@@ -15,6 +15,7 @@ import materialien.MyWeightedEdge;
 import materialien.Vertex;
 import materialien.Graph.DirectedAttributedGraph;
 import materialien.Graph.DirectedAttributedWeightedGraph;
+import materialien.Graph.UndirectedAttributedGraph;
 import materialien.Graph.UndirectedAttributedWeightedGraph;
 
 import org.jgraph.graph.DefaultGraphCell;
@@ -1049,7 +1050,7 @@ import org.jgrapht.graph.WeightedPseudograph;
 	    public static Graph<Vertex, MyWeightedEdge> undirectedAttributeGraph(List<String> infoGraph)
 	    {
 
-	    	Pseudograph<Vertex, MyWeightedEdge> retrunGraph = new Pseudograph<Vertex, MyWeightedEdge>(MyWeightedEdge.class);
+	      UndirectedAttributedGraph<Vertex, MyWeightedEdge> retrunGraph = new UndirectedAttributedGraph<Vertex, MyWeightedEdge>(MyWeightedEdge.class);
 	      Random positionGenerator = new Random();
 	      int x,y;
 	      
