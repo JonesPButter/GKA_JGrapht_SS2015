@@ -25,6 +25,7 @@ import werkzeuge.SubwerkzeugObserver;
 import werkzeuge.algorithmen.aStern.ASternImpl;
 import werkzeuge.algorithmen.bfs.BreadthFirstSearchImpl;
 import werkzeuge.algorithmen.dijkstra.DijkstraImpl;
+import werkzeuge.subwerkzeuge.BigGraph.BigGraphImpl;
 
 /**
  * Der GraphManager ist für die Verwaltung des Graphen zuständig. 
@@ -42,6 +43,7 @@ public class GraphManager extends ObservableSubwerkzeug
     private JGraphModelAdapter<Vertex, MyWeightedEdge> _modelAdapter; // wird benötigt um die JGrapht graphen mittel JGraph anzuzeigen
     private GraphBuilder _graphBuilder;
     private GraphSaver _graphSaver;
+    private BigGraphImpl _bigGraph;
     
     private GraphManager()
     {
@@ -87,6 +89,16 @@ public class GraphManager extends ObservableSubwerkzeug
         
         
         informiereUeberAenderung("Graph changed!"); 
+    }
+    
+    public void createBigGraph()
+    {
+    	
+    	_bigGraph = new BigGraphImpl();
+    	_graph = _bigGraph.getBigGraph();
+    	 _modelAdapter = _graphBuilder.getModelAdapter(_graph);  
+         _visualizationGraph.setModel(_modelAdapter);//TODO
+         informiereUeberAenderung("Graph changed!");   
     }
     
     public void createDefaultDirectedGraph()

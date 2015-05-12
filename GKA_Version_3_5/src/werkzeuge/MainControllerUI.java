@@ -25,6 +25,7 @@ public class MainControllerUI
     private JMenuItem _menuItemFile_Safe;
     private JMenuItem _menuItemCreate_DirectedGraph;
     private JMenuItem _menuItemCreate_UndirectedGraph;
+    private JMenuItem _menuItemCreate_BigGraph;
     private JMenuItem _menuItemAlgorithms_BreadthFirst;
     private JMenuItem _menuItemAlgorithms_Dijkstra;
     
@@ -73,6 +74,9 @@ public class MainControllerUI
         
         _menuItemCreate_UndirectedGraph = new JMenuItem("undirected Graph");
         menuCreate.add(_menuItemCreate_UndirectedGraph);
+        
+        _menuItemCreate_BigGraph = new JMenuItem("Big Graph");
+        menuCreate.add(_menuItemCreate_BigGraph);
         
         JMenu menuAlgorithms = new JMenu("Algorithms");
         menuBar.add(menuAlgorithms);
@@ -191,6 +195,15 @@ public class MainControllerUI
         return _menuItemCreate_UndirectedGraph;
     }
 
+    /**
+     * Liefert den MenuItemButton für das Erstellen eines Big Graphen
+     * @return
+     */
+    public JMenuItem getMenuItemCreate_BigGraph()
+    {
+        return _menuItemCreate_BigGraph;
+    }
+    
     /**
      * Liefert den MenuItemButton für das Anwenden des BreadthFirstSearch Algorithmus
      * @return

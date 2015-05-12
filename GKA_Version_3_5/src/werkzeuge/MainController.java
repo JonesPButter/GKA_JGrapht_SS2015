@@ -464,6 +464,18 @@ public class MainController
             }
         });
         
+        JMenuItem createBigGraphButton = _ui.getMenuItemCreate_BigGraph();
+        createBigGraphButton.addActionListener(new ActionListener()
+        {
+            
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                _graphManager.createBigGraph();;
+                aktualisiereGraph();
+            }
+        });
+        
         JMenuItem createDirectedGraphButton = _ui.getMenuItemCreate_DirectedGraph();
         createDirectedGraphButton.addActionListener(new ActionListener()
         {
