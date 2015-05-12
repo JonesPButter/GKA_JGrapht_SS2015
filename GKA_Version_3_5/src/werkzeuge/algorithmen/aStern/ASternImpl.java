@@ -146,28 +146,43 @@ public class ASternImpl extends ObservableSubwerkzeug
         
         for(Vertex child : neighbours)
         {             
-            _falseMap.put(child,"false");
-
             MyWeightedEdge e = _graph.getEdge(source, child);           
             entf = source.getEntfernungVomStartVertex() + e.getEdgeWeight(); // entf = 0 + Kanntengewicht
             schätzwertF = entf + child.getAttr();
             
-            if(child.isVisited())
+            
+            if(_falseMap.containsKey(child)) // wenn Child in _falseMap 
             {
-                if(child.getEntfernungVomStartVertex() > entf)
+                if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
                 {
-                    _vorgaengerMap.put(child, source);
-                    child.setEntfernungVomStartVertex(entf); 
-                    _schätzwerte.put(child, schätzwertF);
+                    _vorgaengerMap.put(child, source); // neuen Vorgänger für child
+                    child.setEntfernungVomStartVertex(entf);  // neue Entfernung für child
+                    _schätzwerte.put(child, schätzwertF); // neuen Schätzwert für child
                 }
             }
-            else if(!child.isVisited())
-            {
+            else{
+                _falseMap.put(child,"false");
                 _vorgaengerMap.put(child, source);
                 child.setEntfernungVomStartVertex(entf);
                 _schätzwerte.put(child, schätzwertF);
-            }
-            child.visit();
+                child.visit();
+            }                 
+//            if(child.isVisited())
+//            {
+//                if(child.getEntfernungVomStartVertex() > entf)
+//                {
+//                    _vorgaengerMap.put(child, source);
+//                    child.setEntfernungVomStartVertex(entf); 
+//                    _schätzwerte.put(child, schätzwertF);
+//                }
+//            }
+//            else if(!child.isVisited())
+//            {
+//                _vorgaengerMap.put(child, source);
+//                child.setEntfernungVomStartVertex(entf);
+//                _schätzwerte.put(child, schätzwertF);
+//            }
+//            child.visit();
         }
     }
 
