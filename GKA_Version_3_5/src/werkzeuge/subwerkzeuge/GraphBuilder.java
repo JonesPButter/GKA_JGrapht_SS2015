@@ -119,7 +119,7 @@ import org.jgrapht.graph.WeightedPseudograph;
 	        		  GraphInfoArray.get(0).contains("weighted") &&
 	        		  GraphInfoArray.get(0).contains("attributed")) 
 	        {
-//	            System.out.println("undirectedAttriuteWeightedGraph");
+	            System.out.println("undirectedAttriuteWeightedGraph");
 	            GraphInfoArray.remove(0);
 	            graph = undirectedAttriuteWeightedGraph(GraphInfoArray); 
 	            
@@ -1213,7 +1213,7 @@ import org.jgrapht.graph.WeightedPseudograph;
 	    public static Graph<Vertex, MyWeightedEdge> undirectedAttriuteWeightedGraph(List<String> infoGraph)
 	    {
 	    	   
-	      WeightedPseudograph<Vertex, MyWeightedEdge> returnGraph = new WeightedPseudograph<Vertex, MyWeightedEdge>(MyWeightedEdge.class);
+	      UndirectedAttributedWeightedGraph<Vertex, MyWeightedEdge> returnGraph = new UndirectedAttributedWeightedGraph<Vertex, MyWeightedEdge>(MyWeightedEdge.class);
 	      Random positionGenerator = new Random();
 	      int x,y;
 	      
