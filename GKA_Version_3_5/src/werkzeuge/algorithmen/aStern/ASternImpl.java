@@ -74,20 +74,31 @@ public class ASternImpl extends ObservableSubwerkzeug
         tempSource.setPartOfShortestWay();
         _vorgaengerMap.put(tempSource, tempSource); // Der Vorgänger von Source ist Source.      
         tempSource.setEntfernungVomStartVertex(0);
-        _schätzwerte.put(tempSource, tempSource.getAttr());
         _okMap.put(tempSource, "ok");
+        _schätzwerte.put(tempSource, tempSource.getAttr());
         
-        while(tempSource != null && (!_okMap.containsKey(target)||!_falseMap.isEmpty()))
+        while(tempSource != null || (!_falseMap.isEmpty())) // !_okMap.containsKey(target)||
         {
+            
             calculateNeighboursDistance(tempSource); // fügt die Nachbarn in die FalseMap und berechnet Entfernung
             
             // TODO Liefert falsches Ergebnis für Beispiel Aufgabe 25 S.40 Foliensatz 4,
             //wenn man an den Knoten V4 noch einen Knoten V10 mit dem Attribut 7 hängt und
             //von dem auf v8 mit der 3 geht. Genauso beim Dijkstra
+            System.out.println("*****");
+            System.out.println("TempSource = " + tempSource);
+            System.out.println("OKMap = " + _okMap);
+            System.out.println("FalseMap = " + _falseMap);
+            System.out.println("VorgängerMap = " + _vorgaengerMap);
+            System.out.println("Schätzwerte = " + _schätzwerte);
             tempSource = getVertexWithSmallestF(_falseMap);
-            _okMap.put(tempSource, "ok");
-            _falseMap.remove(tempSource);
+            System.out.println("TempNeu: " + tempSource );
             
+            if(tempSource != null)
+            {
+                _okMap.put(tempSource, "ok");
+                _falseMap.remove(tempSource);
+            }
         }
         
         calculateShortestWay(shortestWay,source,target);
@@ -101,17 +112,23 @@ public class ASternImpl extends ObservableSubwerkzeug
     {
         Set<Vertex> falseMapSet = falseMap.keySet();
         Vertex result = null;
-        double f;
+        double f = 0;
+        double tempF;
         for(Vertex v : falseMapSet)
         {
-            f = (v.getAttr()+ _schätzwerte.get(v));
-            if(result == null)
+            if(! _okMap.containsKey(v))
             {
-                result = v;
-            }
-            if(f < ((result.getAttr() + _schätzwerte.get(result))))
-            {
-                result = v;
+                tempF =_schätzwerte.get(v);          
+                if(result == null)
+                {
+                    f = tempF;
+                    result = v;
+                }
+                if(f > tempF)
+                {
+                    f = tempF;
+                    result = v;
+                }
             }
         }
         return result;
@@ -150,8 +167,27 @@ public class ASternImpl extends ObservableSubwerkzeug
             entf = source.getEntfernungVomStartVertex() + e.getEdgeWeight(); // entf = 0 + Kanntengewicht
             schätzwertF = entf + child.getAttr();
             
-            
-            if(_falseMap.containsKey(child)) // wenn Child in _falseMap 
+            if(!_okMap.containsKey(child))
+            {
+                
+                if(_falseMap.containsKey(child)) // wenn Child in _falseMap 
+                {
+                    if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
+                    {
+                        _vorgaengerMap.put(child, source); // neuen Vorgänger für child
+                        child.setEntfernungVomStartVertex(entf);  // neue Entfernung für child
+                        _schätzwerte.put(child, schätzwertF); // neuen Schätzwert für child
+                    }
+                }
+                else{
+                    _falseMap.put(child,"false");
+                    _vorgaengerMap.put(child, source);
+                    child.setEntfernungVomStartVertex(entf);
+                    _schätzwerte.put(child, schätzwertF);
+                    child.visit();
+                }                                 
+            }
+            else if(_okMap.containsKey(child) && child.equals(_targetVertex))
             {
                 if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
                 {
@@ -160,13 +196,6 @@ public class ASternImpl extends ObservableSubwerkzeug
                     _schätzwerte.put(child, schätzwertF); // neuen Schätzwert für child
                 }
             }
-            else{
-                _falseMap.put(child,"false");
-                _vorgaengerMap.put(child, source);
-                child.setEntfernungVomStartVertex(entf);
-                _schätzwerte.put(child, schätzwertF);
-                child.visit();
-            }                 
 //            if(child.isVisited())
 //            {
 //                if(child.getEntfernungVomStartVertex() > entf)
@@ -198,16 +227,10 @@ public class ASternImpl extends ObservableSubwerkzeug
            Vertex neighbour = _graph.getEdgeTarget(edge);
            if(source.equals(n))
            {
-               if(!_okMap.containsKey(neighbour))
-               {
-                   adjacentNodes.add(neighbour);   
-               }
+               adjacentNodes.add(neighbour);  
            } else if(neighbour.equals(n))
            {
-               if(!_okMap.containsKey(source))
-               {
-                   adjacentNodes.add(source);
-               }
+               adjacentNodes.add(source);  
            }
        }
        return adjacentNodes;
@@ -230,7 +253,7 @@ public class ASternImpl extends ObservableSubwerkzeug
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                System.out.println("**************** DIJKSTRA ******************** ");
+                System.out.println("**************** AStern ******************** ");
                 String vertexSource = _ui.getVertexSource().getText();
                 String vertexTarget = _ui.getVertexTarget().getText();
  
