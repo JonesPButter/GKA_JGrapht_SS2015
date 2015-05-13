@@ -143,7 +143,7 @@ public class GraphSaver {
 			Iterator<Vertex> it = vertexlist.iterator();
 			while(it.hasNext())
 			{
-				String sourceA = it.next().toString();
+				String sourceA = it.next().getName();
 				result.add(sourceA);
 			}
 		}
@@ -191,8 +191,9 @@ public class GraphSaver {
 		{
 			Iterator<Vertex> it = vertexlist.iterator();
 			while(it.hasNext())
+				
 			{
-				String sourceA = it.next().toString();
+				String sourceA = it.next().getName() + ":" + it.next().getAttr();
 				result.add(sourceA);
 			}
 		}
@@ -245,7 +246,7 @@ public class GraphSaver {
 				Iterator<Vertex> it = vertexlist.iterator();
 				while(it.hasNext())
 				{
-					String sourceA = it.next().toString();
+					String sourceA = it.next().getName();
 					result.add(sourceA);
 				}
 				
@@ -277,7 +278,7 @@ public class GraphSaver {
 			Vertex target = (Vertex) graph.getEdgeTarget(dwe);
 			int weighing = (int) graph.getEdgeWeight(dwe);		
 			
-			String edgeString = source.toString() + ":" + source.getAttr() + " , " + target.toString() + ":" + target.getAttr() +"::"+ weighing;
+			String edgeString = source.getName() + ":" + source.getAttr() + " , " + target.getName() + ":" + target.getAttr() +"::"+ weighing;
 			
 			if(vertexlist.contains((Vertex) graph.getEdgeSource(dwe)))
 			{
@@ -298,7 +299,7 @@ public class GraphSaver {
 			Iterator<Vertex> it = vertexlist.iterator();
 			while(it.hasNext())
 			{
-				String sourceA =  it.next().toString();
+				String sourceA =  it.next().getName() + ":" + it.next().getAttr();
 				result.add(sourceA);
 			}
 			
