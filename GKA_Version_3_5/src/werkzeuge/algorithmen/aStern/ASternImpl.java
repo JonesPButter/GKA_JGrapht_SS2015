@@ -18,6 +18,7 @@ import materialien.Graph.UndirectedAttributedWeightedGraph;
 import org.jgrapht.Graph;
 
 import werkzeuge.ObservableSubwerkzeug;
+import werkzeuge.algorithmen.AlgorithmConsole;
 
 public class ASternImpl extends ObservableSubwerkzeug
 {
@@ -29,6 +30,7 @@ public class ASternImpl extends ObservableSubwerkzeug
     Map<Vertex,Vertex> _vorgaengerMap; // map<key,val>
     Map<Vertex,Double> _schätzwerte; // berechnet Schätzwert
     int _benoetigteKanten;
+    int _graphAccesses;
     double _wegLaenge;
     ASternUI _ui;
     
@@ -52,6 +54,7 @@ public class ASternImpl extends ObservableSubwerkzeug
         _falseMap = new HashMap<Vertex, String>();
         _vorgaengerMap = new HashMap<Vertex, Vertex>();
         _benoetigteKanten =0;
+        _graphAccesses = 0;
         _wegLaenge=0;
         _schätzwerte  = new HashMap<>();
         _ui = new ASternUI();
@@ -79,6 +82,8 @@ public class ASternImpl extends ObservableSubwerkzeug
         _schätzwerte.put(tempSource, tempSource.getAttr());
         
         do{
+            _graphAccesses++;
+            
             // 1.)
             tempSource = getVertexWithSmallestF(_falseMap); // Knoten mit niedrigsten f in OL suchen
             
@@ -95,36 +100,6 @@ public class ASternImpl extends ObservableSubwerkzeug
             }
         } while(!_falseMap.isEmpty());
         
-//        tempSource.visit();
-//        tempSource.setPartOfShortestWay();
-//        _vorgaengerMap.put(tempSource, tempSource); // Der Vorgänger von Source ist Source.      
-//        tempSource.setEntfernungVomStartVertex(0);
-//        _okMap.put(tempSource, "ok");
-//        _schätzwerte.put(tempSource, tempSource.getAttr());
-//        
-//        while(tempSource != null || (!_falseMap.isEmpty())) // !_okMap.containsKey(target)||
-//        {
-//            
-//            calculateNeighboursDistance(tempSource); // fügt die Nachbarn in die FalseMap und berechnet Entfernung
-//            
-//            // TODO Liefert falsches Ergebnis für Beispiel Aufgabe 25 S.40 Foliensatz 4,
-//            //wenn man an den Knoten V4 noch einen Knoten V10 mit dem Attribut 7 hängt und
-//            //von dem auf v8 mit der 3 geht. Genauso beim Dijkstra
-//            System.out.println("*****");
-//            System.out.println("TempSource = " + tempSource);
-//            System.out.println("OKMap = " + _okMap);
-//            System.out.println("FalseMap = " + _falseMap);
-//            System.out.println("VorgängerMap = " + _vorgaengerMap);
-//            System.out.println("Schätzwerte = " + _schätzwerte);
-//            tempSource = getVertexWithSmallestF(_falseMap);
-//            System.out.println("TempNeu: " + tempSource );
-//            
-//            if(tempSource != null)
-//            {
-//                _okMap.put(tempSource, "ok");
-//                _falseMap.remove(tempSource);
-//            }
-//        }
         if(_okMap.containsKey(target))
         {
             calculateShortestWay(shortestWay,source,target);            
@@ -141,6 +116,7 @@ public class ASternImpl extends ObservableSubwerkzeug
         Vertex result = null;
         double f = 0;
         double tempF;
+        _graphAccesses++;
         for(Vertex v : falseMapSet)
         {
             if(! _okMap.containsKey(v))
@@ -187,7 +163,7 @@ public class ASternImpl extends ObservableSubwerkzeug
         Set<Vertex> neighbours = getAdjacentNodes(source);
         double entf;
         double schätzwertF;
-        
+        _graphAccesses++;
         for(Vertex child : neighbours)
         {             
             if(!_okMap.containsKey(child))
@@ -226,7 +202,7 @@ public class ASternImpl extends ObservableSubwerkzeug
         }
     }
 
-    // Liefert alle Nachbarn, die noch nicht in der OKMap  stehen
+    // Liefert alle Nachbarn, die noch nicht in der OKMap stehen
     private Set<Vertex> getAdjacentNodes(Vertex n)
     {
         Set<Vertex> adjacentNodes= new HashSet<Vertex>();
@@ -279,9 +255,8 @@ public class ASternImpl extends ObservableSubwerkzeug
                     }
                     else
                     {
-                    JOptionPane.showMessageDialog(null, "Der Kürzeste Weg von: "+ _rootVertex +" nach: "+ _targetVertex +" lautet: "
-                            + shortestW + ".\n Anzahl der benötigten Kanten: " + _benoetigteKanten
-                            + "\n Die Entfernung der beiden Knoten beträgt: " + _wegLaenge);
+                        AlgorithmConsole console = new AlgorithmConsole(_rootVertex, _targetVertex, shortestW, ""+_graphAccesses, "" + _benoetigteKanten, ""+_wegLaenge);
+                        console.start();
                     }
                 }
                 else{

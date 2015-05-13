@@ -19,6 +19,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.WeightedPseudograph;
 
 import werkzeuge.ObservableSubwerkzeug;
+import werkzeuge.algorithmen.AlgorithmConsole;
 
 public class DijkstraImpl extends ObservableSubwerkzeug
 {
@@ -29,6 +30,7 @@ public class DijkstraImpl extends ObservableSubwerkzeug
     Map<Vertex,String> _falseMap;
     Map<Vertex,Vertex> _vorgaengerMap; // map<key,val>
     int _benoetigteKanten;
+    int _graphAccesses;
     double _wegLaenge;
     DijkstraUI _ui;
     
@@ -52,6 +54,7 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         _falseMap = new HashMap<Vertex, String>();
         _vorgaengerMap = new HashMap<Vertex, Vertex>();
         _benoetigteKanten =0;
+        _graphAccesses = 0;
         _wegLaenge=0;
         _ui = new DijkstraUI();
         faerbungenZuruecksetzen();
@@ -74,17 +77,27 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         assert target != null : "Vorbedingung verletzt: graph != null";
         
         List<Vertex> shortestWay = new ArrayList<Vertex>();
-
         Vertex tempSource = source;
+
+        // nur für die spätere Färbung
         source.visit();
         source.setPartOfShortestWay();
+        
+        // Initialisierung
         _vorgaengerMap.put(source, source); // Der Vorgänger von Source ist Source.      
         _falseMap.put(source, "false");      
+        
         do{
-            tempSource = getVertexWithShortestDist(_falseMap);
+            _graphAccesses++;
+            
+            // 1.) Suche unter den Knoten v(i) mit OK(i) = false einen Knoten v(h) mit dem kleinsten Wert von Entf(i)
+            tempSource = getVertexWithShortestDist(_falseMap); 
+            
+            // 2.) Setze OK(h) = true
             _okMap.put(tempSource, "OK");
             _falseMap.remove(tempSource);
             
+            // 3.) Für alle Knoten v(j) mit OK(j) = false, für die die Kante v(h),v(j) exisitiert die Entfernung und gegebenenfalls den Vorgänger neuberechnen
             calculateNeighboursDistance(tempSource);
         } while(!_falseMap.isEmpty());         
             
@@ -100,6 +113,7 @@ public class DijkstraImpl extends ObservableSubwerkzeug
      */
     private Vertex getVertexWithShortestDist(Map<Vertex, String> falseMap)
     {
+        _graphAccesses++;
         Set<Vertex> vertexes = falseMap.keySet();
         Vertex result = null;
         for(Vertex v : vertexes)
@@ -186,6 +200,7 @@ public class DijkstraImpl extends ObservableSubwerkzeug
     {
         Set<Vertex> neighbours = getUndirectedAdjacentNodes(source);
         double entf=0;
+        _graphAccesses++;
         for(Vertex child : neighbours)
         {
             if(!_okMap.containsKey(child)) // damit wir nicht "rückwärts" im Graphen schauen
@@ -269,9 +284,8 @@ public class DijkstraImpl extends ObservableSubwerkzeug
                     }
                     else
                     {
-                    JOptionPane.showMessageDialog(null, "Der Kürzeste Weg von: "+ _rootVertex +" nach: "+ _targetVertex +" lautet: "
-                            + shortestW + ".\n Anzahl der benötigten Kanten: " + _benoetigteKanten
-                            + "\n Die Entfernung der beiden Knoten beträgt: " + _wegLaenge);
+                        AlgorithmConsole console = new AlgorithmConsole(_rootVertex, _targetVertex, shortestW, ""+_graphAccesses, "" + _benoetigteKanten, ""+_wegLaenge);
+                        console.start();
                     }
                 }
                 else{

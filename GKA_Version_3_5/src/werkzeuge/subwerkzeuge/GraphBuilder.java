@@ -1436,7 +1436,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	{
 	    JGraphModelAdapter<Vertex,MyWeightedEdge> modAdapter = new JGraphModelAdapter<>(graph);
 	    Set<Vertex> vertexes = graph.vertexSet();
-//	    System.out.println("Test: Builder 1439");
 	    for(Vertex o : vertexes)
 	    {
 	        DefaultGraphCell cell = modAdapter.getVertexCell(o);
@@ -1456,7 +1455,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	        }
 	        else if(o.isVisited() && !o.isTarget())
 	        {
-	            System.out.println("BLAU");
 	            GraphConstants.setBackground(attr, Color.blue);
 	        }
 	
