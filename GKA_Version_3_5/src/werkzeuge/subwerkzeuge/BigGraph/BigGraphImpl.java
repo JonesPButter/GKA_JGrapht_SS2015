@@ -9,12 +9,16 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 
+
+
+import werkzeuge.ObservableSubwerkzeug;
+import werkzeuge.SubwerkzeugObserver;
 import materialien.MyWeightedEdge;
 import materialien.Vertex;
 import materialien.Graph.UndirectedAttributedWeightedGraph;
+import werkzeuge.ObservableSubwerkzeug;
 
-
-public class BigGraphImpl {
+public class BigGraphImpl extends ObservableSubwerkzeug{
 
 	BigGraphUI _ui;
 	int _kantenAnzahl;
@@ -26,7 +30,6 @@ public class BigGraphImpl {
 	public BigGraphImpl()
 	{
 		_ui = new BigGraphUI();
-		showUI();
 		registiereListener();
 
 	}
@@ -39,7 +42,7 @@ public class BigGraphImpl {
 	 {
 		 _knotenAnzahl = 100;
 		 _kantenAnzahl = 6000;
-//		 showUI();
+
 		 _ui.getOkButton().addActionListener(new ActionListener() {
 			
 			@Override
@@ -50,8 +53,10 @@ public class BigGraphImpl {
 				
 				if(eingabenKorrekt(knotenAnzahl, kantenAnzahl))
 				{
-					 _ui.getDialog().dispose();
-					 createBigGraph();
+					_ui.getDialog().dispose();
+					createBigGraph();
+					_graph = getBigGraph();
+					informiereUeberAenderung(_graph);
 				}
 				else
 				{
@@ -74,7 +79,7 @@ public class BigGraphImpl {
 	 {
 		 
 		 
-		 if(!knotenAnzahl.matches("(?[0-9]+)") || !kantenAnzahl.matches("(?[0-9]+)"))
+		 if(false)//!knotenAnzahl.matches("(?[0-9]+)") || !kantenAnzahl.matches("(?[0-9]+)"))
 		 {
 			 JOptionPane.showMessageDialog(null , "Fehlerhafte Eingabe. "
                      + "\n Bitte geben Sie eine gültige Zahl ein."
@@ -128,7 +133,7 @@ public class BigGraphImpl {
 		//Die Kanten bekommen auch durch den RandomGenerator zufällige Attribute-
 		for(int j = 0; j < _kantenAnzahl; j++)
 		{
-			weight = randomGenerator.nextInt(6000);
+			weight = randomGenerator.nextInt(600);
 			x = randomGenerator.nextInt(_knotenAnzahl);
 			y = randomGenerator.nextInt(_knotenAnzahl);
 			source = (Vertex) vertexList.get(x);
@@ -158,4 +163,5 @@ public class BigGraphImpl {
 	 {
 		 return _graph;
 	 }
+
 }
