@@ -284,7 +284,7 @@ public class DijkstraImpl extends ObservableSubwerkzeug
                     }
                     else
                     {
-                        AlgorithmConsole console = new AlgorithmConsole(_rootVertex, _targetVertex, shortestW, ""+_graphAccesses, "" + _benoetigteKanten, ""+_wegLaenge);
+                        AlgorithmConsole console = new AlgorithmConsole(_rootVertex, _targetVertex, shortestW, ""+_graphAccesses, "" + _benoetigteKanten, ""+_wegLaenge, "Dijkstra");
                         console.start();
                     }
                 }

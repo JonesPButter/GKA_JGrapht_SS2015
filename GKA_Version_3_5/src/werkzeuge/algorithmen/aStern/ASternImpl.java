@@ -255,7 +255,7 @@ public class ASternImpl extends ObservableSubwerkzeug
                     }
                     else
                     {
-                        AlgorithmConsole console = new AlgorithmConsole(_rootVertex, _targetVertex, shortestW, ""+_graphAccesses, "" + _benoetigteKanten, ""+_wegLaenge);
+                        AlgorithmConsole console = new AlgorithmConsole(_rootVertex, _targetVertex, shortestW, ""+_graphAccesses, "" + _benoetigteKanten, ""+_wegLaenge, "AStern");
                         console.start();
                     }
                 }

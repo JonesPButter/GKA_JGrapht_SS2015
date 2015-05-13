@@ -22,9 +22,9 @@ public class AlgorithmConsole
  
     public AlgorithmConsole(Vertex rootVertex,
             Vertex targetVertex, String shortestW, String graphAccesses,
-            String benoetigteKanten, String wegLaenge)
+            String benoetigteKanten, String wegLaenge, String algorithm)
     {
-        _frame = new JFrame("AlgorithmConsole");        
+        _frame = new JFrame("AlgorithmConsole - " + algorithm);        
         JPanel panel = new JPanel(new GridLayout(7, 1));
 
         _rootVertex = new JLabel("Start: " + rootVertex.toString());
