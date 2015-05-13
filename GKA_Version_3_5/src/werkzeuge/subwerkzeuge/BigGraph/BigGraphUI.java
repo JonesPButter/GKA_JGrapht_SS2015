@@ -23,6 +23,7 @@ package werkzeuge.subwerkzeuge.BigGraph;
 	    
 	    public BigGraphUI()
 	    {
+	    	//Dialog Einstellungen
 	        _dialog = new JDialog();
 	        _dialog.setSize(300, 200);
 	        _dialog.setLocationRelativeTo(null);
@@ -53,6 +54,7 @@ package werkzeuge.subwerkzeuge.BigGraph;
 	        _dialog.setModalityType(Dialog.DEFAULT_MODALITY_TYPE);
 	    }
 
+	    
 	    public JDialog getDialog()
 	    {
 	        return _dialog;

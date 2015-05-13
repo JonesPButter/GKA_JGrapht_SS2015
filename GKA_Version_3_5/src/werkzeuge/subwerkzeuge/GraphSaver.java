@@ -253,7 +253,12 @@ public class GraphSaver {
 		return result;
 	
 	}
-	
+/**	
+ * speichert gewichtete Graphen in ein Strings, welcher später die .graph datei wird. 
+ * 
+ * @param grapnte bekommt einen String, die später die List sein wird.
+ * @return eine Liste von String List<String>
+ */
 	public List<String> weightedAttributedGraphInArray(Graph<Vertex, MyWeightedEdge> graph)
 	{
 	
@@ -263,7 +268,9 @@ public class GraphSaver {
 		vertexlist.addAll(vertexSet);
 		Set<MyWeightedEdge> edgeSet = graph.edgeSet();
 		
-		
+		//Geht über jede Kante und Speichert diese als String,
+		//diese wird später der List von String (result) hinzu gefügt.
+		//Zum schluss werden die Knoten aus der Liste entfernt.
 		for(MyWeightedEdge dwe : edgeSet)
 		{
 			Vertex source  = (Vertex) graph.getEdgeSource(dwe);
@@ -285,16 +292,17 @@ public class GraphSaver {
 
 
 		}
-			if(!vertexlist.isEmpty())
+		//Wenn die List noch nicht leer ist. Habe diese Knoten keine Knte und werden einzelt gespeichert
+		if(!vertexlist.isEmpty())
+		{
+			Iterator<Vertex> it = vertexlist.iterator();
+			while(it.hasNext())
 			{
-				Iterator<Vertex> it = vertexlist.iterator();
-				while(it.hasNext())
-				{
-					String sourceA = it.next().toString();
-					result.add(sourceA);
-				}
-				
+				String sourceA =  it.next().toString();
+				result.add(sourceA);
 			}
+			
+		}
 		return result;
 	
 	}	

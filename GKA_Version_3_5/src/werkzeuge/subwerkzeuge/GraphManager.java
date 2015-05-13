@@ -95,7 +95,10 @@ public class GraphManager extends ObservableSubwerkzeug
     {
     	
     	_bigGraph = new BigGraphImpl();
+    	_bigGraph.createBigGraph();
     	_graph = _bigGraph.getBigGraph();
+//    	System.out.println(_graph + "Manager 99");
+//    	System.out.println("Big: " + _bigGraph );
     	 _modelAdapter = _graphBuilder.getModelAdapter(_graph);  
          _visualizationGraph.setModel(_modelAdapter);//TODO
          informiereUeberAenderung("Graph changed!");   

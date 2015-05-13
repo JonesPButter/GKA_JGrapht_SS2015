@@ -19,7 +19,7 @@ import materialien.Vertex;
 
 import org.jgraph.JGraph;
 import org.jgraph.graph.DefaultGraphCell;
-import org.jgrapht.graph.DefaultWeightedEdge;
+//import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.Pseudograph;
 
 //import werkzeuge.algorithmen.BreadthFirstSearchImpl;
@@ -471,6 +471,7 @@ public class MainController
             @Override
             public void actionPerformed(ActionEvent e)
             {
+            	
                 _graphManager.createBigGraph();;
                 aktualisiereGraph();
             }
