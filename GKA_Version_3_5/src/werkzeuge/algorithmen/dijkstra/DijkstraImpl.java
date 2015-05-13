@@ -76,26 +76,18 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         List<Vertex> shortestWay = new ArrayList<Vertex>();
 
         Vertex tempSource = source;
-        tempSource.visit();
-        tempSource.setPartOfShortestWay();
-        _vorgaengerMap.put(tempSource, tempSource); // Der Vorgänger von Source ist Source.      
-        _falseMap.put(tempSource, "false");
-        //  while(!_falseMap.isEmpty())
-        while(tempSource != null && (!_okMap.containsKey(target)||!_falseMap.isEmpty()))
-        {
-//            System.out.println("Ich bin gefangen im Code, holt mich hier raus!");
+        source.visit();
+        source.setPartOfShortestWay();
+        _vorgaengerMap.put(source, source); // Der Vorgänger von Source ist Source.      
+        _falseMap.put(source, "false");      
+        do{
+            tempSource = getVertexWithShortestDist(_falseMap);
+            _okMap.put(tempSource, "OK");
             _falseMap.remove(tempSource);
-            _okMap.put(tempSource, "OK"); 
             
             calculateNeighboursDistance(tempSource);
+        } while(!_falseMap.isEmpty());         
             
-            tempSource = findNearestVertex(tempSource);
-            if(tempSource != null)
-            {
-                System.out.println("NearestVertex:" + tempSource + " mit Entfernung: " + tempSource.getEntfernungVomStartVertex());
-            }
-        }
-        
         if(_okMap.containsKey(target))
         {
             calculateShortestWay(shortestWay,source,target);            
@@ -103,6 +95,38 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         return shortestWay;
     }
     
+    /*
+     * liefert den Knoten mit OK = false mit dem kleinsten Wert von Entf
+     */
+    private Vertex getVertexWithShortestDist(Map<Vertex, String> falseMap)
+    {
+        Set<Vertex> vertexes = falseMap.keySet();
+        Vertex result = null;
+        for(Vertex v : vertexes)
+        {
+            if(result == null)
+            {
+                result = v;
+            }
+            else
+            {
+                if(result.getEntfernungVomStartVertex() > v.getEntfernungVomStartVertex())
+                {
+                    result = v;
+                }
+            }
+        }
+        return result;
+    }
+
+
+
+
+
+
+
+
+
     private void calculateShortestWay(List<Vertex> shortestWay, Vertex source, Vertex target)
     {
         boolean startVertex = false;
@@ -161,15 +185,14 @@ public class DijkstraImpl extends ObservableSubwerkzeug
     private void calculateNeighboursDistance(Vertex source)
     {
         Set<Vertex> neighbours = getUndirectedAdjacentNodes(source);
-        
+        double entf=0;
         for(Vertex child : neighbours)
         {
             if(!_okMap.containsKey(child)) // damit wir nicht "rückwärts" im Graphen schauen
             {                  
-                _falseMap.put(child,"false");
 
                 MyWeightedEdge e = _graph.getEdge(source, child);           
-                double entf = source.getEntfernungVomStartVertex() + e.getEdgeWeight(); // entf = 0 + Kanntengewicht
+                entf = source.getEntfernungVomStartVertex() + e.getEdgeWeight(); // entf = 0 + Kanntengewicht
                 
                 if(child.isVisited())
                 {
@@ -181,10 +204,11 @@ public class DijkstraImpl extends ObservableSubwerkzeug
                 }
                 else if(!child.isVisited())
                 {
+                    _falseMap.put(child,"false");
                     _vorgaengerMap.put(child, source);
                     child.setEntfernungVomStartVertex(entf);
+                    child.visit();
                 }
-                child.visit();
             }
         }
     }

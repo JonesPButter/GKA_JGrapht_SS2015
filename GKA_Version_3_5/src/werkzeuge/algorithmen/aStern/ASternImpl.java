@@ -67,41 +67,68 @@ public class ASternImpl extends ObservableSubwerkzeug
         assert target != null : "Vorbedingung verletzt: graph != null";
         
         List<Vertex> shortestWay = new ArrayList<Vertex>();
-
-        
         Vertex tempSource = source;
-        tempSource.visit();
-        tempSource.setPartOfShortestWay();
-        _vorgaengerMap.put(tempSource, tempSource); // Der Vorgänger von Source ist Source.      
-        tempSource.setEntfernungVomStartVertex(0);
-        _okMap.put(tempSource, "ok");
+        
+        // nur für die spätere Färbung
+        source.visit();
+        source.setPartOfShortestWay();
+        
+        // Initialisierung
+        _vorgaengerMap.put(source, source); // Der Vorgänger von Source ist Source.      
+        _falseMap.put(source, "false");  
         _schätzwerte.put(tempSource, tempSource.getAttr());
         
-        while(tempSource != null || (!_falseMap.isEmpty())) // !_okMap.containsKey(target)||
-        {
+        do{
+            // 1.)
+            tempSource = getVertexWithSmallestF(_falseMap); // Knoten mit niedrigsten f in OL suchen
             
-            calculateNeighboursDistance(tempSource); // fügt die Nachbarn in die FalseMap und berechnet Entfernung
+            // 2.)
+            _okMap.put(tempSource, "OK"); // Knoten in die CL schieben.
+            _falseMap.remove(tempSource);
+           
+           // 3.)
+            calculateNeighboursDistance(tempSource); // für alle adjazente Knoten v(j), die nicht in der CL sind, prüfen, ob g(j) > g(k)+ l(k,j)    
             
-            // TODO Liefert falsches Ergebnis für Beispiel Aufgabe 25 S.40 Foliensatz 4,
-            //wenn man an den Knoten V4 noch einen Knoten V10 mit dem Attribut 7 hängt und
-            //von dem auf v8 mit der 3 geht. Genauso beim Dijkstra
-            System.out.println("*****");
-            System.out.println("TempSource = " + tempSource);
-            System.out.println("OKMap = " + _okMap);
-            System.out.println("FalseMap = " + _falseMap);
-            System.out.println("VorgängerMap = " + _vorgaengerMap);
-            System.out.println("Schätzwerte = " + _schätzwerte);
-            tempSource = getVertexWithSmallestF(_falseMap);
-            System.out.println("TempNeu: " + tempSource );
-            
-            if(tempSource != null)
+            if(_okMap.containsKey(target))
             {
-                _okMap.put(tempSource, "ok");
-                _falseMap.remove(tempSource);
+                break;
             }
-        }
+        } while(!_falseMap.isEmpty());
         
-        calculateShortestWay(shortestWay,source,target);
+//        tempSource.visit();
+//        tempSource.setPartOfShortestWay();
+//        _vorgaengerMap.put(tempSource, tempSource); // Der Vorgänger von Source ist Source.      
+//        tempSource.setEntfernungVomStartVertex(0);
+//        _okMap.put(tempSource, "ok");
+//        _schätzwerte.put(tempSource, tempSource.getAttr());
+//        
+//        while(tempSource != null || (!_falseMap.isEmpty())) // !_okMap.containsKey(target)||
+//        {
+//            
+//            calculateNeighboursDistance(tempSource); // fügt die Nachbarn in die FalseMap und berechnet Entfernung
+//            
+//            // TODO Liefert falsches Ergebnis für Beispiel Aufgabe 25 S.40 Foliensatz 4,
+//            //wenn man an den Knoten V4 noch einen Knoten V10 mit dem Attribut 7 hängt und
+//            //von dem auf v8 mit der 3 geht. Genauso beim Dijkstra
+//            System.out.println("*****");
+//            System.out.println("TempSource = " + tempSource);
+//            System.out.println("OKMap = " + _okMap);
+//            System.out.println("FalseMap = " + _falseMap);
+//            System.out.println("VorgängerMap = " + _vorgaengerMap);
+//            System.out.println("Schätzwerte = " + _schätzwerte);
+//            tempSource = getVertexWithSmallestF(_falseMap);
+//            System.out.println("TempNeu: " + tempSource );
+//            
+//            if(tempSource != null)
+//            {
+//                _okMap.put(tempSource, "ok");
+//                _falseMap.remove(tempSource);
+//            }
+//        }
+        if(_okMap.containsKey(target))
+        {
+            calculateShortestWay(shortestWay,source,target);            
+        }
         return shortestWay;
     }
 
@@ -157,20 +184,20 @@ public class ASternImpl extends ObservableSubwerkzeug
         
     private void calculateNeighboursDistance(Vertex source)
     {
-        Set<Vertex> neighbours = getUndirectedAdjacentNodes(source);
+        Set<Vertex> neighbours = getAdjacentNodes(source);
         double entf;
         double schätzwertF;
         
         for(Vertex child : neighbours)
         {             
-            MyWeightedEdge e = _graph.getEdge(source, child);           
-            entf = source.getEntfernungVomStartVertex() + e.getEdgeWeight(); // entf = 0 + Kanntengewicht
-            schätzwertF = entf + child.getAttr();
-            
             if(!_okMap.containsKey(child))
             {
                 
-                if(_falseMap.containsKey(child)) // wenn Child in _falseMap 
+                MyWeightedEdge e = _graph.getEdge(source, child);           
+                entf = source.getEntfernungVomStartVertex() + e.getEdgeWeight(); // entf = 0 + Kanntengewicht
+                schätzwertF = entf + child.getAttr();
+                
+                if(child.isVisited()) // wenn Child in _falseMap 
                 {
                     if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
                     {
@@ -179,7 +206,7 @@ public class ASternImpl extends ObservableSubwerkzeug
                         _schätzwerte.put(child, schätzwertF); // neuen Schätzwert für child
                     }
                 }
-                else{
+                else{ // child wurde noch nie beobachtet, also einfach Werte berechnen
                     _falseMap.put(child,"false");
                     _vorgaengerMap.put(child, source);
                     child.setEntfernungVomStartVertex(entf);
@@ -187,36 +214,20 @@ public class ASternImpl extends ObservableSubwerkzeug
                     child.visit();
                 }                                 
             }
-            else if(_okMap.containsKey(child) && child.equals(_targetVertex))
-            {
-                if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
-                {
-                    _vorgaengerMap.put(child, source); // neuen Vorgänger für child
-                    child.setEntfernungVomStartVertex(entf);  // neue Entfernung für child
-                    _schätzwerte.put(child, schätzwertF); // neuen Schätzwert für child
-                }
-            }
-//            if(child.isVisited())
+//            else if(_okMap.containsKey(child) && child.equals(_targetVertex))
 //            {
-//                if(child.getEntfernungVomStartVertex() > entf)
+//                if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
 //                {
-//                    _vorgaengerMap.put(child, source);
-//                    child.setEntfernungVomStartVertex(entf); 
-//                    _schätzwerte.put(child, schätzwertF);
+//                    _vorgaengerMap.put(child, source); // neuen Vorgänger für child
+//                    child.setEntfernungVomStartVertex(entf);  // neue Entfernung für child
+//                    _schätzwerte.put(child, schätzwertF); // neuen Schätzwert für child
 //                }
 //            }
-//            else if(!child.isVisited())
-//            {
-//                _vorgaengerMap.put(child, source);
-//                child.setEntfernungVomStartVertex(entf);
-//                _schätzwerte.put(child, schätzwertF);
-//            }
-//            child.visit();
         }
     }
 
     // Liefert alle Nachbarn, die noch nicht in der OKMap stehen
-    private Set<Vertex> getUndirectedAdjacentNodes(Vertex n)
+    private Set<Vertex> getAdjacentNodes(Vertex n)
     {
         Set<Vertex> adjacentNodes= new HashSet<Vertex>();
         Set<MyWeightedEdge> edges= _graph.edgesOf(n);
