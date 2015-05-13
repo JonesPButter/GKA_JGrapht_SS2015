@@ -65,13 +65,12 @@ public class GraphSaver {
 			result.addAll(weightedAttributedGraphInArray(graph));
 			
 		}
-		else if(graph instanceof Pseudograph)
+		else if(graph instanceof UndirectedAttributedWeightedGraph)
 		{
 			
-			allAttributes = "";			
+			allAttributes = "#attributed #weighted";			
 			result.add(allAttributes);
-			result.addAll(unweightedGraphInArray(graph));
-			
+			result.addAll(weightedAttributedGraphInArray(graph));
 		}
 		else if(graph instanceof WeightedPseudograph)
 		{
@@ -87,12 +86,13 @@ public class GraphSaver {
 			result.addAll(unweightedAttributedGraphInArray(graph));
 			
 		}
-		else if(graph instanceof UndirectedAttributedWeightedGraph)
+		else if(graph instanceof Pseudograph)
 		{
 			
-			allAttributes = "#attributed #weighted";			
+			allAttributes = "";			
 			result.add(allAttributes);
-			result.addAll(weightedAttributedGraphInArray(graph));
+			result.addAll(unweightedGraphInArray(graph));
+			
 		}
 				
 

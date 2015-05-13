@@ -12,11 +12,11 @@ import javax.swing.JOptionPane;
 
 
 import werkzeuge.ObservableSubwerkzeug;
-import werkzeuge.SubwerkzeugObserver;
+//import werkzeuge.SubwerkzeugObserver;
 import materialien.MyWeightedEdge;
 import materialien.Vertex;
 import materialien.Graph.UndirectedAttributedWeightedGraph;
-import werkzeuge.ObservableSubwerkzeug;
+//import werkzeuge.ObservableSubwerkzeug;
 
 public class BigGraphImpl extends ObservableSubwerkzeug{
 
@@ -115,7 +115,7 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 		{
 			
 			x = randomGenerator.nextInt((1200)+1);
-		    y  = randomGenerator.nextInt((1000)+1);
+		    y  = randomGenerator.nextInt((800)+1);
 		    attr = randomGenerator.nextInt((400));
 		    vertexName = "V" + i;
 		    //Hier wird der Knoten erstellt.

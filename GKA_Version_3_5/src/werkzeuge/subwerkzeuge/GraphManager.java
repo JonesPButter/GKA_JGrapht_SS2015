@@ -93,15 +93,34 @@ public class GraphManager extends ObservableSubwerkzeug
     
     public void createBigGraph()
     {
-    	
-    	_bigGraph = new BigGraphImpl();
-    	_bigGraph.createBigGraph();
-    	_graph = _bigGraph.getBigGraph();
-//    	System.out.println(_graph + "Manager 99");
-//    	System.out.println("Big: " + _bigGraph );
-    	 _modelAdapter = _graphBuilder.getModelAdapter(_graph);  
-         _visualizationGraph.setModel(_modelAdapter);//TODO
-         informiereUeberAenderung("Graph changed!");   
+         try
+         {
+        	 _bigGraph = new BigGraphImpl();
+            
+             _bigGraph.registriereObserver(new SubwerkzeugObserver()
+             { 
+                 @Override
+                 public void reagiereAufAenderung(Object o)
+                 {
+            	   	 _graph = _bigGraph.getBigGraph();
+                	 
+                     _modelAdapter = _graphBuilder.getModelAdapter(_graph);
+                     _visualizationGraph.setModel(_modelAdapter);
+                     
+                     informiereUeberAenderung("Graph changed!");                 
+                 }
+                 @Override
+                 public void reagiereAufAenderung()
+                 {
+                     
+                 }
+             });
+             _bigGraph.showUI();       
+         }
+         catch (Exception e)
+         {
+             JOptionPane.showMessageDialog(null, "Dies ist kein gültiger Graph, um den Dijkstra-Algorithmus anzuwenden.");
+         }
     }
     
     public void createDefaultDirectedGraph()
