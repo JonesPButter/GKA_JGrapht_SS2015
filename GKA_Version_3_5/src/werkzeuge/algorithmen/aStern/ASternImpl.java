@@ -226,7 +226,7 @@ public class ASternImpl extends ObservableSubwerkzeug
         }
     }
 
-    // Liefert alle Nachbarn, die noch nicht in der OKMap stehen
+    // Liefert alle Nachbarn, die noch nicht in der OKMap  stehen
     private Set<Vertex> getAdjacentNodes(Vertex n)
     {
         Set<Vertex> adjacentNodes= new HashSet<Vertex>();
