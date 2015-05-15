@@ -310,4 +310,19 @@ public class ASternImpl extends ObservableSubwerkzeug
         
         return bool;
     }
+    
+    public Vertex getRoot()
+    {
+        return _rootVertex;
+    }
+    
+    public Vertex getTarget()
+    {
+        return _targetVertex;
+    }
+    
+    public double getWeglaenge()
+    {
+        return _wegLaenge;
+    }
 }

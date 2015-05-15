@@ -305,7 +305,7 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         _ui.getDialog().setVisible(true);
     }
     
-    private boolean eingabenKorrekt(String vertexSource, String vertexTarget)
+    public boolean eingabenKorrekt(String vertexSource, String vertexTarget)
     {
         boolean bool = false;
         boolean sourceOK = false;
@@ -338,5 +338,20 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         }
         
         return bool;
+    }
+    
+    public Vertex getRoot()
+    {
+        return _rootVertex;
+    }
+    
+    public Vertex getTarget()
+    {
+        return _targetVertex;
+    }
+    
+    public double getWeglaenge()
+    {
+        return _wegLaenge;
     }
 }
