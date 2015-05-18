@@ -2,12 +2,23 @@ package werkzeuge.subwerkzeuge.BigGraph;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.LinkedList;
+//import java.util.HashSet;
+//import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+//import java.util.Set;
+
+
 
 import javax.swing.JOptionPane;
 
+//import org.jgrapht.DirectedGraph;
+//import org.jgrapht.Graph;
+//import org.jgrapht.UndirectedGraph;
+//import org.jgrapht.alg.NeighborIndex;
 
 
 
@@ -23,9 +34,10 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 	BigGraphUI _ui;
 	int _kantenAnzahl;
 	int _knotenAnzahl;
+	List<Vertex> _vertexList;
+	Map<Vertex, Integer> _vertexMap;
+	
 	UndirectedAttributedWeightedGraph<Vertex, MyWeightedEdge> _graph;
-	
-	
 	
 	public BigGraphImpl()
 	{
@@ -56,7 +68,8 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 					_ui.getDialog().dispose();
 					createBigGraph();
 					_graph = getBigGraph();
-					informiereUeberAenderung(_graph);
+					informiereUeberAenderung(_graph);						
+				
 				}
 				else
 				{
@@ -95,55 +108,129 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 	 }
 	 
 	 //Erstellt einen Graphen mit X Knoten und y Kanten. Die theotetisch beliebig groß sein können.
-	 
+
 	 public void createBigGraph()
 	 {
+//		 if( _knotenAnzahl >= 0)
+//			 return;
+		 _graph =  new UndirectedAttributedWeightedGraph<Vertex, MyWeightedEdge>(MyWeightedEdge.class);
+		 _vertexList = new LinkedList<Vertex>();
+		 _vertexMap = new HashMap<Vertex, Integer>();
 		 
-		_graph = new UndirectedAttributedWeightedGraph<Vertex, MyWeightedEdge>(MyWeightedEdge.class);
-		int x;
-		int y;
-		int attr;
-		Vertex vertex;
-		String vertexName;
-		List<Vertex> vertexList = new LinkedList<Vertex>();
+		createVertex();
+		 
+		setRandomValues(_knotenAnzahl);
+		 
+		calculateHeuristic();
 		
-		//For Schleife um die Knoten zu erstellen. Mit random Attributen.
-		//Außerdem werden die Knoten(Vertex) in eine Liste gespeichtert, da ein Set-Zugriff aufwendiger ist.
+		addVertices();
 		
-		Random randomGenerator = new Random();
-		for(int i = 0; i < _knotenAnzahl ; i++)
-		{
-			
-			x = randomGenerator.nextInt((1200)+1);
-		    y  = randomGenerator.nextInt((800)+1);
-		    attr = randomGenerator.nextInt((400));
-		    vertexName = "V" + i;
-		    //Hier wird der Knoten erstellt.
-			vertex= Vertex.createVertex(vertexName, attr, x, y);
-			vertexList.add(vertex);
-			_graph.addVertex(vertex); 
-		}
+		addEdges(_kantenAnzahl);
 
-		int weight;
-		Vertex source;
-		Vertex target;
-		MyWeightedEdge edge;
+	 }
+	 
+	 public void setRandomValues(int KnotenAnzahl)
+	 {
+		 Random randomGenerator = new Random();
+		 
+		 int maxKnotenValAnzahl = KnotenAnzahl * 15;
+		 int vertexValue;
+		 
+		 for(Vertex ver : _vertexList)
+		 {
+			vertexValue = randomGenerator.nextInt(maxKnotenValAnzahl);
 			
-		//for Schleife um die Kanten zu erstellen. Dazu wercen aus der Liste zwei random Knoten ausgewählt und verbunden.
-		//Die Kanten bekommen auch durch den RandomGenerator zufällige Attribute-
-		for(int j = 0; j < _kantenAnzahl; j++)
+			_vertexMap.put(ver, vertexValue);
+		 }
+		 
+		 
+		 //Vllt. hinzufügen von nur verschieden Attr 
+		
+		
+	 }
+	 
+	 public void createVertex()
+	 {
+		 Random randomGenerator = new Random();
+		 String vertexName; 
+		 int  x;
+		 int  y;
+		 Vertex vertex;
+		 for(int i = 1; i <=  _knotenAnzahl; i++)
+		 {
+			 x = randomGenerator.nextInt((1200)+1); 
+			 y = randomGenerator.nextInt((800)+1);
+			 vertexName = "V" + i;
+			 vertex = Vertex.createVertex(vertexName, 0, x, y);
+			 
+			 
+			 _vertexList.add(vertex);
+		 }
+		 
+	 }
+	 
+	 
+	 public void calculateHeuristic()
+	 {
+		Vertex target = _vertexList.get(_vertexList.size() -1);
+		target.setAttr(0);
+		
+		int targetVal = _vertexMap.get(target);
+		
+		int SourceVal;
+		int attribute;
+		
+		
+		for(Vertex ver : _vertexList)
 		{
-			weight = randomGenerator.nextInt(600);
-			x = randomGenerator.nextInt(_knotenAnzahl);
-			y = randomGenerator.nextInt(_knotenAnzahl);
-			source = (Vertex) vertexList.get(x);
-			target = (Vertex) vertexList.get(y);
-			//Hier wird die Kante erstellt.
-			 edge = (MyWeightedEdge) _graph.addEdge(source,target);
-      	     ((UndirectedAttributedWeightedGraph<Vertex, MyWeightedEdge>)_graph).setEdgeWeight(edge, weight);
+			SourceVal = _vertexMap.get(ver);
+			attribute = Math.abs(targetVal - SourceVal);
+			
+			if(!ver.equals(target))
+			{
+				ver.setAttr(attribute);
+			}
+		}
+		
+	 }
+	 
+	 public void addEdges(int edges)
+	 {
+		Random randomGenerator = new Random();
+		int random;
+		MyWeightedEdge edge;
+		int min;
+		int max;
+		int weight;
+		for(int i = 0; i < edges; i++)
+		{
+			random = randomGenerator.nextInt(_vertexList.size());
+			Vertex v1 = _vertexList.get(random);
+			random = randomGenerator.nextInt(_vertexList.size());
+			Vertex v2 = _vertexList.get(random);
+			
+			min = (int) Math.abs(v1.getAttr() -v2.getAttr());
+			max = (min + 1) * 15;
+			
+			weight = randomGenerator.nextInt(max - min) + min;
+			
+			 edge = (MyWeightedEdge) _graph.addEdge(v1,v2);
+			 
+    	     ((UndirectedAttributedWeightedGraph<Vertex, MyWeightedEdge>)_graph).setEdgeWeight(edge, weight );
 			
 		}
+		
 	 }
+	 
+	 public void addVertices()
+	 {
+		 for(Vertex ver : _vertexList)
+		 {
+			 _graph.addVertex(ver);
+		 }
+	 }
+	 
+	 
 	 
 	/**
 	 * durch diese Methode wird die UI angezeigt.
@@ -154,7 +241,7 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
         
 //	        registiereListener();
     }
-	 
+
     /**
      * gibt den Big Graphen zurück
      * @return _graph 
