@@ -111,8 +111,7 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 
 	 public void createBigGraph()
 	 {
-		 if( _knotenAnzahl >= 0)
-			 return;
+
 		 _graph =  new UndirectedAttributedWeightedGraph<Vertex, MyWeightedEdge>(MyWeightedEdge.class);
 		 _vertexList = new LinkedList<Vertex>();
 		 _vertexMap = new HashMap<Vertex, Integer>();
@@ -244,7 +243,7 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 			//Die minimale Gewichtung bestimmen
 			min = (int) Math.abs(v1.getAttr() -v2.getAttr());
 			//Die maximale Gewichtung bestimmen
-			max = (min + 1) * 15;
+			max = (min + 1) * 10;
 			
 			//Ein zufälliges Gewicht zischen min und max bestimmen.
 			weight = randomGenerator.nextInt(max - min) + min;
