@@ -111,8 +111,8 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 
 	 public void createBigGraph()
 	 {
-//		 if( _knotenAnzahl >= 0)
-//			 return;
+		 if( _knotenAnzahl >= 0)
+			 return;
 		 _graph =  new UndirectedAttributedWeightedGraph<Vertex, MyWeightedEdge>(MyWeightedEdge.class);
 		 _vertexList = new LinkedList<Vertex>();
 		 _vertexMap = new HashMap<Vertex, Integer>();
@@ -129,6 +129,12 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 
 	 }
 	 
+	 
+	 /**
+	  * für alle Knoten eine zufälligen Wert setzen und in einer Map  speicher.
+	  * 
+	  * @param KnotenAnzahl
+	  */
 	 public void setRandomValues(int KnotenAnzahl)
 	 {
 		 Random randomGenerator = new Random();
@@ -149,41 +155,59 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 		
 	 }
 	 
+	 /**
+	  * Hier werden alle Knoten erstellt und  einer Liste hinzu gefügt.
+	  * Außerdem bekommen sie noch kein Attribute.
+	  */
+	 
 	 public void createVertex()
 	 {
+		 //Random Werte für eine zufällige Position
 		 Random randomGenerator = new Random();
 		 String vertexName; 
 		 int  x;
 		 int  y;
 		 Vertex vertex;
+		 
 		 for(int i = 1; i <=  _knotenAnzahl; i++)
 		 {
+			 //Die Position bestimmen
 			 x = randomGenerator.nextInt((1200)+1); 
 			 y = randomGenerator.nextInt((800)+1);
+			 
 			 vertexName = "V" + i;
+			 
+			 //Den Knoten erstellen
 			 vertex = Vertex.createVertex(vertexName, 0, x, y);
 			 
-			 
+			 //ZUm SChluss der Liste hinzfügen
 			 _vertexList.add(vertex);
 		 }
 		 
 	 }
 	 
-	 
+	 /**
+	  * Hier wird die Heuristik berechnet.
+	  * Zuerst bestimmen wird ein Ziel bestimmt, welches ein Attribute von 0 bekommt.
+	  * Auerdem werden für alle Vertex aus der Liste, die Heuristik berechnet.
+	  */
 	 public void calculateHeuristic()
 	 {
+		//Bestimmen eine Zielknoten
 		Vertex target = _vertexList.get(_vertexList.size() -1);
 		target.setAttr(0);
 		
+		//Speichern des Wertes, des Ziels
 		int targetVal = _vertexMap.get(target);
 		
 		int SourceVal;
 		int attribute;
 		
-		
 		for(Vertex ver : _vertexList)
 		{
+			//Bekommen des Start Knotenwertes
 			SourceVal = _vertexMap.get(ver);
+			//Das Attribute bestimmen, mit der Differenz
 			attribute = Math.abs(targetVal - SourceVal);
 			
 			if(!ver.equals(target))
@@ -194,34 +218,49 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 		
 	 }
 	 
+	 /**
+	  * Hier werden die Kanten dem Graphen hinzu gefügt.
+	  * Und es werden auch die Gewichtung der Kanten berechnet.
+	  * @param edges
+	  */
 	 public void addEdges(int edges)
 	 {
+		 
 		Random randomGenerator = new Random();
 		int random;
 		MyWeightedEdge edge;
 		int min;
 		int max;
 		int weight;
+
 		for(int i = 0; i < edges; i++)
 		{
+			//Einen random start Knoten bekommen
 			random = randomGenerator.nextInt(_vertexList.size());
 			Vertex v1 = _vertexList.get(random);
+			//Einen random Ziel Knoten bekommen
 			random = randomGenerator.nextInt(_vertexList.size());
 			Vertex v2 = _vertexList.get(random);
-			
+			//Die minimale Gewichtung bestimmen
 			min = (int) Math.abs(v1.getAttr() -v2.getAttr());
+			//Die maximale Gewichtung bestimmen
 			max = (min + 1) * 15;
 			
+			//Ein zufälliges Gewicht zischen min und max bestimmen.
 			weight = randomGenerator.nextInt(max - min) + min;
 			
+			//Die Kante erstellen
 			 edge = (MyWeightedEdge) _graph.addEdge(v1,v2);
-			 
     	     ((UndirectedAttributedWeightedGraph<Vertex, MyWeightedEdge>)_graph).setEdgeWeight(edge, weight );
 			
 		}
 		
 	 }
 	 
+	 
+	 /**
+	  * Alle Knoten dem Graphen hinzufügen
+	  */
 	 public void addVertices()
 	 {
 		 for(Vertex ver : _vertexList)
