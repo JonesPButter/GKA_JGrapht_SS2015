@@ -59,7 +59,7 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Big Graph");
+//				System.out.println("Big Graph");
 				String knotenAnzahl = _ui.getKnotenanzahl().getText();
 				String kantenAnzahl = _ui.getKantenanzahl().getText();
 				
@@ -194,6 +194,7 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 	 {
 		//Bestimmen eine Zielknoten
 		Vertex target = _vertexList.get(_vertexList.size() -1);
+		target.setName("Ziel");
 		target.setAttr(0);
 		
 		//Speichern des Wertes, des Ziels
