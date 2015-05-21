@@ -43,10 +43,10 @@ package werkzeuge.subwerkzeuge.BigGraph;
 	        JLabel knotenLabel = new JLabel("Knotenanzahl:");
 	        _kantenanzahl = new JTextField(10);
 	        _knotenanzahl = new JTextField(10);
-	        centerPanel .add(kantenLabel);
-	        centerPanel .add(_kantenanzahl);
 	        centerPanel .add(knotenLabel);
 	        centerPanel .add(_knotenanzahl);
+	        centerPanel .add(kantenLabel);
+	        centerPanel .add(_kantenanzahl);
 	        _dialog.add(centerPanel,BorderLayout.CENTER);
 	        
 	        _dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

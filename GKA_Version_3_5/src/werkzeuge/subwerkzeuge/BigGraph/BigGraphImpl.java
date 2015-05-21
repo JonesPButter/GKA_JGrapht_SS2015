@@ -65,6 +65,7 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 				
 				if(eingabenKorrekt(knotenAnzahl, kantenAnzahl))
 				{
+					
 					_ui.getDialog().dispose();
 					createBigGraph();
 					_graph = getBigGraph();
@@ -91,20 +92,28 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 	 private boolean eingabenKorrekt(String knotenAnzahl, String kantenAnzahl)
 	 {
 		 
-		 
-		 if(false)//!knotenAnzahl.matches("(?[0-9]+)") || !kantenAnzahl.matches("(?[0-9]+)"))
-		 {
-			 JOptionPane.showMessageDialog(null , "Fehlerhafte Eingabe. "
-                     + "\n Bitte geben Sie eine gültige Zahl ein."
-                     + " Beispiele: 5|| 8 || 42");
+		 try {
+			 
+			 if(Integer.parseInt(kantenAnzahl) > 0 && Integer.parseInt(knotenAnzahl) > 0)
+			 {
+
+					 _knotenAnzahl = Integer.parseInt(knotenAnzahl);
+
+					 _kantenAnzahl = Integer.parseInt(kantenAnzahl);
+
+					 return true;
+			 }
+		} 
+		catch (Exception e)
+		{
+//			 JOptionPane.showMessageDialog(null , "Fehlerhafte Eingabe. "
+//            + "\n Bitte geben Sie eine gültige Zahl ein."
+//            + " Beispiele: 5|| 8 || 42");
 		}
-		 else if(Integer.parseInt(kantenAnzahl) > 0 && Integer.parseInt(knotenAnzahl) > 0)
-		 {
-			 _knotenAnzahl = Integer.parseInt(knotenAnzahl);
-			 _kantenAnzahl = Integer.parseInt(kantenAnzahl);
-			 return true;
-		 }
+			
 		 return false;
+
+
 	 }
 	 
 	 //Erstellt einen Graphen mit X Knoten und y Kanten. Die theotetisch beliebig groß sein können.
