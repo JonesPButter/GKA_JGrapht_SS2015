@@ -94,11 +94,7 @@ public class ASternImpl extends ObservableSubwerkzeug
            // 3.)
             calculateNeighboursDistance(tempSource); // für alle adjazente Knoten v(j), die nicht in der CL sind, prüfen, ob g(j) > g(k)+ l(k,j)    
             
-            if(_okMap.containsKey(target))
-            {
-                break;
-            }
-        } while(!_falseMap.isEmpty());
+        } while(!_falseMap.isEmpty()|| _okMap.containsKey(target));
         
         if(_okMap.containsKey(target))
         {
