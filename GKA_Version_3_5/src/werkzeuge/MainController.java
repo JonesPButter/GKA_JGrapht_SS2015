@@ -464,6 +464,17 @@ public class MainController
             }
         });
         
+        JMenuItem kruskalAlgorithm = _ui.getMenuItemAlgorithms_Kruskal();
+        kruskalAlgorithm.addActionListener(new ActionListener()
+        {
+            
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                _graphManager.startKruskalAlgorithm();                
+            }
+        });
+        
         JMenuItem createBigGraphButton = _ui.getMenuItemCreate_BigGraph();
         createBigGraphButton.addActionListener(new ActionListener()
         {

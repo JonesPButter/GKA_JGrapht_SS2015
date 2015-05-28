@@ -28,6 +28,7 @@ public class MainControllerUI
     private JMenuItem _menuItemCreate_BigGraph;
     private JMenuItem _menuItemAlgorithms_BreadthFirst;
     private JMenuItem _menuItemAlgorithms_Dijkstra;
+    private JMenuItem _menuItemAlgorithms_Kruskal;
     
     private JRadioButtonMenuItem _menuRadioButton_Vertex;
     private JRadioButtonMenuItem _menuRadioButton_Edge;
@@ -89,6 +90,9 @@ public class MainControllerUI
  
         _menuItemAlgorithms_AStern = new JMenuItem("A*");
         menuAlgorithms.add(_menuItemAlgorithms_AStern);
+        
+        _menuItemAlgorithms_Kruskal = new JMenuItem("Kruskal");
+        menuAlgorithms.add(_menuItemAlgorithms_Kruskal);
         
         _menuRadioButton_Vertex = new JRadioButtonMenuItem("Vertex");
         _menuRadioButton_Vertex.setMaximumSize(new Dimension(100, 100));
@@ -230,6 +234,16 @@ public class MainControllerUI
     {
         return _menuItemAlgorithms_AStern;
     }
+    
+    /**
+     * Liefert den MenuItemButton für das Anwenden des Kruskal Algorithmus
+     * @return
+     */    
+    public JMenuItem getMenuItemAlgorithms_Kruskal()
+    {
+        return _menuItemAlgorithms_Kruskal;
+    }
+    
     /**
      * Liefert den JRadioButtonMenuItem für das Erstellen neuer Knoten
      * @return

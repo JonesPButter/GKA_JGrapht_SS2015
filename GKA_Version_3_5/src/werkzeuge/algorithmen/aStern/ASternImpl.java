@@ -25,10 +25,10 @@ public class ASternImpl extends ObservableSubwerkzeug
     Graph<Vertex,MyWeightedEdge> _graph; 
     Vertex _rootVertex;
     Vertex _targetVertex;
-    Map<Vertex,String> _okMap; 
-    Map<Vertex,String> _falseMap;
+    List<Vertex> _okList; 
+    List<Vertex> _falseList;
     Map<Vertex,Vertex> _vorgaengerMap; // map<key,val>
-    Map<Vertex,Double> _schätzwerte; // berechnet Schätzwert
+    Map<Vertex,Double> _schaetzwerte; // berechnet Schätzwert
     int _benoetigteKanten;
     int _graphAccesses;
     double _wegLaenge;
@@ -50,22 +50,27 @@ public class ASternImpl extends ObservableSubwerkzeug
         }
         
         _graph = graph;
-        _okMap = new HashMap<>();
-        _falseMap = new HashMap<Vertex, String>();
+        _okList = new ArrayList<>();
+        _falseList = new ArrayList<>();
         _vorgaengerMap = new HashMap<Vertex, Vertex>();
         _benoetigteKanten =0;
         _graphAccesses = 0;
         _wegLaenge=0;
-        _schätzwerte  = new HashMap<>();
+        _schaetzwerte  = new HashMap<>();
         _ui = new ASternUI();
         faerbungenZuruecksetzen();
         registriereListenerAnUI();
     }
 
-    public List<Vertex> findShortestWay(Graph<Vertex,MyWeightedEdge> graph,Vertex source,Vertex target)
+    /**
+     * Findet den kürzesten Weg von source nach target
+     * @param source Der Startvertex
+     * @param target Der Zielvertex
+     * @return Den kürzesten Weg von source nach target
+     */
+    public List<Vertex> findShortestWay(Vertex source,Vertex target)
     {
         // Preconditions
-        assert graph != null : "Vorbedingung verletzt: graph != null";
         assert source != null : "Vorbedingung verletzt: graph != null";
         assert target != null : "Vorbedingung verletzt: graph != null";
         
@@ -78,25 +83,25 @@ public class ASternImpl extends ObservableSubwerkzeug
         
         // Initialisierung
         _vorgaengerMap.put(source, source); // Der Vorgänger von Source ist Source.      
-        _falseMap.put(source, "false");  
-        _schätzwerte.put(tempSource, tempSource.getAttr());
+        _falseList.add(source);  // Source als vorerst einzigen Wert in _falseList schreiben 
+        _schaetzwerte.put(tempSource, tempSource.getAttr()); // f = Vertex.HeuristikWert
         
         do{
             _graphAccesses++;
             
-            // 1.)
-            tempSource = getVertexWithSmallestF(_falseMap); // Knoten mit niedrigsten f in OL suchen
+            // 1.) Knoten mit niedrigsten f in OL suchen
+            tempSource = getVertexWithSmallestF(_falseList); 
             
-            // 2.)
-            _okMap.put(tempSource, "OK"); // Knoten in die CL schieben.
-            _falseMap.remove(tempSource);
+            // 2.) Knoten in die CL schieben.
+            _okList.add(tempSource); 
+            _falseList.remove(tempSource);
            
-           // 3.)
-            calculateNeighboursDistance(tempSource); // für alle adjazente Knoten v(j), die nicht in der CL sind, prüfen, ob g(j) > g(k)+ l(k,j)    
-            
-        } while(!_falseMap.isEmpty()|| _okMap.containsKey(target));
+           // 3.) für alle adjazente Knoten v(j), die nicht in der CL sind, prüfen, ob g(j) > g(k)+ l(k,j)
+            calculateNeighboursDistance(tempSource);    
+
+        } while(!_falseList.isEmpty() && !_okList.contains(target));
         
-        if(_okMap.containsKey(target))
+        if(_okList.contains(target))
         {
             calculateShortestWay(shortestWay,source,target);            
         }
@@ -106,54 +111,58 @@ public class ASternImpl extends ObservableSubwerkzeug
     /*
      * Liefert immer den Vertex mit dem geringsten Schätzwert
      */
-    private Vertex getVertexWithSmallestF(Map<Vertex, String> falseMap)
+    private Vertex getVertexWithSmallestF(List<Vertex> falseList)
     {
-        Set<Vertex> falseMapSet = falseMap.keySet();
         Vertex result = null;
         double f = 0;
         double tempF;
         _graphAccesses++;
-        for(Vertex v : falseMapSet)
+        for(Vertex v : falseList) // Für alle Knoten aus der falseList
         {
-            if(! _okMap.containsKey(v))
+            tempF =_schaetzwerte.get(v);          
+            if(result == null)
             {
-                tempF =_schätzwerte.get(v);          
-                if(result == null)
-                {
-                    f = tempF;
-                    result = v;
-                }
-                if(f > tempF)
-                {
-                    f = tempF;
-                    result = v;
-                }
+                f = tempF;
+                result = v;
+            }
+            if(f > tempF) 
+            {
+                f = tempF;
+                result = v;
             }
         }
         return result;
     }
 
+    /*
+     * Berechnet den kürzesten Weg von source nach target "auf dem Rückweg"
+     */
     private void calculateShortestWay(List<Vertex> shortestWay, Vertex source, Vertex target)
     {
         boolean startVertex = false;
         Vertex tempTarget = target;
         Vertex vorgänger = null;
-        shortestWay.add(tempTarget);
-        _wegLaenge = tempTarget.getEntfernungVomStartVertex();
-        while(!startVertex)
+        shortestWay.add(tempTarget); // target in die Liste hinzufügen
+        _wegLaenge = tempTarget.getEntfernungVomStartVertex(); // die Länge des Weges von source nach target
+        
+        // von Target rückwärts anhand der gespeicherten Vorgänger den Weg finden
+        while(!startVertex) // solange wir den startVertex noch nicht erreicht haben
         {
             tempTarget.setPartOfShortestWay();
             _benoetigteKanten++;
             vorgänger = _vorgaengerMap.get(tempTarget);
-            shortestWay.add(0,vorgänger);
-            if(vorgänger.equals(source))
+            shortestWay.add(0,vorgänger); // den Vorgänger dem kürzesten weg hinzufügen (vorne anfügen)
+            if(vorgänger.equals(source)) // wenn wir den startvertex gefunden haben, beenden wir die schleife
             {
                 startVertex = true;
             }
             tempTarget = vorgänger;
         }        
     }
-        
+     
+    /*
+     * berechnet die Entfernung der Nachbarn und den Schätzwert f für source
+     */
     private void calculateNeighboursDistance(Vertex source)
     {
         Set<Vertex> neighbours = getAdjacentNodes(source);
@@ -162,43 +171,36 @@ public class ASternImpl extends ObservableSubwerkzeug
         _graphAccesses++;
         for(Vertex child : neighbours)
         {             
-            if(!_okMap.containsKey(child))
+            if(!_okList.contains(child)) // child wird nur angeschaut, wenn es noch nicht in der _okMap steht
             {
                 
-                MyWeightedEdge e = _graph.getEdge(source, child);           
-                entf = source.getEntfernungVomStartVertex() + e.getEdgeWeight(); // entf = 0 + Kanntengewicht
+                MyWeightedEdge e = _graph.getEdge(source, child);   // die Kante zwischen source und child        
+                entf = source.getEntfernungVomStartVertex() + e.getEdgeWeight(); // entf = 0 + Kantengewicht
                 schätzwertF = entf + child.getAttr();
                 
-                if(child.isVisited()) // wenn Child in _falseMap 
+                if(child.isVisited()) // wenn Child bereits beobachtet wurde (steht also auch in _falseMap)
                 {
                     if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
                     {
                         _vorgaengerMap.put(child, source); // neuen Vorgänger für child
                         child.setEntfernungVomStartVertex(entf);  // neue Entfernung für child
-                        _schätzwerte.put(child, schätzwertF); // neuen Schätzwert für child
+                        _schaetzwerte.put(child, schätzwertF); // neuen Schätzwert für child
                     }
                 }
                 else{ // child wurde noch nie beobachtet, also einfach Werte berechnen
-                    _falseMap.put(child,"false");
+                    _falseList.add(child);
                     _vorgaengerMap.put(child, source);
                     child.setEntfernungVomStartVertex(entf);
-                    _schätzwerte.put(child, schätzwertF);
+                    _schaetzwerte.put(child, schätzwertF);
                     child.visit();
                 }                                 
             }
-//            else if(_okMap.containsKey(child) && child.equals(_targetVertex))
-//            {
-//                if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
-//                {
-//                    _vorgaengerMap.put(child, source); // neuen Vorgänger für child
-//                    child.setEntfernungVomStartVertex(entf);  // neue Entfernung für child
-//                    _schätzwerte.put(child, schätzwertF); // neuen Schätzwert für child
-//                }
-//            }
         }
     }
 
-    // Liefert alle Nachbarn, die noch nicht in der OKMap stehen
+    /*
+     * Liefert alle Nachbarn von n
+     */
     private Set<Vertex> getAdjacentNodes(Vertex n)
     {
         Set<Vertex> adjacentNodes= new HashSet<Vertex>();
@@ -216,10 +218,12 @@ public class ASternImpl extends ObservableSubwerkzeug
                adjacentNodes.add(source);  
            }
        }
-       return adjacentNodes;
-        
+       return adjacentNodes;        
     }
     
+    /*
+     * zurücksetzen der Färbungen
+     */
     private void faerbungenZuruecksetzen()
     {
         for(Vertex v : _graph.vertexSet())
@@ -243,7 +247,7 @@ public class ASternImpl extends ObservableSubwerkzeug
                 if(eingabenKorrekt(vertexSource,vertexTarget))
                 {
                     _ui.getDialog().dispose();
-                    String shortestW = findShortestWay(_graph,_rootVertex,_targetVertex).toString();  
+                    String shortestW = findShortestWay(_rootVertex,_targetVertex).toString();  
                     informiereUeberAenderung(_graph);
                     if(shortestW.equals("[]"))
                     {

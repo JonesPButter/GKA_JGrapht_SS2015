@@ -2,6 +2,7 @@ package werkzeuge.subwerkzeuge.BigGraph;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 //import java.util.HashSet;
@@ -11,22 +12,17 @@ import java.util.Map;
 import java.util.Random;
 //import java.util.Set;
 
-
-
 import javax.swing.JOptionPane;
 
-//import org.jgrapht.DirectedGraph;
-//import org.jgrapht.Graph;
-//import org.jgrapht.UndirectedGraph;
-//import org.jgrapht.alg.NeighborIndex;
-
-
-
-import werkzeuge.ObservableSubwerkzeug;
 //import werkzeuge.SubwerkzeugObserver;
 import materialien.MyWeightedEdge;
 import materialien.Vertex;
 import materialien.Graph.UndirectedAttributedWeightedGraph;
+//import org.jgrapht.DirectedGraph;
+//import org.jgrapht.Graph;
+//import org.jgrapht.UndirectedGraph;
+//import org.jgrapht.alg.NeighborIndex;
+import werkzeuge.ObservableSubwerkzeug;
 //import werkzeuge.ObservableSubwerkzeug;
 
 public class BigGraphImpl extends ObservableSubwerkzeug{
@@ -42,6 +38,11 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 	public BigGraphImpl()
 	{
 		_ui = new BigGraphUI();
+		_kantenAnzahl = 0;
+		_knotenAnzahl = 0;
+		_vertexList = new ArrayList<>();
+		_vertexMap = new HashMap<>();
+		_graph = new UndirectedAttributedWeightedGraph<>(MyWeightedEdge.class);
 		registiereListener();
 
 	}
@@ -52,8 +53,8 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 	 */
 	 public void registiereListener()
 	 {
-		 _knotenAnzahl = 100;
-		 _kantenAnzahl = 6000;
+//		 _knotenAnzahl = 100;
+//		 _kantenAnzahl = 6000;
 
 		 _ui.getOkButton().addActionListener(new ActionListener() {
 			
@@ -67,8 +68,8 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 				{
 					
 					_ui.getDialog().dispose();
-					createBigGraph();
-					_graph = getBigGraph();
+					createBigGraph(_knotenAnzahl,_kantenAnzahl);
+//					_graph = getBigGraph();
 					informiereUeberAenderung(_graph);						
 				
 				}
@@ -118,22 +119,22 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 	 
 	 //Erstellt einen Graphen mit X Knoten und y Kanten. Die theotetisch beliebig groß sein können.
 
-	 public void createBigGraph()
+	 public void createBigGraph(int knotenAnzahl, int kantenAnzahl)
 	 {
 
 		 _graph =  new UndirectedAttributedWeightedGraph<Vertex, MyWeightedEdge>(MyWeightedEdge.class);
 		 _vertexList = new LinkedList<Vertex>();
 		 _vertexMap = new HashMap<Vertex, Integer>();
 		 
-		createVertex();
+		createVertex(knotenAnzahl);
 		 
-		setRandomValues(_knotenAnzahl);
+		setRandomValues(knotenAnzahl);
 		 
 		calculateHeuristic();
 		
 		addVertices();
 		
-		addEdges(_kantenAnzahl);
+		addEdges(kantenAnzahl);
 
 	 }
 	 
@@ -168,7 +169,7 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 	  * Außerdem bekommen sie noch kein Attribute.
 	  */
 	 
-	 public void createVertex()
+	 public void createVertex(int knotenAnzahl)
 	 {
 		 //Random Werte für eine zufällige Position
 		 Random randomGenerator = new Random();
@@ -177,7 +178,7 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 		 int  y;
 		 Vertex vertex;
 		 
-		 for(int i = 1; i <=  _knotenAnzahl; i++)
+		 for(int i = 1; i <=  knotenAnzahl; i++)
 		 {
 			 //Die Position bestimmen
 			 x = randomGenerator.nextInt((1200)+1); 
@@ -202,7 +203,7 @@ public class BigGraphImpl extends ObservableSubwerkzeug{
 	 public void calculateHeuristic()
 	 {
 		//Bestimmen eine Zielknoten
-		Vertex target = _vertexList.get(_vertexList.size() -1);
+		Vertex target = _vertexList.get(_vertexList.size()-1);
 		target.setName("Ziel");
 		target.setAttr(0);
 		
