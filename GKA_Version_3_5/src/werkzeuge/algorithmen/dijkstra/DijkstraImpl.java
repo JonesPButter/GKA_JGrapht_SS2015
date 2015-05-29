@@ -161,40 +161,6 @@ public class DijkstraImpl extends ObservableSubwerkzeug
             tempTarget = vorgänger;
         }        
     }
-
-    private Vertex findNearestVertex(Vertex source)
-    {
-        Vertex nearestVertex = null;
-        
-        Set<Vertex> neighbours = getUndirectedAdjacentNodes(source);
-        
-        // einen RandomVertex als am Wenigsten weit entfernt makieren
-        // --> wird anschließend geprüft und gegebenenfalls korrigiert
-        for(Vertex child : neighbours)
-        {
-            if(!_okMap.containsKey(child))
-            {
-                nearestVertex = child;
-                break;
-            }
-        }  
-        
-        if(nearestVertex != null)
-        {
-            for(Vertex child : neighbours)
-            {
-                if(!_okMap.containsKey(child)) // damit wir nicht "rückwärts" im Graphen schauen
-                {
-                    if(child.getEntfernungVomStartVertex() < nearestVertex.getEntfernungVomStartVertex())
-                    {
-                        nearestVertex = child;
-                    }
-                }
-            }           
-        }
-        
-        return nearestVertex;
-    }
     
     private void calculateNeighboursDistance(Vertex source)
     {

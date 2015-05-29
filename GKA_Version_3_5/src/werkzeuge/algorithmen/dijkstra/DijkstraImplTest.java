@@ -1,6 +1,5 @@
 package werkzeuge.algorithmen.dijkstra;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -24,7 +23,7 @@ import werkzeuge.subwerkzeuge.GraphManager;
 public class DijkstraImplTest
 {
     GraphManager _manager;
-    DijkstraShortestPath _jgraphtDijkstra;
+    DijkstraShortestPath<Vertex, MyWeightedEdge> _jgraphtDijkstra;
     DijkstraImpl _dijkstraAlg;
     Graph<Vertex,MyWeightedEdge> _graph;
     
