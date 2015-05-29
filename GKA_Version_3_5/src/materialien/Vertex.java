@@ -1,6 +1,6 @@
 package materialien;
 
-public class Vertex
+public class Vertex 
 {
     String _name;
     double _attr;

@@ -2,7 +2,7 @@ package materialien;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class MyWeightedEdge extends DefaultWeightedEdge
+public class MyWeightedEdge extends DefaultWeightedEdge implements Comparable<MyWeightedEdge>
 {
     /**
      * 
@@ -18,5 +18,13 @@ public class MyWeightedEdge extends DefaultWeightedEdge
     public double getEdgeWeight()
     {
         return this.getWeight();
+    }
+
+    @Override
+    public int compareTo(MyWeightedEdge o)
+    {
+        
+        Double thisWeight =  (Double)this.getEdgeWeight();
+        return thisWeight.compareTo((Double)((MyWeightedEdge)o).getEdgeWeight());
     }
 }

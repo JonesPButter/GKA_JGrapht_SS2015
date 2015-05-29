@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import materialien.MyWeightedEdge;
@@ -19,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import werkzeuge.subwerkzeuge.GraphManager;
+import werkzeuge.subwerkzeuge.BigGraph.BigGraphImpl;
 
 public class DijkstraImplTest
 {
@@ -50,7 +52,7 @@ public class DijkstraImplTest
         // Test 1.) Husum - Hamburg
         _dijkstraAlg = new DijkstraImpl(_graph);
         _jgraphtDijkstra = new DijkstraShortestPath<Vertex, MyWeightedEdge>(_graph, getVertex(husum),getVertex(hamburg));
-        _dijkstraAlg.findShortestWay(_graph, getVertex(husum), getVertex(hamburg));         
+        _dijkstraAlg.findShortestWay(getVertex(husum), getVertex(hamburg));         
 
         assertTrue(_dijkstraAlg.getWeglaenge() == _jgraphtDijkstra.getPathLength());
     }
@@ -69,7 +71,7 @@ public class DijkstraImplTest
 //        // Test 2.) Minden - Hamburg
         _dijkstraAlg = new DijkstraImpl(_graph);
         _jgraphtDijkstra = new DijkstraShortestPath<Vertex, MyWeightedEdge>(_graph, getVertex(minden),getVertex(hamburg));
-        _dijkstraAlg.findShortestWay(_graph, getVertex(minden), getVertex(hamburg)); 
+        _dijkstraAlg.findShortestWay(getVertex(minden), getVertex(hamburg)); 
         
 
         assertTrue(_dijkstraAlg.getWeglaenge() == _jgraphtDijkstra.getPathLength());
@@ -89,12 +91,35 @@ public class DijkstraImplTest
         // Test 3.) Münster - Hamburg
         _dijkstraAlg = new DijkstraImpl(_graph);
         _jgraphtDijkstra = new DijkstraShortestPath<Vertex, MyWeightedEdge>(_graph, getVertex(münster),getVertex(hamburg));
-        _dijkstraAlg.findShortestWay(_graph, getVertex(münster), getVertex(hamburg)); 
+        _dijkstraAlg.findShortestWay(getVertex(münster), getVertex(hamburg)); 
         
 
         assertTrue(_dijkstraAlg.getWeglaenge() == _jgraphtDijkstra.getPathLength());
 
     }
+    
+    @Test
+    public void testInBigGraph_01()
+    {
+        // Graph bsp3.graph laden
+        loadBigGraph();
+        
+        int random = new Random().nextInt(28)+1;
+        // Algorithmus anwenden
+        
+        Vertex start = getVertex("V" + random);
+        Vertex ziel = getVertex("Ziel");
+
+        // Test 3.) Münster - Hamburg
+        _dijkstraAlg = new DijkstraImpl(_graph);
+        _jgraphtDijkstra = new DijkstraShortestPath<Vertex, MyWeightedEdge>(_graph, start,ziel);
+        _dijkstraAlg.findShortestWay(start, ziel); 
+        
+        System.out.println("unsere Länge: " +_dijkstraAlg.getWeglaenge()+ " und JGraphT: " + _jgraphtDijkstra.getPathLength() );
+        assertTrue(_dijkstraAlg.getWeglaenge() == _jgraphtDijkstra.getPathLength());
+
+    }
+    
     
     // ..............Hilfsmethoden ..............
     
@@ -109,6 +134,13 @@ public class DijkstraImplTest
         // **** Graphen bauen ****
         _manager.loadGraph(dataList);  
         _graph = _manager.getGraph();       
+    }
+    
+    private void loadBigGraph()
+    {
+        BigGraphImpl big = new BigGraphImpl();
+        big.createBigGraph(30, 90);
+        _graph = big.getBigGraph();
     }
     
     private Vertex getVertex(String vertexName)

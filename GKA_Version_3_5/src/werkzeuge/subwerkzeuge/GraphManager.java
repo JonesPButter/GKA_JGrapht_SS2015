@@ -25,6 +25,7 @@ import werkzeuge.SubwerkzeugObserver;
 import werkzeuge.algorithmen.aStern.ASternImpl;
 import werkzeuge.algorithmen.bfs.BreadthFirstSearchImpl;
 import werkzeuge.algorithmen.dijkstra.DijkstraImpl;
+import werkzeuge.algorithmen.kruskal.KruskalImpl;
 import werkzeuge.subwerkzeuge.BigGraph.BigGraphImpl;
 
 /**
@@ -321,5 +322,22 @@ public class GraphManager extends ObservableSubwerkzeug
         {
             JOptionPane.showMessageDialog(null, "Dies ist kein gültiger Graph, um den AStern-Algorithmus anzuwenden.");
         }
+    }
+
+    public void startKruskalAlgorithm()
+    {
+        int option = JOptionPane.showConfirmDialog(null, "Möchten Sie den Kruskal ausführen?");
+        
+        if(option == JOptionPane.YES_OPTION)
+        {
+            KruskalImpl kruskal = new KruskalImpl(_graph);
+            
+            Graph<Vertex,MyWeightedEdge> kruskalGraph = kruskal.getGraph();
+            _modelAdapter = _graphBuilder.getModelAdapter(kruskalGraph);
+            _visualizationGraph.setModel(_modelAdapter);
+            
+            informiereUeberAenderung("Graph changed!"); 
+        }
+        
     }
 }

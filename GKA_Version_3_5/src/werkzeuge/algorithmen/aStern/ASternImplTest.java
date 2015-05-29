@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import materialien.MyWeightedEdge;
@@ -19,6 +20,7 @@ import org.junit.Test;
 
 import werkzeuge.algorithmen.dijkstra.DijkstraImpl;
 import werkzeuge.subwerkzeuge.GraphManager;
+import werkzeuge.subwerkzeuge.BigGraph.BigGraphImpl;
 
 
 public class ASternImplTest
@@ -52,9 +54,9 @@ public class ASternImplTest
         
         // Test 1.) Husum - Hamburg
         DijkstraImpl dijkstraAlg = new DijkstraImpl(_graph);
-        dijkstraAlg.findShortestWay(_graph,start,target);
+        dijkstraAlg.findShortestWay(start,target);
         _aSternAlg = new ASternImpl(_graph);
-        _aSternAlg.findShortestWay(_graph,start,target);    
+        _aSternAlg.findShortestWay(start,target);    
 
         assertTrue(dijkstraAlg.getWeglaenge() == _aSternAlg.getWeglaenge());
     }
@@ -71,9 +73,9 @@ public class ASternImplTest
         
         // Test 2.) Minden - Hamburg
         DijkstraImpl dijkstraAlg = new DijkstraImpl(_graph);
-        dijkstraAlg.findShortestWay(_graph,start,target);
+        dijkstraAlg.findShortestWay(start,target);
         _aSternAlg = new ASternImpl(_graph);
-        _aSternAlg.findShortestWay(_graph,start,target);    
+        _aSternAlg.findShortestWay(start,target);    
 
         assertTrue(dijkstraAlg.getWeglaenge() == _aSternAlg.getWeglaenge());
     }
@@ -90,9 +92,81 @@ public class ASternImplTest
 
         // Test 3.) Münster - Hamburg
         DijkstraImpl dijkstraAlg = new DijkstraImpl(_graph);
-        dijkstraAlg.findShortestWay(_graph,start,target);
+        dijkstraAlg.findShortestWay(start,target);
         _aSternAlg = new ASternImpl(_graph);
-        _aSternAlg.findShortestWay(_graph,start,target);    
+        _aSternAlg.findShortestWay(start,target);    
+
+        assertTrue(dijkstraAlg.getWeglaenge() == _aSternAlg.getWeglaenge());
+    }
+    
+    @Test
+    public void testInBigGraph_01()
+    {
+        loadBigGraph();
+        int random = new Random().nextInt(28)+1;
+        // Algorithmus anwenden
+        Vertex start = getVertex("V" + random);
+        Vertex target = getVertex("Ziel");
+
+        // Test 3.) Münster - Hamburg
+        DijkstraImpl dijkstraAlg = new DijkstraImpl(_graph);
+        dijkstraAlg.findShortestWay(start,target);
+        _aSternAlg = new ASternImpl(_graph);
+        _aSternAlg.findShortestWay(start,target);    
+
+        assertTrue(dijkstraAlg.getWeglaenge() == _aSternAlg.getWeglaenge());
+    }
+    
+    @Test
+    public void testInBigGraph_02()
+    {
+        loadBigGraph();
+        int random = new Random().nextInt(28)+1;
+        // Algorithmus anwenden
+        Vertex start = getVertex("V" + random);
+        Vertex target = getVertex("Ziel");
+
+        // Test 3.) Münster - Hamburg
+        DijkstraImpl dijkstraAlg = new DijkstraImpl(_graph);
+        dijkstraAlg.findShortestWay(start,target);
+        _aSternAlg = new ASternImpl(_graph);
+        _aSternAlg.findShortestWay(start,target);    
+
+        assertTrue(dijkstraAlg.getWeglaenge() == _aSternAlg.getWeglaenge());
+    }
+    
+    @Test
+    public void testInBigGraph_03()
+    {
+        loadBigGraph();
+        int random = new Random().nextInt(28)+1;
+        // Algorithmus anwenden
+        Vertex start = getVertex("V" + random);
+        Vertex target = getVertex("Ziel");
+
+        // Test 3.) Münster - Hamburg
+        DijkstraImpl dijkstraAlg = new DijkstraImpl(_graph);
+        dijkstraAlg.findShortestWay(start,target);
+        _aSternAlg = new ASternImpl(_graph);
+        _aSternAlg.findShortestWay(start,target);    
+
+        assertTrue(dijkstraAlg.getWeglaenge() == _aSternAlg.getWeglaenge());
+    }
+    
+    @Test
+    public void testInBigGraph_04()
+    {
+        loadBigGraph();
+        int random = new Random().nextInt(28)+1;
+        // Algorithmus anwenden
+        Vertex start = getVertex("V" + random);
+        Vertex target = getVertex("Ziel");
+
+        // Test 3.) Münster - Hamburg
+        DijkstraImpl dijkstraAlg = new DijkstraImpl(_graph);
+        dijkstraAlg.findShortestWay(start,target);
+        _aSternAlg = new ASternImpl(_graph);
+        _aSternAlg.findShortestWay(start,target);    
 
         assertTrue(dijkstraAlg.getWeglaenge() == _aSternAlg.getWeglaenge());
     }
@@ -110,6 +184,13 @@ public class ASternImplTest
         // **** Graphen bauen ****
         _manager.loadGraph(dataList);  
         _graph = _manager.getGraph();       
+    }
+    
+    private void loadBigGraph()
+    {
+        BigGraphImpl big = new BigGraphImpl();
+        big.createBigGraph(30, 90);
+        _graph = big.getBigGraph();
     }
     
     private Vertex getVertex(String vertexName)

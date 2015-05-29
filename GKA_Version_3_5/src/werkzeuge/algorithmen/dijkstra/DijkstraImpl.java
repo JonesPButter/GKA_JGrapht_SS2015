@@ -26,8 +26,8 @@ public class DijkstraImpl extends ObservableSubwerkzeug
     Graph<Vertex,MyWeightedEdge> _graph; 
     Vertex _rootVertex;
     Vertex _targetVertex;
-    Map<Vertex,String> _okMap; 
-    Map<Vertex,String> _falseMap;
+    List<Vertex> _okList; 
+    List<Vertex> _falseList;
     Map<Vertex,Vertex> _vorgaengerMap; // map<key,val>
     int _benoetigteKanten;
     int _graphAccesses;
@@ -50,8 +50,8 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         }
         
         _graph = graph;
-        _okMap = new HashMap<>();
-        _falseMap = new HashMap<Vertex, String>();
+        _okList = new ArrayList<>();
+        _falseList = new ArrayList<>();
         _vorgaengerMap = new HashMap<Vertex, Vertex>();
         _benoetigteKanten =0;
         _graphAccesses = 0;
@@ -60,19 +60,16 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         faerbungenZuruecksetzen();
         registriereListenerAnUI();
     }
-
     
-    
-    
-    
-    
-    
-    
-    
-    public List<Vertex> findShortestWay(Graph<Vertex,MyWeightedEdge> graph,Vertex source,Vertex target)
+    /**
+     * Findet den kürzesten Weg von source nach target
+     * @param source Der Startvertex
+     * @param target Der Zielvertex
+     * @return Den kürzesten Weg von source nach target
+     */
+    public List<Vertex> findShortestWay(Vertex source,Vertex target)
     {
         // Preconditions
-        assert graph != null : "Vorbedingung verletzt: graph != null";
         assert source != null : "Vorbedingung verletzt: graph != null";
         assert target != null : "Vorbedingung verletzt: graph != null";
         
@@ -85,23 +82,23 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         
         // Initialisierung
         _vorgaengerMap.put(source, source); // Der Vorgänger von Source ist Source.      
-        _falseMap.put(source, "false");      
+        _falseList.add(source);  // Source als vorerst einzigen Wert in _falseList schreiben    
         
         do{
             _graphAccesses++;
             
             // 1.) Suche unter den Knoten v(i) mit OK(i) = false einen Knoten v(h) mit dem kleinsten Wert von Entf(i)
-            tempSource = getVertexWithShortestDist(_falseMap); 
+            tempSource = getVertexWithShortestDist(_falseList); 
             
             // 2.) Setze OK(h) = true
-            _okMap.put(tempSource, "OK");
-            _falseMap.remove(tempSource);
+            _okList.add(tempSource);
+            _falseList.remove(tempSource);
             
             // 3.) Für alle Knoten v(j) mit OK(j) = false, für die die Kante v(h),v(j) exisitiert die Entfernung und gegebenenfalls den Vorgänger neuberechnen
             calculateNeighboursDistance(tempSource);
-        } while(!_falseMap.isEmpty());         
+        } while(!_falseList.isEmpty());         
             
-        if(_okMap.containsKey(target))
+        if(_okList.contains(target))
         {
             calculateShortestWay(shortestWay,source,target);            
         }
@@ -111,12 +108,11 @@ public class DijkstraImpl extends ObservableSubwerkzeug
     /*
      * liefert den Knoten mit OK = false mit dem kleinsten Wert von Entf
      */
-    private Vertex getVertexWithShortestDist(Map<Vertex, String> falseMap)
+    private Vertex getVertexWithShortestDist(List<Vertex> falseList)
     {
         _graphAccesses++;
-        Set<Vertex> vertexes = falseMap.keySet();
         Vertex result = null;
-        for(Vertex v : vertexes)
+        for(Vertex v : falseList)
         {
             if(result == null)
             {
@@ -133,28 +129,25 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         return result;
     }
 
-
-
-
-
-
-
-
-
+    /*
+     * Berechnet den kürzesten Weg von source nach target und speichert ihn in shortestWay
+     */
     private void calculateShortestWay(List<Vertex> shortestWay, Vertex source, Vertex target)
     {
         boolean startVertex = false;
         Vertex tempTarget = target;
         Vertex vorgänger = null;
-        shortestWay.add(tempTarget);
-        _wegLaenge = tempTarget.getEntfernungVomStartVertex();
-        while(!startVertex)
+        shortestWay.add(tempTarget); // target in die Liste hinzufügen
+        _wegLaenge = tempTarget.getEntfernungVomStartVertex(); // die Länge des Weges von source nach target
+        
+        // von Target rückwärts anhand der gespeicherten Vorgänger den Weg finden
+        while(!startVertex) // solange wir den startVertex noch nicht erreicht haben
         {
             tempTarget.setPartOfShortestWay();
             _benoetigteKanten++;
             vorgänger = _vorgaengerMap.get(tempTarget);
-            shortestWay.add(0,vorgänger);
-            if(vorgänger.equals(source))
+            shortestWay.add(0,vorgänger); // den Vorgänger dem kürzesten weg hinzufügen (vorne anfügen)
+            if(vorgänger.equals(source)) // wenn wir den startvertex gefunden haben, beenden wir die schleife
             {
                 startVertex = true;
             }
@@ -169,23 +162,23 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         _graphAccesses++;
         for(Vertex child : neighbours)
         {
-            if(!_okMap.containsKey(child)) // damit wir nicht "rückwärts" im Graphen schauen
+            if(!_okList.contains(child)) // child wird nur angeschaut, wenn es noch nicht in der _okMap steht, damit wir nicht "rückwärts" schauen
             {                  
 
-                MyWeightedEdge e = _graph.getEdge(source, child);           
+                MyWeightedEdge e = _graph.getEdge(source, child); // die Kante zwischen source und child                  
                 entf = source.getEntfernungVomStartVertex() + e.getEdgeWeight(); // entf = 0 + Kanntengewicht
                 
-                if(child.isVisited())
+                if(_falseList.contains(child)) // wenn Child bereits beobachtet wurde (steht also auch in _falseMap)
                 {
-                    if(child.getEntfernungVomStartVertex() > entf)
+                    if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
                     {
-                        _vorgaengerMap.put(child, source);
-                        child.setEntfernungVomStartVertex(entf);                    
+                        _vorgaengerMap.put(child, source); // neuen Vorgänger für child
+                        child.setEntfernungVomStartVertex(entf);  // neue Entfernung für child                  
                     }
                 }
-                else if(!child.isVisited())
+                else// if(!child.isVisited()) // child wurde noch nie beobachtet, also einfach Werte berechnen
                 {
-                    _falseMap.put(child,"false");
+                    _falseList.add(child);
                     _vorgaengerMap.put(child, source);
                     child.setEntfernungVomStartVertex(entf);
                     child.visit();
@@ -193,7 +186,10 @@ public class DijkstraImpl extends ObservableSubwerkzeug
             }
         }
     }
-
+    
+    /*
+     * Liefert alle Nachbarn von n
+     */
     private Set<Vertex> getUndirectedAdjacentNodes(Vertex n)
     {
         Set<Vertex> adjacentNodes= new HashSet<Vertex>();
@@ -210,10 +206,6 @@ public class DijkstraImpl extends ObservableSubwerkzeug
            {
                adjacentNodes.add(source);
            }
-//           else if(neighbour.equals(_targetVertex))
-//           {
-//               break;
-//           }
        }
        return adjacentNodes;
         
@@ -242,7 +234,7 @@ public class DijkstraImpl extends ObservableSubwerkzeug
                 if(eingabenKorrekt(vertexSource,vertexTarget))
                 {
                     _ui.getDialog().dispose();
-                    String shortestW = findShortestWay(_graph,_rootVertex,_targetVertex).toString();  
+                    String shortestW = findShortestWay(_rootVertex,_targetVertex).toString();  
                     informiereUeberAenderung(_graph);
                     if(shortestW.equals("[]"))
                     {
