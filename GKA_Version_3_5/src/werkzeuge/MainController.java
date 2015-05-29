@@ -464,14 +464,14 @@ public class MainController
             }
         });
         
-        JMenuItem kruskalAlgorithm = _ui.getMenuItemAlgorithms_Kruskal();
+        JMenuItem kruskalAlgorithm = _ui.getMenuItemAlgorithms_Spannbaeume();
         kruskalAlgorithm.addActionListener(new ActionListener()
         {
             
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                _graphManager.startKruskalAlgorithm();                
+                _graphManager.startSpannbaumAlgorithm();                
             }
         });
         

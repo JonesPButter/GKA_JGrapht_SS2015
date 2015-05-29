@@ -26,6 +26,8 @@ import werkzeuge.algorithmen.aStern.ASternImpl;
 import werkzeuge.algorithmen.bfs.BreadthFirstSearchImpl;
 import werkzeuge.algorithmen.dijkstra.DijkstraImpl;
 import werkzeuge.algorithmen.kruskal.KruskalImpl;
+import werkzeuge.algorithmen.prim.AdvancedPrimImpl;
+import werkzeuge.algorithmen.prim.SimplePrimImpl;
 import werkzeuge.subwerkzeuge.BigGraph.BigGraphImpl;
 
 /**
@@ -324,11 +326,34 @@ public class GraphManager extends ObservableSubwerkzeug
         }
     }
 
-    public void startKruskalAlgorithm()
+    public void startSpannbaumAlgorithm()
     {
-        int option = JOptionPane.showConfirmDialog(null, "Möchten Sie den Kruskal ausführen?");
+        Object[] options = {"Prim (Fibonacci Heap)", "Prim", "Kruskal"};
+        Object option = JOptionPane.showInputDialog(null,
+                "Welchen Algorithmus möchten Sie verwenden?", "Spannbäume erstellen", JOptionPane.QUESTION_MESSAGE, null,
+                options, options[0]);
         
-        if(option == JOptionPane.YES_OPTION)
+        if(option.equals(options[0]))
+        {
+            AdvancedPrimImpl prim = new AdvancedPrimImpl(_graph);
+            
+            Graph<Vertex,MyWeightedEdge> primGraph = prim.getGraph();
+            _modelAdapter = _graphBuilder.getModelAdapter(primGraph);
+//            _visualizationGraph.setModel(_modelAdapter);
+//            
+//            informiereUeberAenderung("Graph changed!"); 
+        }
+        if(option.equals(options[1]))
+        {
+            SimplePrimImpl prim = new SimplePrimImpl(_graph);
+            
+            Graph<Vertex,MyWeightedEdge> primGraph = prim.getGraph();
+            _modelAdapter = _graphBuilder.getModelAdapter(primGraph);
+//            _visualizationGraph.setModel(_modelAdapter);
+//            
+//            informiereUeberAenderung("Graph changed!"); 
+        }
+        else if(option.equals(options[2]))
         {
             KruskalImpl kruskal = new KruskalImpl(_graph);
             

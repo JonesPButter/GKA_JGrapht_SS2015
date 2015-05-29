@@ -28,14 +28,14 @@ public class MainControllerUI
     private JMenuItem _menuItemCreate_BigGraph;
     private JMenuItem _menuItemAlgorithms_BreadthFirst;
     private JMenuItem _menuItemAlgorithms_Dijkstra;
-    private JMenuItem _menuItemAlgorithms_Kruskal;
+    private JMenuItem _menuItemAlgorithms_AStern;
+    private JMenuItem _menuItemAlgorithms_Spannbaeume;
     
     private JRadioButtonMenuItem _menuRadioButton_Vertex;
     private JRadioButtonMenuItem _menuRadioButton_Edge;
     private JRadioButtonMenuItem _menuRadioButton_Delete;
     private JSlider _speedSlider;
     private JPanel _graphPanel;
-    private JMenuItem _menuItemAlgorithms_AStern;
 
     public static int FrameWIDTH = 1650, FrameHEIGHT = 1000, GraphPanelWIDTH,GraphPanelHEIGHT;
 
@@ -91,8 +91,8 @@ public class MainControllerUI
         _menuItemAlgorithms_AStern = new JMenuItem("A*");
         menuAlgorithms.add(_menuItemAlgorithms_AStern);
         
-        _menuItemAlgorithms_Kruskal = new JMenuItem("Kruskal");
-        menuAlgorithms.add(_menuItemAlgorithms_Kruskal);
+        _menuItemAlgorithms_Spannbaeume = new JMenuItem("Spannbäume");
+        menuAlgorithms.add(_menuItemAlgorithms_Spannbaeume);
         
         _menuRadioButton_Vertex = new JRadioButtonMenuItem("Vertex");
         _menuRadioButton_Vertex.setMaximumSize(new Dimension(100, 100));
@@ -239,9 +239,9 @@ public class MainControllerUI
      * Liefert den MenuItemButton für das Anwenden des Kruskal Algorithmus
      * @return
      */    
-    public JMenuItem getMenuItemAlgorithms_Kruskal()
+    public JMenuItem getMenuItemAlgorithms_Spannbaeume()
     {
-        return _menuItemAlgorithms_Kruskal;
+        return _menuItemAlgorithms_Spannbaeume;
     }
     
     /**
