@@ -96,7 +96,7 @@ public class DijkstraImpl extends ObservableSubwerkzeug
             
             // 3.) Für alle Knoten v(j) mit OK(j) = false, für die die Kante v(h),v(j) exisitiert die Entfernung und gegebenenfalls den Vorgänger neuberechnen
             calculateNeighboursDistance(tempSource);
-        } while(!_falseList.isEmpty());         
+        } while(!_falseList.isEmpty() || !_okList.contains(target));         
             
         if(_okList.contains(target))
         {

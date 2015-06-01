@@ -18,7 +18,6 @@ public class KruskalImpl
 
     private Graph<Vertex, MyWeightedEdge> _eingabeGraph;
     private Graph<Vertex, MyWeightedEdge> _kruskalGraph;
-    private DijkstraImpl _dijkstraAlgorithm;
     private List<MyWeightedEdge> _edges;
     private List<Vertex> _vertexList;
     
@@ -73,9 +72,9 @@ public class KruskalImpl
     private boolean erzeugtKreis(Vertex v1, Vertex v2,
             Graph<Vertex, MyWeightedEdge> kruskalGraph)
     {
-        _dijkstraAlgorithm = new DijkstraImpl(kruskalGraph);
+        DijkstraImpl _dijkstraAlgorithm = new DijkstraImpl(kruskalGraph);
         _dijkstraAlgorithm.findShortestWay(v1, v2);
-        if(_dijkstraAlgorithm.getWeglaenge() != 0)
+        if(_dijkstraAlgorithm.getWeglaenge() != 0 || v1.equals(v2))
         {
             return true;
         }
