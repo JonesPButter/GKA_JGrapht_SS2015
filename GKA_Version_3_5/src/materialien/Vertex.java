@@ -179,6 +179,15 @@ public class Vertex implements Comparable<Vertex>
         return _yPos;
     }
     
+    /**
+     * Liefert den Wert der Kante mit dem minimalen Kantengewicht, die an diesem Vertexobjekt hängt 
+     * @return -1, wenn es keine Kante gibt
+     */
+    public double getMinEdgeWeight()
+    {
+        return _minEdgeWeight;
+    }
+    
     @Override
     public String toString()
     {
@@ -220,14 +229,7 @@ public class Vertex implements Comparable<Vertex>
         _isPartOfShortestWay = false;
     }
     
-    /**
-     * Liefert den Wert der Kante mit dem minimalen Kantengewicht, die an diesem Vertexobjekt hängt 
-     * @return -1, wenn es keine Kante gibt
-     */
-    public double getMinEdgeWeight()
-    {
-        return _minEdgeWeight;
-    }
+
     
     public void reset()
     {
