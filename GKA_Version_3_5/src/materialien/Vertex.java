@@ -84,6 +84,14 @@ public class Vertex implements Comparable<Vertex>
         _minEdgeWeight = min;
     }
     
+    public void setNewEdgeWeight(double min)
+    {
+    	if(_minEdgeWeight > min || _minEdgeWeight == -1)
+    	{
+    		_minEdgeWeight = min;
+    	}
+    }
+    
     /**
      * Den Vertex als besucht makieren.
      */
