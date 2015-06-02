@@ -349,9 +349,9 @@ public class GraphManager extends ObservableSubwerkzeug
             
             Graph<Vertex,MyWeightedEdge> primGraph = prim.getGraph();
             _modelAdapter = _graphBuilder.getModelAdapter(primGraph);
-//            _visualizationGraph.setModel(_modelAdapter);
-//            
-//            informiereUeberAenderung("Graph changed!"); 
+            _visualizationGraph.setModel(_modelAdapter);
+            
+            informiereUeberAenderung("Graph changed!"); 
         }
         else if(option.equals(options[2]))
         {

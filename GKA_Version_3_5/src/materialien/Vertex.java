@@ -1,10 +1,9 @@
 package materialien;
 
-public class Vertex implements Comparable<Vertex>
+public class Vertex
 {
     String _name;
     double _attr;
-    double _minEdgeWeight;
     int _xPos, _yPos;
     double _entfernungVomStartVertex;
     boolean _isVisited;
@@ -17,7 +16,6 @@ public class Vertex implements Comparable<Vertex>
         _attr = attr;
         _xPos = x;
         _yPos = y;
-        _minEdgeWeight = -1;
         _isVisited = false;
         _isTarget = false;
         _isPartOfShortestWay = false;
@@ -74,24 +72,7 @@ public class Vertex implements Comparable<Vertex>
     {
         _isTarget = false;
     }
-    
-    /**
-     * Setzt den neuen Wert für die minimale Kante, die an dem Vertexobjekt hängt
-     * @param min
-     */
-    public void setMinEdgeWeight(double min)
-    {
-        _minEdgeWeight = min;
-    }
-    
-    public void setNewEdgeWeight(double min)
-    {
-    	if(_minEdgeWeight > min || _minEdgeWeight == -1)
-    	{
-    		_minEdgeWeight = min;
-    	}
-    }
-    
+
     /**
      * Den Vertex als besucht makieren.
      */
@@ -179,15 +160,6 @@ public class Vertex implements Comparable<Vertex>
         return _yPos;
     }
     
-    /**
-     * Liefert den Wert der Kante mit dem minimalen Kantengewicht, die an diesem Vertexobjekt hängt 
-     * @return -1, wenn es keine Kante gibt
-     */
-    public double getMinEdgeWeight()
-    {
-        return _minEdgeWeight;
-    }
-    
     @Override
     public String toString()
     {
@@ -239,10 +211,4 @@ public class Vertex implements Comparable<Vertex>
         isNotPartOfShortestWay();
     }
 
-    @Override
-    public int compareTo(Vertex v)
-    {
-        Double thisMin = (Double)this._minEdgeWeight;
-        return thisMin.compareTo((Double)v.getMinEdgeWeight());
-    }
 }

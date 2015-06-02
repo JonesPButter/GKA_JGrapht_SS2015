@@ -1030,8 +1030,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	               if(vSource.equals(vTarget)){            	   
 	            	    MyWeightedEdge edge = returnGraph.addEdge(vSource, vSource);
 	            	   ((Pseudograph<Vertex, MyWeightedEdge>)returnGraph).setEdgeWeight(edge, weighing);
-	             	   vSource.setNewEdgeWeight(weighing);
-	            	   vTarget.setNewEdgeWeight(weighing);
 	               }
 	               else if(targetEcken.length() == 0)
 	               {
@@ -1041,8 +1039,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	               {
 	            	   MyWeightedEdge edge = returnGraph.addEdge(vSource, vTarget);
 	            	   ((Pseudograph<Vertex, MyWeightedEdge>)returnGraph).setEdgeWeight(edge, weighing);
-	            	   vSource.setNewEdgeWeight(weighing);
-	            	   vTarget.setNewEdgeWeight(weighing);
 	               }
 	               
 	           }
@@ -1380,8 +1376,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	             if(vSource.equals(vTarget)){            	   
 	            	MyWeightedEdge edge = returnGraph.addEdge(vSource,vSource);
 	          	    ((WeightedPseudograph<Vertex, MyWeightedEdge>)returnGraph).setEdgeWeight(edge, weighing);
-	           	    vSource.setNewEdgeWeight(weighing);
-            	    vTarget.setNewEdgeWeight(weighing);
 	             }
 	             else if(targetEcken.length() == 0)
 	             {
@@ -1391,8 +1385,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	             {
 	            	 MyWeightedEdge edge = returnGraph.addEdge(vSource, vTarget);
 	            	 ((Pseudograph<Vertex, MyWeightedEdge>)returnGraph).setEdgeWeight(edge, weighing);
-	           	     vSource.setNewEdgeWeight(weighing);
-            	     vTarget.setNewEdgeWeight(weighing);
 	             }
 	             
 	         }
