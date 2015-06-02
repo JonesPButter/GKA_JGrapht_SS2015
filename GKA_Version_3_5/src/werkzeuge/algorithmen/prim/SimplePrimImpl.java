@@ -23,6 +23,7 @@ public class SimplePrimImpl
 
     PriorityQueue<Vertex> _prioQueue;
     List<Vertex> _simplePrimGraphVertices;
+    Map<Vertex,Double> _schlüssel;
     
     public SimplePrimImpl(Graph<Vertex, MyWeightedEdge> graph)
     {
@@ -32,7 +33,8 @@ public class SimplePrimImpl
         _eingabeGraph = graph;
         _simplePrimGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
         _simplePrimGraphVertices = new ArrayList<Vertex>(_eingabeGraph.vertexSet());
-        _prioQueue = new PriorityQueue<>(new MyVertexComparator());     
+        _schlüssel = new HashMap<>();
+        _prioQueue = new PriorityQueue<>(new MyVertexComparator(_schlüssel));     
         
         
         startAlgorithm();
@@ -40,23 +42,37 @@ public class SimplePrimImpl
     
     private void startAlgorithm()
     {
-        Vertex tempVertex = _simplePrimGraphVertices.get(0);
         Map<Vertex,Vertex> vorgaenger = new HashMap<>();
-        Vertex nextVertex;
-        _simplePrimGraph.addVertex(tempVertex);
-        do{
-            System.out.println("******************************** ");
-            System.out.println("Graphknoten = " + _simplePrimGraph.vertexSet());
-            System.out.println("TempVertex: " + tempVertex);
-            fuegeNachbarnInQueue(tempVertex,vorgaenger); // Queue wird um alle Vertices erweitert, die Kind von tempvertex sind und noch nicht in der Queue stehen
+        for(Vertex v : _simplePrimGraphVertices)
+        {
+            _schlüssel.put(v, Double.POSITIVE_INFINITY);
+            vorgaenger.put(v, null);
+            _simplePrimGraph.addVertex(v);
+        }
+        
+        Vertex tempVertex = _simplePrimGraphVertices.get(0);
+        Vertex nextVertex;        
+        _schlüssel.put(tempVertex, 0.0); // schlüssel[r] = 0
+        _prioQueue.addAll(_simplePrimGraphVertices); // Q = V(G)
+        double kantenGewicht;
+        MyWeightedEdge edge = null;
+        
+        while(!_prioQueue.isEmpty())
+        {
             nextVertex = _prioQueue.remove();
-            System.out.println("NextVertex: " + tempVertex);
-            _simplePrimGraph.addVertex(nextVertex);
-            
-            _simplePrimGraph.addEdge(vorgaenger.get(nextVertex),nextVertex, _eingabeGraph.getEdge(vorgaenger.get(nextVertex), nextVertex));                
+            Set<Vertex> neighbours = getUndirectedAdjacentNodes(nextVertex);
+            for(Vertex child : neighbours)
+            {
+                edge = _eingabeGraph.getEdge(nextVertex, child);
+                kantenGewicht = edge.getEdgeWeight();
+                if(_prioQueue.contains(child) && kantenGewicht < _schlüssel.get(child))
+                {
+                    vorgaenger.put(child, nextVertex);
+                    _schlüssel.put(child, kantenGewicht);                    
+                }
+            }
+        }
 
-            
-        }while(!_prioQueue.isEmpty());
         
         _eingabeGraph = _simplePrimGraph;
     }
