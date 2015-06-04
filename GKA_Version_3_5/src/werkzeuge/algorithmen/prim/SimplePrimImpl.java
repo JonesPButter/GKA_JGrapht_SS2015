@@ -1,6 +1,8 @@
 package werkzeuge.algorithmen.prim;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,8 +36,7 @@ public class SimplePrimImpl
         _simplePrimGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
         _simplePrimGraphVertices = new ArrayList<Vertex>(_eingabeGraph.vertexSet());
         _schlüssel = new HashMap<>();
-        _prioQueue = new PriorityQueue<>(new MyVertexComparator(_schlüssel));     
-        
+        _prioQueue = new PriorityQueue<>(new MyVertexComparator(_schlüssel));
         
         startAlgorithm();
     }
@@ -53,27 +54,46 @@ public class SimplePrimImpl
         Vertex tempVertex = _simplePrimGraphVertices.get(0);
         Vertex nextVertex;        
         _schlüssel.put(tempVertex, 0.0); // schlüssel[r] = 0
+//        System.out.println("Startvertex: " + tempVertex);
         _prioQueue.addAll(_simplePrimGraphVertices); // Q = V(G)
         double kantenGewicht;
         MyWeightedEdge edge = null;
         
         while(!_prioQueue.isEmpty())
-        {
-            nextVertex = _prioQueue.remove();
-            Set<Vertex> neighbours = getUndirectedAdjacentNodes(nextVertex);
+        {   
+//            System.out.println(_prioQueue);
+            tempVertex = _prioQueue.remove();
+            _prioQueue.add(tempVertex);
+            _prioQueue.remove(tempVertex);
+//            System.out.println("Aus der Queue entnommen: "+tempVertex);
+            Set<Vertex> neighbours = getUndirectedAdjacentNodes(tempVertex);
+            
+            // Wir gehen über alle Nachbarn von dem eben der PrioQueue entnommenen
+            // Knoten und bestimmen den Schlüssel und den Vorgänger neu
             for(Vertex child : neighbours)
             {
-                edge = _eingabeGraph.getEdge(nextVertex, child);
+                edge = _eingabeGraph.getEdge(tempVertex, child);
                 kantenGewicht = edge.getEdgeWeight();
                 if(_prioQueue.contains(child) && kantenGewicht < _schlüssel.get(child))
                 {
-                    vorgaenger.put(child, nextVertex);
-                    _schlüssel.put(child, kantenGewicht);                    
+                    vorgaenger.put(child, tempVertex);
+                    _schlüssel.put(child, kantenGewicht);
+                    
                 }
-            }
+            } 
+            
         }
 
         
+        for(Vertex v : _simplePrimGraphVertices)
+        {
+            if(vorgaenger.get(v) != null)
+            {
+                edge = _eingabeGraph.getEdge(v, vorgaenger.get(v));
+//                System.out.println("Kante hinzugefügt: "+v + " - " + vorgaenger.get(v));
+                _simplePrimGraph.addEdge(v, vorgaenger.get(v), edge);
+            }           
+        }
         _eingabeGraph = _simplePrimGraph;
     }
 
@@ -139,8 +159,8 @@ public class SimplePrimImpl
 //           _graphAccesses++;
            Vertex source = _eingabeGraph.getEdgeSource(edge);
            Vertex neighbour = _eingabeGraph.getEdgeTarget(edge);
-           System.out.println("Source: " + source);
-           System.out.println("Neighbour: " + neighbour);
+//           System.out.println("Source: " + source);
+//           System.out.println("Neighbour: " + neighbour);
            if(source.equals(n))
            {
                adjacentNodes.add(neighbour);               
@@ -148,10 +168,6 @@ public class SimplePrimImpl
            {
                adjacentNodes.add(source);
            }
-//           else if(neighbour.equals(_targetVertex))
-//           {
-//               break;
-//           }
        }
        return adjacentNodes;
         
