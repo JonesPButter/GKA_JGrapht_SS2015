@@ -22,6 +22,7 @@ import org.jgrapht.graph.WeightedPseudograph;
 
 import werkzeuge.ObservableSubwerkzeug;
 import werkzeuge.SubwerkzeugObserver;
+import werkzeuge.algorithmen.SpannbaumConsole;
 import werkzeuge.algorithmen.aStern.ASternImpl;
 import werkzeuge.algorithmen.bfs.BreadthFirstSearchImpl;
 import werkzeuge.algorithmen.dijkstra.DijkstraImpl;
@@ -352,6 +353,12 @@ public class GraphManager extends ObservableSubwerkzeug
             _visualizationGraph.setModel(_modelAdapter);
             
             informiereUeberAenderung("Graph changed!"); 
+
+            SpannbaumConsole console = new SpannbaumConsole(prim.getAccesses()+"", 
+                    prim.getWeglaenge()+"", "Simple Prim",
+                    prim.getAnzahlBenoetigteKanten()+"",
+                    (prim.getTime()/1000)/1000+"");
+            console.start();
         }
         else if(option.equals(options[2]))
         {
@@ -362,6 +369,12 @@ public class GraphManager extends ObservableSubwerkzeug
             _visualizationGraph.setModel(_modelAdapter);
             
             informiereUeberAenderung("Graph changed!"); 
+            
+//            SpannbaumConsole console = new SpannbaumConsole(kruskal.getAccesses()+"", 
+//                    kruskal.getWeglaenge()+"", "Kruskal",
+//                    kruskal.getAnzahlBenoetigteKanten()+"",
+//                    (kruskal.getTime()/1000)/1000+"");
+//            console.start();
         }
         
     }

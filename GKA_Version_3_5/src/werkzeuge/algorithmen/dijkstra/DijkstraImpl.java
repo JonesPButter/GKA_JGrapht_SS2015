@@ -199,6 +199,7 @@ public class DijkstraImpl extends ObservableSubwerkzeug
 //           _graphAccesses++;
            Vertex source = _graph.getEdgeSource(edge);
            Vertex neighbour = _graph.getEdgeTarget(edge);
+           System.out.println("EdgeSource: " + source + " Edgetarget: " + neighbour);
            if(source.equals(n))
            {
                adjacentNodes.add(neighbour);               
