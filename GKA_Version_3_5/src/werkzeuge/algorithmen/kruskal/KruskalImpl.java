@@ -35,6 +35,7 @@ public class KruskalImpl
     {
         assert (graph instanceof WeightedPseudograph) : "Vorbedingung verletzt: (graph instanceof WeightedPseudograph)";
         
+        
         _eingabeGraph = graph;
         _kruskalGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
         _vertexList = new ArrayList<>();
@@ -64,6 +65,10 @@ public class KruskalImpl
     private void startAlgorithm()
     {
         
+    	 startTime = System.nanoTime();
+         System.out.println(startTime);
+    	
+    	
         for(MyWeightedEdge e : _edges)
         {
             Vertex v1 = _eingabeGraph.getEdgeSource(e);
@@ -74,7 +79,9 @@ public class KruskalImpl
                 _kruskalGraph.addEdge(v1, v2, e);
             }
         }
+        
         endTime = System.nanoTime();
+        System.out.println(endTime);
     }
 
     private boolean erzeugtKreis(Vertex v1, Vertex v2,

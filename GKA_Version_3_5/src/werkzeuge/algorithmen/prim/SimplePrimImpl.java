@@ -97,6 +97,8 @@ public class SimplePrimImpl
 
         endTime = System.nanoTime();
         System.out.println(endTime);
+        long erg = endTime - startTime;
+        System.out.println("Erg: "  + erg);
         for(Vertex v : _simplePrimGraphVertices)
         {
             _graphAccesses++;

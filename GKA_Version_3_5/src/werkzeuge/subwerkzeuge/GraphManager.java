@@ -357,7 +357,7 @@ public class GraphManager extends ObservableSubwerkzeug
             SpannbaumConsole console = new SpannbaumConsole(prim.getAccesses()+"", 
                     prim.getWeglaenge()+"", "Simple Prim",
                     prim.getAnzahlBenoetigteKanten()+"",
-                    (prim.getTime()/1000)/1000+"");
+                    (prim.getTime()/ Math.pow(10.0, 9.0)) + "sec");
             console.start();
         }
         else if(option.equals(options[2]))
@@ -370,11 +370,11 @@ public class GraphManager extends ObservableSubwerkzeug
             
             informiereUeberAenderung("Graph changed!"); 
             
-//            SpannbaumConsole console = new SpannbaumConsole(kruskal.getAccesses()+"", 
-//                    kruskal.getWeglaenge()+"", "Kruskal",
-//                    kruskal.getAnzahlBenoetigteKanten()+"",
-//                    (kruskal.getTime()/1000)/1000+"");
-//            console.start();
+            SpannbaumConsole console = new SpannbaumConsole(kruskal.getAccesses()+"", 
+                    kruskal.getWeglaenge()+"", "Kruskal",
+                    kruskal.getAnzahlBenoetigteKanten()+"",
+                    (kruskal.getTime()/ Math.pow(10.0, 9.0)) + "sec");
+            console.start();
         }
         
     }
