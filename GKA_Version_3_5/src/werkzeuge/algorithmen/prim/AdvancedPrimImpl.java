@@ -67,7 +67,7 @@ public class AdvancedPrimImpl
             _graphAccesses++;
             Vertex minVertex = _fibHeap.removeMin().getData();
             Vertex target = getBestNeighbour(minVertex);
-            MyWeightedEdge edge =  _eingabeGraph.getEdge(minVertex, target);
+            MyWeightedEdge edge =  getMinimumEdgeFor(minVertex,target);
             System.out.println("Minvertex: " + minVertex);
             System.out.println("Target: " + target);
             System.out.println("Edge: " + edge);
@@ -80,6 +80,20 @@ public class AdvancedPrimImpl
         endTime = System.nanoTime();
     }
     
+    private MyWeightedEdge getMinimumEdgeFor(Vertex minVertex, Vertex target)
+    {
+        MyWeightedEdge minEdge = _eingabeGraph.getEdge(minVertex, target);
+        double kantenGewicht = minEdge.getEdgeWeight();
+        for(MyWeightedEdge edge :_eingabeGraph.getAllEdges(minVertex, target))
+        {
+            if(edge.getEdgeWeight()<kantenGewicht)
+            {
+                minEdge = edge;
+            }
+        }
+        return minEdge;
+    }
+
     private Vertex getBestNeighbour(Vertex minVertex)
     {
         System.out.println("_________ BESTNEIGHBOUR ______________");

@@ -68,7 +68,7 @@ public class SimplePrimImpl
             
             Vertex minVertex = _prioQueue.remove();
             Vertex target = getBestNeighbour(minVertex);
-            MyWeightedEdge edge =  _eingabeGraph.getEdge(minVertex, target);
+            MyWeightedEdge edge =  getMinimumEdgeFor(minVertex, target);
             System.out.println("Minvertex: " + minVertex);
             System.out.println("Target: " + target);
             System.out.println("Edge: " + edge);
@@ -158,6 +158,20 @@ public class SimplePrimImpl
         
     }
 
+    private MyWeightedEdge getMinimumEdgeFor(Vertex minVertex, Vertex target)
+    {
+        MyWeightedEdge minEdge = _eingabeGraph.getEdge(minVertex, target);
+        double kantenGewicht = minEdge.getEdgeWeight();
+        for(MyWeightedEdge edge :_eingabeGraph.getAllEdges(minVertex, target))
+        {
+            if(edge.getEdgeWeight()<kantenGewicht)
+            {
+                minEdge = edge;
+            }
+        }
+        return minEdge;
+    }
+    
     public boolean isGraphConnected(Graph<Vertex, MyWeightedEdge> graph)
     {
     	boolean result = false;
