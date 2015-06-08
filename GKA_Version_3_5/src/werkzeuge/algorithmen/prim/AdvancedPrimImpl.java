@@ -31,7 +31,7 @@ public class AdvancedPrimImpl
     
     public AdvancedPrimImpl(Graph<Vertex, MyWeightedEdge> graph)
     {
-        assert graph.vertexSet().size() > 0 : "Vorbedingung verletzt: graph.vertexSet().size() > 0";
+        assert graph.vertexSet().size() > 1 : "Vorbedingung verletzt: graph.vertexSet().size() > 1";
         assert graph.edgeSet().size() > 0 : "Vorbedingung verletzt: graph.edgeSet().size() > 0";
         
         _eingabeGraph = graph;
