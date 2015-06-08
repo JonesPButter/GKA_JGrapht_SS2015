@@ -120,7 +120,7 @@ public class KruskalImplTest
     private void loadBigGraph()
     {
         BigGraphImpl big = new BigGraphImpl();
-        big.createBigGraph(30, 90);
+        big.createBigGraph(1000, 6000);
         _graph = big.getBigGraph();
     }
     

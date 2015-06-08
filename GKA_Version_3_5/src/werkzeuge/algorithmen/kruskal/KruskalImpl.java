@@ -42,14 +42,6 @@ public class KruskalImpl
         _kruskalGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
         _vertexList = new ArrayList<>();
         _edges = new ArrayList<>();
-        
-        _vertexList.addAll(_eingabeGraph.vertexSet());
-        vertexListHinzufuegen(); // fügt dem neuen Graphen alle Knoten des Eingabegraphen hinzu
-        
-        _edges.addAll(_eingabeGraph.edgeSet());
-        startTime = System.currentTimeMillis();
-        Collections.sort(_edges,new MyWeightedEdgeComparator()); // Kanten aufsteigend sortieren
-        
         startAlgorithm();
     }
 
@@ -65,11 +57,9 @@ public class KruskalImpl
     }
 
     private void startAlgorithm()
-    {
-        
-    	 startTime = System.nanoTime();
-         System.out.println(startTime);
-    	
+    {   	
+        startTime = System.nanoTime();
+    	init();
     	
         for(MyWeightedEdge e : _edges)
         {
@@ -83,7 +73,16 @@ public class KruskalImpl
         }
         
         endTime = System.nanoTime();
-        System.out.println(endTime);
+    }
+
+    private void init()
+    {       
+        _vertexList.addAll(_eingabeGraph.vertexSet());
+        vertexListHinzufuegen(); // fügt dem neuen Graphen alle Knoten des Eingabegraphen hinzu
+        
+        _edges.addAll(_eingabeGraph.edgeSet());
+        startTime = System.currentTimeMillis();
+        Collections.sort(_edges,new MyWeightedEdgeComparator()); // Kanten aufsteigend sortieren     
     }
 
     private boolean erzeugtKreis(Vertex v1, Vertex v2,

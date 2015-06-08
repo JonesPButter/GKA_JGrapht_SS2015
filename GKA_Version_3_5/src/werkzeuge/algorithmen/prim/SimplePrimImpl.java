@@ -29,11 +29,12 @@ public class SimplePrimImpl
     int _kantenAnzahl;
     private int _graphAccesses;
     
-    public SimplePrimImpl(Graph<Vertex, MyWeightedEdge> graph)
+    public SimplePrimImpl(Graph<Vertex, MyWeightedEdge> graph) throws IllegalArgumentException
     {
-        assert graph.vertexSet().size() > 0 : "Vorbedingung verletzt: graph.vertexSet().size() > 0";
-        assert graph.edgeSet().size() > 0 : "Vorbedingung verletzt: graph.edgeSet().size() > 0";
-        assert isGraphConnected(graph) : "Vorbedingung verletzt: isGraphConnected(graph)";
+        if(!isGraphConnected(graph)) throw new IllegalArgumentException("Der Graph ist nicht zusammenhängend.");
+//        assert graph.vertexSet().size() > 0 : "Vorbedingung verletzt: graph.vertexSet().size() > 0";
+//        assert graph.edgeSet().size() > 0 : "Vorbedingung verletzt: graph.edgeSet().size() > 0";
+//        assert isGraphConnected(graph) : "Vorbedingung verletzt: isGraphConnected(graph)";
         
         _eingabeGraph = graph;
         _simplePrimGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
@@ -48,7 +49,7 @@ public class SimplePrimImpl
     private void startAlgorithm()
     {
         startTime = System.nanoTime();
-        System.out.println(startTime);
+//        System.out.println(startTime);
         Map<Vertex,Vertex> vorgaenger = new HashMap<>();
         for(Vertex v : _simplePrimGraphVertices)
         {
@@ -69,9 +70,9 @@ public class SimplePrimImpl
             Vertex minVertex = _prioQueue.remove();
             Vertex target = getBestNeighbour(minVertex);
             MyWeightedEdge edge =  getMinimumEdgeFor(minVertex, target);
-            System.out.println("Minvertex: " + minVertex);
-            System.out.println("Target: " + target);
-            System.out.println("Edge: " + edge);
+//            System.out.println("Minvertex: " + minVertex);
+//            System.out.println("Target: " + target);
+//            System.out.println("Edge: " + edge);
             
             _simplePrimGraph.addVertex(minVertex);
             _simplePrimGraph.addEdge(minVertex, target, edge);
@@ -85,7 +86,7 @@ public class SimplePrimImpl
 
     private Vertex getBestNeighbour(Vertex minVertex)
     {
-        System.out.println("_________ BESTNEIGHBOUR ______________");
+//        System.out.println("_________ BESTNEIGHBOUR ______________");
         Vertex source;
         Vertex target;
         Vertex child = null;
@@ -143,13 +144,13 @@ public class SimplePrimImpl
             if(_simplePrimGraph.containsVertex(child)) continue;
             if(!_prioQueue.contains(child))// && kantenGewicht < _schlüssel.get(child))
             {
-                System.out.println("Child: " + child + " mit Gewicht: " + kantenGewicht + " wird in Heap geschrieben");
+//                System.out.println("Child: " + child + " mit Gewicht: " + kantenGewicht + " wird in Heap geschrieben");
                 _schlüssel.put(child, kantenGewicht);
                 _prioQueue.add(child);                
             }
             else if(_schlüssel.get(child) > kantenGewicht)
             {
-                System.out.println("alter Wert von Child größer als der Neue, also Gewichtung ändern: " + child + "Gewicht: " + kantenGewicht);
+//                System.out.println("alter Wert von Child größer als der Neue, also Gewichtung ändern: " + child + "Gewicht: " + kantenGewicht);
                 _prioQueue.remove(child);
                 _schlüssel.put(child, kantenGewicht);
                 _prioQueue.add(child);
@@ -230,29 +231,6 @@ public class SimplePrimImpl
        }
        return adjacentNodes;        
     }
-//
-//    private Set<Vertex> getUndirectedAdjacentNodes(Vertex n)
-//    {
-//        Set<Vertex> adjacentNodes= new HashSet<Vertex>();
-//        Set<MyWeightedEdge> edges= _eingabeGraph.edgesOf(n);
-//       for(MyWeightedEdge edge : edges)
-//       {
-////           _graphAccesses++;
-//           Vertex source = _eingabeGraph.getEdgeSource(edge);
-//           Vertex neighbour = _eingabeGraph.getEdgeTarget(edge);
-////           System.out.println("Source: " + source);
-////           System.out.println("Neighbour: " + neighbour);
-//           if(source.equals(n))
-//           {
-//               adjacentNodes.add(neighbour);               
-//           } else if(neighbour.equals(n))
-//           {
-//               adjacentNodes.add(source);
-//           }
-//       }
-//       return adjacentNodes;
-//        
-//    }
     
     public Graph<Vertex, MyWeightedEdge> getGraph()
     {
