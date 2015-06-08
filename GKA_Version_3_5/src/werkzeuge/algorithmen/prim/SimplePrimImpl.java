@@ -262,7 +262,12 @@ public class SimplePrimImpl
 
     public int getAnzahlBenoetigteKanten()
     {
-        return _kantenAnzahl-1;
+        int laenge = 0;
+        for(MyWeightedEdge edge : _simplePrimGraph.edgeSet())
+        {
+            laenge += 1;
+        }
+        return laenge;
     }
 
     public int getAccesses()
