@@ -42,6 +42,7 @@ public class AdvancedPrimImpl
         _fibInhalt = new HashMap<>();
         _fibHeap = new FibonacciHeap<>();
         startAlgorithm();
+        
     }
     
     private void startAlgorithm()
