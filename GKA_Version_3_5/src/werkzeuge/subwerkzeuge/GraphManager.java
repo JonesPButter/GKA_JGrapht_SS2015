@@ -340,9 +340,14 @@ public class GraphManager extends ObservableSubwerkzeug
             
             Graph<Vertex,MyWeightedEdge> primGraph = prim.getGraph();
             _modelAdapter = _graphBuilder.getModelAdapter(primGraph);
-//            _visualizationGraph.setModel(_modelAdapter);
-//            
-//            informiereUeberAenderung("Graph changed!"); 
+            _visualizationGraph.setModel(_modelAdapter);
+            
+            informiereUeberAenderung("Graph changed!");
+            SpannbaumConsole console = new SpannbaumConsole(prim.getAccesses()+"", 
+                    prim.getWeglaenge()+"", "AdvancedPrim (FibonacciHeap)",
+                    prim.getAnzahlBenoetigteKanten()+"",
+                    (prim.getTime()/ Math.pow(10.0, 9.0)) + "sec");
+            console.start();
         }
         if(option.equals(options[1]))
         {
