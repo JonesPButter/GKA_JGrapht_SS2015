@@ -78,7 +78,9 @@ public class SimplePrimImpl
                 if(_eingabeGraph.getEdgeSource(e).equals(tempVertex))
                 {
                     child = _eingabeGraph.getEdgeTarget(e);
-                } else{
+                } 
+                else
+                {
                     child = _eingabeGraph.getEdgeSource(e);
                 }
                 if(_prioQueue.contains(child) && kantenGewicht < _schlüssel.get(child))
@@ -87,7 +89,8 @@ public class SimplePrimImpl
                     _schlüssel.put(child, kantenGewicht);
                     
                 }
-                else if(vorgaenger.get(child) == null){
+                else if(vorgaenger.get(child) == null)
+                {
                     vorgaenger.put(child, tempVertex);
                     _schlüssel.put(child, kantenGewicht);
                     _prioQueue.add(child);
@@ -149,9 +152,9 @@ public class SimplePrimImpl
     public double getWeglaenge()
     {
         double laenge = 0;
-        for(Vertex v : _schlüssel.keySet())
+        for(MyWeightedEdge edge : _simplePrimGraph.edgeSet())
         {
-            laenge += _schlüssel.get(v);
+            laenge += edge.getEdgeWeight();
         }
         return laenge;
     }
