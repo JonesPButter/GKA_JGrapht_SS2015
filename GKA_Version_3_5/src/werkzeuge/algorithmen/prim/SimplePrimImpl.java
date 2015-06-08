@@ -1,8 +1,6 @@
 package werkzeuge.algorithmen.prim;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +8,6 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-import junit.framework.Assert;
 import materialien.MyVertexComparator;
 import materialien.MyWeightedEdge;
 import materialien.Vertex;
@@ -36,7 +33,7 @@ public class SimplePrimImpl
     {
         assert graph.vertexSet().size() > 0 : "Vorbedingung verletzt: graph.vertexSet().size() > 0";
         assert graph.edgeSet().size() > 0 : "Vorbedingung verletzt: graph.edgeSet().size() > 0";
-        assert isGraphConnected(graph) == true : "Vorbedingung verletzt: isGraphConnected(graph) == true";
+        assert isGraphConnected(graph) : "Vorbedingung verletzt: isGraphConnected(graph)";
         
         _eingabeGraph = graph;
         _simplePrimGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
@@ -58,67 +55,109 @@ public class SimplePrimImpl
             _graphAccesses++;
             _schlüssel.put(v, Double.POSITIVE_INFINITY);
             vorgaenger.put(v, null);
-            _simplePrimGraph.addVertex(v);
         }
         
-        Vertex tempVertex = _simplePrimGraphVertices.get(0);      
+        Vertex tempVertex = _eingabeGraph.vertexSet().iterator().next();      
         _schlüssel.put(tempVertex, 0.0); // schlüssel[r] = 0
-        _prioQueue.add(tempVertex);
-        double kantenGewicht;
-        MyWeightedEdge edge = null;
-        Vertex child= null;
+        _simplePrimGraph.addVertex(tempVertex);
+        insertNeighboursIntoQueue(tempVertex);
         
         while(!_prioQueue.isEmpty())
         {   
-            _graphAccesses++;
-            tempVertex = _prioQueue.remove();           
+            _graphAccesses++;         
             
-            for(MyWeightedEdge e : _eingabeGraph.edgesOf(tempVertex))
-            {
-                _graphAccesses++;
-                kantenGewicht = e.getEdgeWeight();
-                if(_eingabeGraph.getEdgeSource(e).equals(tempVertex))
-                {
-                    child = _eingabeGraph.getEdgeTarget(e);
-                } 
-                else
-                {
-                    child = _eingabeGraph.getEdgeSource(e);
-                }
-                if(_prioQueue.contains(child) && kantenGewicht < _schlüssel.get(child))
-                {
-                    vorgaenger.put(child, tempVertex);
-                    _schlüssel.put(child, kantenGewicht);
-                    
-                }
-                else if(vorgaenger.get(child) == null)
-                {
-                    vorgaenger.put(child, tempVertex);
-                    _schlüssel.put(child, kantenGewicht);
-                    _prioQueue.add(child);
-                }
-            }            
+            Vertex minVertex = _prioQueue.remove();
+            Vertex target = getBestNeighbour(minVertex);
+            MyWeightedEdge edge =  _eingabeGraph.getEdge(minVertex, target);
+            System.out.println("Minvertex: " + minVertex);
+            System.out.println("Target: " + target);
+            System.out.println("Edge: " + edge);
+            
+            _simplePrimGraph.addVertex(minVertex);
+            _simplePrimGraph.addEdge(minVertex, target, edge);
+            
+            insertNeighboursIntoQueue(minVertex);        
         }
 
         endTime = System.nanoTime();
-        System.out.println(endTime);
-        long erg = endTime - startTime;
-        System.out.println("Erg: "  + erg);
-        for(Vertex v : _simplePrimGraphVertices)
-        {
-            _graphAccesses++;
-            if(vorgaenger.get(v) != null)
-            {
-                _kantenAnzahl++;
-                edge = _eingabeGraph.getEdge(v, vorgaenger.get(v));
-                _simplePrimGraph.addEdge(v, vorgaenger.get(v), edge);
-            }           
-        }
-        _eingabeGraph = _simplePrimGraph;
     }
     
-    
-    
+
+    private Vertex getBestNeighbour(Vertex minVertex)
+    {
+        System.out.println("_________ BESTNEIGHBOUR ______________");
+        Vertex source;
+        Vertex target;
+        Vertex child = null;
+        Vertex result = null;
+        double kantenGewicht = Double.POSITIVE_INFINITY;
+        for(MyWeightedEdge edge : _eingabeGraph.edgesOf(minVertex))
+        {
+            _graphAccesses++;
+            source = _eingabeGraph.getEdgeSource(edge);
+            target = _eingabeGraph.getEdgeTarget(edge);
+            if(source.equals(minVertex))
+            {
+                child = target;
+            }
+            else if(target.equals(minVertex))
+            {
+                child = source;
+            }
+            
+            if(_simplePrimGraph.containsVertex(child))
+            {
+                if(kantenGewicht >= edge.getEdgeWeight())
+                {
+                    kantenGewicht = edge.getEdgeWeight();
+                    result = child;
+                }
+            }                 
+        }
+        return result;
+    }
+
+    private void insertNeighboursIntoQueue(Vertex tempVertex)
+    {
+        Vertex source;
+        Vertex target;
+        Vertex child = null;
+        double kantenGewicht;
+        for(MyWeightedEdge edge : _eingabeGraph.edgesOf(tempVertex))
+        {
+            _graphAccesses++;
+            source = _eingabeGraph.getEdgeSource(edge);
+            target = _eingabeGraph.getEdgeTarget(edge);
+            child = null;
+            kantenGewicht = edge.getEdgeWeight();
+            
+            if(source.equals(tempVertex))
+            {
+                child = target;
+            }
+            else if(target.equals(tempVertex))
+            {
+                child = source;
+            }
+            
+            if(_simplePrimGraph.containsVertex(child)) continue;
+            if(!_prioQueue.contains(child))// && kantenGewicht < _schlüssel.get(child))
+            {
+                System.out.println("Child: " + child + " mit Gewicht: " + kantenGewicht + " wird in Heap geschrieben");
+                _schlüssel.put(child, kantenGewicht);
+                _prioQueue.add(child);                
+            }
+            else if(_schlüssel.get(child) > kantenGewicht)
+            {
+                System.out.println("alter Wert von Child größer als der Neue, also Gewichtung ändern: " + child + "Gewicht: " + kantenGewicht);
+                _prioQueue.remove(child);
+                _schlüssel.put(child, kantenGewicht);
+                _prioQueue.add(child);
+            }            
+        }
+        
+    }
+
     public boolean isGraphConnected(Graph<Vertex, MyWeightedEdge> graph)
     {
     	boolean result = false;
