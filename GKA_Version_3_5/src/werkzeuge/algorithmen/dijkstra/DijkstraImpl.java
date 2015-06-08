@@ -155,37 +155,81 @@ public class DijkstraImpl extends ObservableSubwerkzeug
         }        
     }
     
-    private void calculateNeighboursDistance(Vertex source)
-    {
-        Set<Vertex> neighbours = getUndirectedAdjacentNodes(source);
-        double entf=0;
-        _graphAccesses++;
-        for(Vertex child : neighbours)
-        {
-            if(!_okList.contains(child)) // child wird nur angeschaut, wenn es noch nicht in der _okMap steht, damit wir nicht "rückwärts" schauen
-            {                  
-
-                MyWeightedEdge e = _graph.getEdge(source, child); // die Kante zwischen source und child                  
-                entf = source.getEntfernungVomStartVertex() + e.getEdgeWeight(); // entf = 0 + Kanntengewicht
-                
-                if(_falseList.contains(child)) // wenn Child bereits beobachtet wurde (steht also auch in _falseMap)
-                {
-                    if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
-                    {
-                        _vorgaengerMap.put(child, source); // neuen Vorgänger für child
-                        child.setEntfernungVomStartVertex(entf);  // neue Entfernung für child                  
-                    }
-                }
-                else// if(!child.isVisited()) // child wurde noch nie beobachtet, also einfach Werte berechnen
-                {
-                    _falseList.add(child);
-                    _vorgaengerMap.put(child, source);
-                    child.setEntfernungVomStartVertex(entf);
-                    child.visit();
-                }
-            }
-        }
-    }
+//    private void calculateNeighboursDistance(Vertex source)
+//    {
+//        Set<Vertex> neighbours = getUndirectedAdjacentNodes(source);
+//        double entf=0;
+//        _graphAccesses++;
+//        for(Vertex child : neighbours)
+//        {
+//            if(!_okList.contains(child)) // child wird nur angeschaut, wenn es noch nicht in der _okMap steht, damit wir nicht "rückwärts" schauen
+//            {                  
+//
+//                MyWeightedEdge e = _graph.getEdge(source, child); // die Kante zwischen source und child                  
+//                entf = source.getEntfernungVomStartVertex() + e.getEdgeWeight(); // entf = 0 + Kanntengewicht
+//                
+//                if(_falseList.contains(child)) // wenn Child bereits beobachtet wurde (steht also auch in _falseMap)
+//                {
+//                    if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
+//                    {
+//                        _vorgaengerMap.put(child, source); // neuen Vorgänger für child
+//                        child.setEntfernungVomStartVertex(entf);  // neue Entfernung für child                  
+//                    }
+//                }
+//                else// if(!child.isVisited()) // child wurde noch nie beobachtet, also einfach Werte berechnen
+//                {
+//                    _falseList.add(child);
+//                    _vorgaengerMap.put(child, source);
+//                    child.setEntfernungVomStartVertex(entf);
+//                    child.visit();
+//                }
+//            }
+//        }
+//    }
+    
+  private void calculateNeighboursDistance(Vertex source)
+  {
+      Set<Vertex> neighbours = getUndirectedAdjacentNodes(source);
+      double entf=0;
+      Vertex start = null;
+      Vertex ziel = null;
+      Vertex child = null;
+      _graphAccesses++;
+      for(MyWeightedEdge edge : _graph.edgesOf(source))
+      {
+          start = _graph.getEdgeSource(edge);
+          ziel = _graph.getEdgeTarget(edge);
+          if(source.equals(start))
+          {
+              child = ziel;
+          }
+          else if(source.equals(ziel))
+          {
+              child = start;
+          }
+          
+          if(!_okList.contains(child)) // child wird nur angeschaut, wenn es noch nicht in der _okMap steht, damit wir nicht "rückwärts" schauen
+          {                                   
+              entf = source.getEntfernungVomStartVertex() + edge.getEdgeWeight(); // entf = 0 + Kanntengewicht
+              
+              if(_falseList.contains(child)) // wenn Child bereits beobachtet wurde (steht also auch in _falseMap)
+              {
+                  if(child.getEntfernungVomStartVertex() > entf) // wenn alter Weg vom Child länger dauert, als der Weg über diesen Knoten
+                  {
+                      _vorgaengerMap.put(child, source); // neuen Vorgänger für child
+                    child.setEntfernungVomStartVertex(entf);  // neue Entfernung für child                  
+                  }
+              }
+              else// if(!child.isVisited()) // child wurde noch nie beobachtet, also einfach Werte berechnen
+              {
+                  _falseList.add(child);
+                  _vorgaengerMap.put(child, source);
+                  child.setEntfernungVomStartVertex(entf);
+                  child.visit();
+              }
+          }
+      }
+  }
     
     /*
      * Liefert alle Nachbarn von n

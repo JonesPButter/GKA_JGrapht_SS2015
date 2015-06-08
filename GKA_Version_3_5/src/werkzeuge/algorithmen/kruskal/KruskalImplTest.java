@@ -54,7 +54,7 @@ public class KruskalImplTest
             }
             catch (Exception e)
             {
-                bedingungenErfuellt = true;
+                
             }
         }
        
@@ -120,7 +120,7 @@ public class KruskalImplTest
     private void loadBigGraph()
     {
         BigGraphImpl big = new BigGraphImpl();
-        big.createBigGraph(1000, 6000);
+        big.createBigGraph(100, 6000);
         _graph = big.getBigGraph();
     }
     
