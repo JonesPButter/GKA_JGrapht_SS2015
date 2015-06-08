@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import junit.framework.Assert;
 import materialien.MyVertexComparator;
 import materialien.MyWeightedEdge;
 import materialien.Vertex;
@@ -35,6 +36,7 @@ public class SimplePrimImpl
     {
         assert graph.vertexSet().size() > 0 : "Vorbedingung verletzt: graph.vertexSet().size() > 0";
         assert graph.edgeSet().size() > 0 : "Vorbedingung verletzt: graph.edgeSet().size() > 0";
+        assert isGraphConnected(graph) == true : "Vorbedingung verletzt: isGraphConnected(graph) == true";
         
         _eingabeGraph = graph;
         _simplePrimGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
@@ -114,7 +116,67 @@ public class SimplePrimImpl
         }
         _eingabeGraph = _simplePrimGraph;
     }
+    
+    
+    
+    public boolean isGraphConnected(Graph<Vertex, MyWeightedEdge> graph)
+    {
+    	boolean result = false;
 
+    	Vertex start = (Vertex) graph.vertexSet().iterator().next();
+    	Vertex add;
+    	Set<Vertex> neighbours = getNeighbours(graph, start);
+    	Set<Vertex> allVertices = new HashSet<Vertex>();
+    	allVertices.add(start);
+    	allVertices.addAll(neighbours);
+   
+    	while(!neighbours.isEmpty())
+    	{
+    		while(neighbours.iterator().hasNext())
+    		{
+    			add = neighbours.iterator().next();
+    			for(Vertex v : getNeighbours(graph, add))
+    			{
+    				if(!allVertices.contains(v))
+    				{
+    					allVertices.add(v);
+    					neighbours.add(v);
+    				}
+    			}
+    			neighbours.remove(add);
+    			
+    		}
+    	}
+
+    	if(allVertices.equals(graph.vertexSet()))
+    	{
+    		result = true;
+    	}
+    	
+//    	System.out.println("Connected: " + result);
+    	return result;
+    	
+    	
+    }
+    
+    private Set<Vertex> getNeighbours(Graph<Vertex, MyWeightedEdge> graph, Vertex n)
+    {
+        Set<Vertex> adjacentNodes= new HashSet<Vertex>();
+        Set<MyWeightedEdge> edges= graph.edgesOf(n);
+       for(MyWeightedEdge edge : edges)
+       {
+           Vertex source = graph.getEdgeSource(edge);
+           Vertex neighbour = graph.getEdgeTarget(edge);
+           if(source.equals(n))
+           {
+               adjacentNodes.add(neighbour);               
+           } else if(neighbour.equals(n))
+           {
+               adjacentNodes.add(source);
+           }
+       }
+       return adjacentNodes;        
+    }
 //
 //    private Set<Vertex> getUndirectedAdjacentNodes(Vertex n)
 //    {

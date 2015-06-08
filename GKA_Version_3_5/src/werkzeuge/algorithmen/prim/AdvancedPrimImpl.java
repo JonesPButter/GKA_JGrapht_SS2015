@@ -33,6 +33,7 @@ public class AdvancedPrimImpl
     {
         assert graph.vertexSet().size() > 1 : "Vorbedingung verletzt: graph.vertexSet().size() > 1";
         assert graph.edgeSet().size() > 0 : "Vorbedingung verletzt: graph.edgeSet().size() > 0";
+        assert isGraphConnected(graph) == true : "Vorbedingung verletzt: isGraphConnected(graph)";
         
         _eingabeGraph = graph;
         _advancedPrimGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
@@ -269,6 +270,65 @@ public class AdvancedPrimImpl
     public int getAccesses()
     {
         return _graphAccesses;
+    }
+    
+    public boolean isGraphConnected(Graph<Vertex, MyWeightedEdge> graph)
+    {
+    	boolean result = false;
+
+    	Vertex start = (Vertex) graph.vertexSet().iterator().next();
+    	Vertex add;
+    	Set<Vertex> neighbours = getNeighbours(graph, start);
+    	Set<Vertex> allVertices = new HashSet<Vertex>();
+    	allVertices.add(start);
+    	allVertices.addAll(neighbours);
+   
+    	while(!neighbours.isEmpty())
+    	{
+    		while(neighbours.iterator().hasNext())
+    		{
+    			add = neighbours.iterator().next();
+    			for(Vertex v : getNeighbours(graph, add))
+    			{
+    				if(!allVertices.contains(v))
+    				{
+    					allVertices.add(v);
+    					neighbours.add(v);
+    				}
+    			}
+    			neighbours.remove(add);
+    			
+    		}
+    	}
+
+    	if(allVertices.equals(graph.vertexSet()))
+    	{
+    		result = true;
+    	}
+    	
+//    	System.out.println("Connected: " + result);
+    	return result;
+    	
+    	
+    }
+    
+    private Set<Vertex> getNeighbours(Graph<Vertex, MyWeightedEdge> graph, Vertex n)
+    {
+        Set<Vertex> adjacentNodes= new HashSet<Vertex>();
+        Set<MyWeightedEdge> edges= graph.edgesOf(n);
+       for(MyWeightedEdge edge : edges)
+       {
+           Vertex source = graph.getEdgeSource(edge);
+           Vertex neighbour = graph.getEdgeTarget(edge);
+           if(source.equals(n))
+           {
+               adjacentNodes.add(neighbour);               
+           } else if(neighbour.equals(n))
+           {
+               adjacentNodes.add(source);
+           }
+       }
+       return adjacentNodes;        
     }
 
     

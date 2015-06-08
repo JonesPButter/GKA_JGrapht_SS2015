@@ -2,7 +2,9 @@ package werkzeuge.algorithmen.kruskal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import materialien.MyWeightedEdge;
 import materialien.MyWeightedEdgeComparator;
@@ -34,7 +36,7 @@ public class KruskalImpl
     public KruskalImpl(Graph<Vertex, MyWeightedEdge> graph)
     {
         assert (graph instanceof WeightedPseudograph) : "Vorbedingung verletzt: (graph instanceof WeightedPseudograph)";
-        
+        assert isGraphConnected(graph) == true : "Vorbedingung verletzt: isGraphConnected(graph) == true";
         
         _eingabeGraph = graph;
         _kruskalGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
@@ -131,4 +133,63 @@ public class KruskalImpl
         return _graphAccesses;
     }
 
+    public boolean isGraphConnected(Graph<Vertex, MyWeightedEdge> graph)
+    {
+    	boolean result = false;
+
+    	Vertex start = (Vertex) graph.vertexSet().iterator().next();
+    	Vertex add;
+    	Set<Vertex> neighbours = getNeighbours(graph, start);
+    	Set<Vertex> allVertices = new HashSet<Vertex>();
+    	allVertices.add(start);
+    	allVertices.addAll(neighbours);
+   
+    	while(!neighbours.isEmpty())
+    	{
+    		while(neighbours.iterator().hasNext())
+    		{
+    			add = neighbours.iterator().next();
+    			for(Vertex v : getNeighbours(graph, add))
+    			{
+    				if(!allVertices.contains(v))
+    				{
+    					allVertices.add(v);
+    					neighbours.add(v);
+    				}
+    			}
+    			neighbours.remove(add);
+    			
+    		}
+    	}
+
+    	if(allVertices.equals(graph.vertexSet()))
+    	{
+    		result = true;
+    	}
+    	
+//    	System.out.println("Connected: " + result);
+    	return result;
+    	
+    	
+    }
+    
+    private Set<Vertex> getNeighbours(Graph<Vertex, MyWeightedEdge> graph, Vertex n)
+    {
+        Set<Vertex> adjacentNodes= new HashSet<Vertex>();
+        Set<MyWeightedEdge> edges= graph.edgesOf(n);
+       for(MyWeightedEdge edge : edges)
+       {
+           Vertex source = graph.getEdgeSource(edge);
+           Vertex neighbour = graph.getEdgeTarget(edge);
+           if(source.equals(n))
+           {
+               adjacentNodes.add(neighbour);               
+           } else if(neighbour.equals(n))
+           {
+               adjacentNodes.add(source);
+           }
+       }
+       return adjacentNodes;        
+    }
+    
 }
