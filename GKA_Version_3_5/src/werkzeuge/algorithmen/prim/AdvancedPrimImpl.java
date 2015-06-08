@@ -51,14 +51,17 @@ public class AdvancedPrimImpl
             _graphAccesses++;
             _schlüssel.put(v, Double.POSITIVE_INFINITY);
 //            _advancedPrimGraph.addVertex(v);
-        }
+        }        
         Vertex start = _eingabeGraph.vertexSet().iterator().next();
+        _schlüssel.put(start,0.0);
         _advancedPrimGraph.addVertex(start);
         System.out.println("Start: " + start);
         insertNeighboursIntoHeap(start);
         
         for(int i=0; i<_eingabeGraph.vertexSet().size()-1;i++)
         {
+            System.out.println("****************************************");
+            System.out.println(_fibHeap);
             _graphAccesses++;
             Vertex minVertex = _fibHeap.removeMin().getData();
             Vertex target = getBestNeighbour(minVertex);
@@ -77,6 +80,7 @@ public class AdvancedPrimImpl
     
     private Vertex getBestNeighbour(Vertex minVertex)
     {
+        System.out.println("_________ BESTNEIGHBOUR ______________");
         Vertex source;
         Vertex target;
         Vertex child = null;
@@ -95,10 +99,15 @@ public class AdvancedPrimImpl
             {
                 child = source;
             }
-            if(!_advancedPrimGraph.containsVertex(child)) continue;
-            if(_schlüssel.containsKey(child) && _schlüssel.get(child) > kantenGewicht) continue;
-            result = child;
-            kantenGewicht = _schlüssel.get(child);                 
+            
+            if(_advancedPrimGraph.containsVertex(child))
+            {
+                if(kantenGewicht >= edge.getEdgeWeight())
+                {
+                    kantenGewicht = edge.getEdgeWeight();
+                    result = child;
+                }
+            }                 
         }
         return result;
     }
@@ -129,14 +138,14 @@ public class AdvancedPrimImpl
             if(_advancedPrimGraph.containsVertex(child)) continue;
             if(!_fibInhalt.containsKey(child))// && kantenGewicht < _schlüssel.get(child))
             {
-                System.out.println("Child noch nicht in Heap und wird hinzugefügt: " + child);
+                System.out.println("Child: " + child + " mit Gewicht: " + kantenGewicht + " wird in Heap geschrieben");
                 _fibInhalt.put(child,new FibonacciHeapNode<Vertex>(child));
                 _schlüssel.put(child, kantenGewicht);
                 _fibHeap.insert(_fibInhalt.get(child), kantenGewicht);                
             }
             else if(_schlüssel.get(child) > kantenGewicht)
             {
-                System.out.println("alter Wert von Child größer als der Neue, also Gewichtung ändern: " + child);
+                System.out.println("alter Wert von Child größer als der Neue, also Gewichtung ändern: " + child + "Gewicht: " + kantenGewicht);
                 _fibHeap.decreaseKey(_fibInhalt.get(child), kantenGewicht);
                 _schlüssel.put(child, kantenGewicht);
             }            
