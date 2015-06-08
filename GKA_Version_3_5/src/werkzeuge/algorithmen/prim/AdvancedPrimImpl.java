@@ -277,40 +277,40 @@ public class AdvancedPrimImpl
     {
     	boolean result = false;
 
-    	Vertex start = (Vertex) graph.vertexSet().iterator().next();
-    	Vertex add;
-    	Set<Vertex> neighbours = getNeighbours(graph, start);
-    	Set<Vertex> allVertices = new HashSet<Vertex>();
-    	allVertices.add(start);
-    	allVertices.addAll(neighbours);
+        Vertex start = (Vertex) graph.vertexSet().iterator().next();
+        Vertex add;
+        Set<Vertex> neighbours = getNeighbours(graph, start);
+        Set<Vertex> allVertices = new HashSet<Vertex>();
+        allVertices.add(start);
+        allVertices.addAll(neighbours);
    
-    	while(!neighbours.isEmpty())
-    	{
-    		while(neighbours.iterator().hasNext())
-    		{
-    			add = neighbours.iterator().next();
-    			for(Vertex v : getNeighbours(graph, add))
-    			{
-    				if(!allVertices.contains(v))
-    				{
-    					allVertices.add(v);
-    					neighbours.add(v);
-    				}
-    			}
-    			neighbours.remove(add);
-    			
-    		}
-    	}
+        while(!neighbours.isEmpty())
+        {
+            while(neighbours.iterator().hasNext())
+            {
+                add = neighbours.iterator().next();
+                for(Vertex v : getNeighbours(graph, add))
+                {
+                    if(!allVertices.contains(v))
+                    {
+                        allVertices.add(v);
+                        neighbours.add(v);
+                    }
+                }
+                neighbours.remove(add);
+                
+            }
+        }
 
-    	if(allVertices.equals(graph.vertexSet()))
-    	{
-    		result = true;
-    	}
-    	
-//    	System.out.println("Connected: " + result);
-    	return result;
-    	
-    	
+        if(allVertices.equals(graph.vertexSet()))
+        {
+            result = true;
+        }
+        
+//      System.out.println("Connected: " + result);
+        return result;
+        
+        
     }
     
     private Set<Vertex> getNeighbours(Graph<Vertex, MyWeightedEdge> graph, Vertex n)
