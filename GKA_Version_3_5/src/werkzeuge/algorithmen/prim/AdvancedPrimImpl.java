@@ -58,7 +58,7 @@ public class AdvancedPrimImpl
         System.out.println("Start: " + start);
         insertNeighboursIntoHeap(start);
         
-        for(int i=0; i<_eingabeGraph.vertexSet().size()-1;i++)
+        while(!_fibHeap.isEmpty())//for(int i=0; i<_eingabeGraph.vertexSet().size()-1;i++)
         {
             System.out.println("****************************************");
             System.out.println(_fibHeap);
