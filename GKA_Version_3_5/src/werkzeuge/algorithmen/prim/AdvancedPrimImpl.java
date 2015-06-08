@@ -62,15 +62,15 @@ public class AdvancedPrimImpl
         
         while(!_fibHeap.isEmpty())//for(int i=0; i<_eingabeGraph.vertexSet().size()-1;i++)
         {
-            System.out.println("****************************************");
-            System.out.println(_fibHeap);
+//            System.out.println("****************************************");
+//            System.out.println(_fibHeap);
             _graphAccesses++;
             Vertex minVertex = _fibHeap.removeMin().getData();
             Vertex target = getBestNeighbour(minVertex);
             MyWeightedEdge edge =  _eingabeGraph.getEdge(minVertex, target);
-            System.out.println("Minvertex: " + minVertex);
-            System.out.println("Target: " + target);
-            System.out.println("Edge: " + edge);
+//            System.out.println("Minvertex: " + minVertex);
+//            System.out.println("Target: " + target);
+//            System.out.println("Edge: " + edge);
             
             _advancedPrimGraph.addVertex(minVertex);
             _advancedPrimGraph.addEdge(minVertex, target, edge);
