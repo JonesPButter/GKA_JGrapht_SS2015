@@ -60,7 +60,7 @@ public class GraphFileWriter
     			
 			} catch (IOException e) {
 //				e.printStackTrace();
-				System.out.println("Fehlschlag im FileWriter");
+//				System.out.println("Fehlschlag im FileWriter");
 			}
     		
     	}

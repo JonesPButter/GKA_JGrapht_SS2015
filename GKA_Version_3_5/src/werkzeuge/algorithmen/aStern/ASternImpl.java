@@ -240,7 +240,7 @@ public class ASternImpl extends ObservableSubwerkzeug
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                System.out.println("**************** AStern ******************** ");
+//                System.out.println("**************** AStern ******************** ");
                 String vertexSource = _ui.getVertexSource().getText();
                 String vertexTarget = _ui.getVertexTarget().getText();
  

@@ -79,14 +79,12 @@ import org.jgrapht.graph.WeightedPseudograph;
 	    		 !GraphInfoArray.get(0).contains("#attributed")
 	    		 ) 
 	        {    
-//	             System.out.println("undirectedGraph");
 	            graph = undirectedGraph(GraphInfoArray);
 	        }
 	         else if( !GraphInfoArray.get(0).contains("directed") && 
 	        		 GraphInfoArray.get(0).contains("weighted") &&
 	        		 !GraphInfoArray.get(0).contains("attributed")) 
 	         {
-//	             System.out.println("undirectedWeightedGraph");
 	             GraphInfoArray.remove(0);
 	             graph = undirectedWeightedGraph(GraphInfoArray);
 	         }
@@ -94,7 +92,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	        		 !GraphInfoArray.get(0).contains("weighted") &&
 	        		 !GraphInfoArray.get(0).contains("attributed") )
 	         {
-//	             System.out.println("directedGraph");
 	             GraphInfoArray.remove(0);
 	             graph = directedGraph(GraphInfoArray); 
 	             
@@ -103,7 +100,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	        		 !GraphInfoArray.get(0).contains("weighted") &&
 	        		  GraphInfoArray.get(0).contains("attributed")) 
 	         {
-//	             System.out.println("undirectedAttributeGraph");
 	             GraphInfoArray.remove(0);
 	             graph = undirectedAttributeGraph(GraphInfoArray);
 	             
@@ -112,7 +108,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	        		  GraphInfoArray.get(0).contains("weighted") &&
 	        		 !GraphInfoArray.get(0).contains("attributed")) 
 	        {
-//	            System.out.println("directedWeightedGraph");
 	            GraphInfoArray.remove(0);
 	            graph = directedWeightedGraph(GraphInfoArray); 
 	        } 
@@ -120,7 +115,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	        		  GraphInfoArray.get(0).contains("weighted") &&
 	        		  GraphInfoArray.get(0).contains("attributed")) 
 	        {
-	            System.out.println("undirectedAttriuteWeightedGraph");
 	            GraphInfoArray.remove(0);
 	            graph = undirectedAttriuteWeightedGraph(GraphInfoArray); 
 	            
@@ -129,7 +123,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	        		 !GraphInfoArray.get(0).contains("weighted") &&
 	        		  GraphInfoArray.get(0).contains("attributed")) 
 	        {
-//	        	System.out.println(" directedAttributeGraph");
 	        	GraphInfoArray.remove(0);
 	            graph = directedAttributeGraph(GraphInfoArray); 
 	        }
@@ -137,7 +130,6 @@ import org.jgrapht.graph.WeightedPseudograph;
 	        		 GraphInfoArray.get(0).contains("weighted") &&
 	        		 GraphInfoArray.get(0).contains("attributed")) 
 	        {
-//	        	System.out.println("directedAttriuteWeightedGraph");
 	        	GraphInfoArray.remove(0);
 	        	graph = directedAttriuteWeightedGraph(GraphInfoArray); 
 	            
