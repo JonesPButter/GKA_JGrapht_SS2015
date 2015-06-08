@@ -1,6 +1,6 @@
 package werkzeuge.algorithmen.prim;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +13,6 @@ import materialien.MyWeightedEdge;
 import materialien.Vertex;
 
 import org.jgrapht.Graph;
-import org.jgrapht.alg.KruskalMinimumSpanningTree;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,11 +20,11 @@ import werkzeuge.algorithmen.kruskal.KruskalImpl;
 import werkzeuge.subwerkzeuge.GraphManager;
 import werkzeuge.subwerkzeuge.BigGraph.BigGraphImpl;
 
-public class SimplePrimImplTest
+public class AdvancedPrimImplTest
 {
 
     GraphManager _manager;
-    SimplePrimImpl _simplePrim;
+    AdvancedPrimImpl _advancedPrim;
     Graph<Vertex,MyWeightedEdge> _graph;
     
     String _home;
@@ -50,7 +49,7 @@ public class SimplePrimImplTest
             loadBigGraph();
             try
             {
-                _simplePrim = new SimplePrimImpl(_graph);                
+                _advancedPrim = new AdvancedPrimImpl(_graph);                
             }
             catch (Exception e)
             {
@@ -61,7 +60,7 @@ public class SimplePrimImplTest
         // Test 1.) 
 //        KruskalMinimumSpanningTree<Vertex, MyWeightedEdge> kruskal = new KruskalMinimumSpanningTree<>(_graph);
         KruskalImpl kruskal = new KruskalImpl(_graph);
-        assertTrue(_simplePrim.getWeglaenge() == kruskal.getWeglaenge());//kruskal.getMinimumSpanningTreeTotalWeight());
+        assertTrue(_advancedPrim.getWeglaenge() == kruskal.getWeglaenge());//kruskal.getMinimumSpanningTreeTotalWeight());
     }
     
     @Test
@@ -75,7 +74,7 @@ public class SimplePrimImplTest
             loadBigGraph();
             try
             {
-                _simplePrim = new SimplePrimImpl(_graph);           
+                _advancedPrim = new AdvancedPrimImpl(_graph);           
             }
             catch (Exception e)
             {
@@ -86,7 +85,7 @@ public class SimplePrimImplTest
         // Test 1.) 
 //      KruskalMinimumSpanningTree<Vertex, MyWeightedEdge> kruskal = new KruskalMinimumSpanningTree<>(_graph);
       KruskalImpl kruskal = new KruskalImpl(_graph);
-      assertTrue(_simplePrim.getWeglaenge() == kruskal.getWeglaenge());//kruskal.getMinimumSpanningTreeTotalWeight());
+      assertTrue(_advancedPrim.getWeglaenge() == kruskal.getWeglaenge());//kruskal.getMinimumSpanningTreeTotalWeight());
     }
     
     @Test
@@ -100,7 +99,7 @@ public class SimplePrimImplTest
             loadBigGraph();
             try
             {
-                _simplePrim = new SimplePrimImpl(_graph);             
+                _advancedPrim = new AdvancedPrimImpl(_graph);                  
             }
             catch (Exception e)
             {
@@ -111,7 +110,7 @@ public class SimplePrimImplTest
         // Test 1.) 
 //      KruskalMinimumSpanningTree<Vertex, MyWeightedEdge> kruskal = new KruskalMinimumSpanningTree<>(_graph);
       KruskalImpl kruskal = new KruskalImpl(_graph);
-      assertTrue(_simplePrim.getWeglaenge() == kruskal.getWeglaenge());//kruskal.getMinimumSpanningTreeTotalWeight());
+      assertTrue(_advancedPrim.getWeglaenge() == kruskal.getWeglaenge());//kruskal.getMinimumSpanningTreeTotalWeight());
     }
  
     // ..............Hilfsmethoden ..............
