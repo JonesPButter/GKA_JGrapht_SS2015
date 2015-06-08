@@ -27,7 +27,6 @@ public class AdvancedPrimImpl
     Map<Vertex,Double> _schlüssel;
     long startTime;
     long endTime;
-    int _kantenAnzahl;
     private int _graphAccesses;
     
     public AdvancedPrimImpl(Graph<Vertex, MyWeightedEdge> graph)
@@ -41,14 +40,12 @@ public class AdvancedPrimImpl
         _schlüssel = new HashMap<>();
         _fibInhalt = new HashMap<>();
         _fibHeap = new FibonacciHeap<>();
-
-        _kantenAnzahl=0;
         startAlgorithm();
     }
     
     private void startAlgorithm()
     {
-        
+        startTime = System.nanoTime();
         for(Vertex v : _simplePrimGraphVertices)
         {
             _graphAccesses++;
@@ -62,6 +59,7 @@ public class AdvancedPrimImpl
         
         for(int i=0; i<_eingabeGraph.vertexSet().size()-1;i++)
         {
+            _graphAccesses++;
             Vertex minVertex = _fibHeap.removeMin().getData();
             Vertex target = getBestNeighbour(minVertex);
             MyWeightedEdge edge =  _eingabeGraph.getEdge(minVertex, target);
@@ -74,6 +72,7 @@ public class AdvancedPrimImpl
             
             insertNeighboursIntoHeap(minVertex);
         }
+        endTime = System.nanoTime();
     }
     
     private Vertex getBestNeighbour(Vertex minVertex)
@@ -85,6 +84,7 @@ public class AdvancedPrimImpl
         double kantenGewicht = Double.POSITIVE_INFINITY;
         for(MyWeightedEdge edge : _eingabeGraph.edgesOf(minVertex))
         {
+            _graphAccesses++;
             source = _eingabeGraph.getEdgeSource(edge);
             target = _eingabeGraph.getEdgeTarget(edge);
             if(source.equals(minVertex))
@@ -249,7 +249,12 @@ public class AdvancedPrimImpl
 
     public int getAnzahlBenoetigteKanten()
     {
-        return _kantenAnzahl-1;
+        int laenge = 0;
+        for(MyWeightedEdge edge : _advancedPrimGraph.edgeSet())
+        {
+            laenge +=1;
+        }
+        return laenge;
     }
 
     public int getAccesses()
