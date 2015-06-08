@@ -87,12 +87,6 @@ public class KruskalImpl
     private boolean erzeugtKreis(Vertex v1, Vertex v2,
             Graph<Vertex, MyWeightedEdge> kruskalGraph)
     {
-//        DijkstraImpl _dijkstraAlgorithm = new DijkstraImpl(kruskalGraph);
-//        _dijkstraAlgorithm.findShortestWay(v1, v2);
-//        if(_dijkstraAlgorithm.getWeglaenge() != 0 || v1.equals(v2))
-//        {
-//            return true;
-//        }
         BreadthFirstSearchImpl bfs = new BreadthFirstSearchImpl(kruskalGraph);
         List<Vertex> shortestPath = bfs.findShortestWay(kruskalGraph, v1, v2);
         if(!shortestPath.isEmpty())
@@ -115,7 +109,7 @@ public class KruskalImpl
     public double getWeglaenge()
     {
         double laenge = 0;
-        for(MyWeightedEdge edge : _edges)
+        for(MyWeightedEdge edge : _kruskalGraph.edgeSet())
         {
             laenge += edge.getEdgeWeight();
         }
@@ -124,7 +118,12 @@ public class KruskalImpl
 
     public int getAnzahlBenoetigteKanten()
     {
-        return _kantenAnzahl-1;
+        int laenge = 0;
+        for(MyWeightedEdge edge : _kruskalGraph.edgeSet())
+        {
+            laenge +=1;
+        }
+        return laenge;
     }
 
     public int getAccesses()
