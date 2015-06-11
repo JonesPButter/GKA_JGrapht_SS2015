@@ -31,11 +31,7 @@ public class AdvancedPrimImpl
     
     public AdvancedPrimImpl(Graph<Vertex, MyWeightedEdge> graph) throws IllegalArgumentException
     {
-        if(!isGraphConnected(graph)) throw new IllegalArgumentException("Der Graph ist nicht zusammenhängend.");
-//        assert graph.vertexSet().size() > 1 : "Vorbedingung verletzt: graph.vertexSet().size() > 1";
-//        assert graph.edgeSet().size() > 0 : "Vorbedingung verletzt: graph.edgeSet().size() > 0";
-//        assert isGraphConnected(graph) == true : "Vorbedingung verletzt: isGraphConnected(graph)";
-        
+        if(!isGraphConnected(graph)) throw new IllegalArgumentException("Der Graph ist nicht zusammenhängend.");        
         _eingabeGraph = graph;
         _advancedPrimGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
         _simplePrimGraphVertices = new ArrayList<Vertex>(_eingabeGraph.vertexSet());
@@ -49,29 +45,25 @@ public class AdvancedPrimImpl
     private void startAlgorithm()
     {
         startTime = System.nanoTime();
+        // *************** Initialisierungsphase *********************
+        
         for(Vertex v : _simplePrimGraphVertices)
         {
-            _graphAccesses++;
             _schlüssel.put(v, Double.POSITIVE_INFINITY);
-//            _advancedPrimGraph.addVertex(v);
         }        
-        Vertex start = _eingabeGraph.vertexSet().iterator().next();
-        _schlüssel.put(start,0.0);
-        _advancedPrimGraph.addVertex(start);
-//        System.out.println("Start: " + start);
-        insertNeighboursIntoHeap(start);
+        Vertex start = _eingabeGraph.vertexSet().iterator().next();// random startknoten    
+        _schlüssel.put(start,0.0); // schlüssel[v] = 0
+        _advancedPrimGraph.addVertex(start); // Startknoten in den Graphen einfügen
+
+        insertNeighboursIntoHeap(start); // Nachbarn in den Heap
         
-        while(!_fibHeap.isEmpty())//for(int i=0; i<_eingabeGraph.vertexSet().size()-1;i++)
+        // **************** Schleifenphase *******************************
+        while(!_fibHeap.isEmpty())
         {
-//            System.out.println("****************************************");
-//            System.out.println(_fibHeap);
             _graphAccesses++;
             Vertex minVertex = _fibHeap.removeMin().getData();
             Vertex target = getBestNeighbour(minVertex);
             MyWeightedEdge edge =  getMinimumEdgeFor(minVertex,target);
-//            System.out.println("Minvertex: " + minVertex);
-//            System.out.println("Target: " + target);
-//            System.out.println("Edge: " + edge);
             
             _advancedPrimGraph.addVertex(minVertex);
             _advancedPrimGraph.addEdge(minVertex, target, edge);

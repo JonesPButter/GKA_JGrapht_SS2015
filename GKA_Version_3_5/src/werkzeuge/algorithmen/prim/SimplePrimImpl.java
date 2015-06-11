@@ -47,21 +47,20 @@ public class SimplePrimImpl
     private void startAlgorithm()
     {
         startTime = System.nanoTime();
-//        System.out.println(startTime);
-        Map<Vertex,Vertex> vorgaenger = new HashMap<>();
+
+        // ****************** Initialisierungsphase ***********************
         Set<Vertex> vertices = _eingabeGraph.vertexSet();
         for(Vertex v : vertices)
         {
-            _graphAccesses++;
-            _schlüssel.put(v, Double.POSITIVE_INFINITY);
-            vorgaenger.put(v, null);
+            _schlüssel.put(v, Double.POSITIVE_INFINITY); // setze Schlüssel für v auf Infinity
         }
         
-        Vertex tempVertex = _eingabeGraph.vertexSet().iterator().next();      
-        _schlüssel.put(tempVertex, 0.0); // schlüssel[r] = 0
-        _simplePrimGraph.addVertex(tempVertex);
-        insertNeighboursIntoQueue(tempVertex);
+        Vertex tempVertex = _eingabeGraph.vertexSet().iterator().next();  // random startknoten    
+        _schlüssel.put(tempVertex, 0.0); // schlüssel[v] = 0
+        _simplePrimGraph.addVertex(tempVertex); // Startknoten in den Graphen einfügen
+        insertNeighboursIntoQueue(tempVertex); // Nachbarn in die Queue
         
+        // ******************* Schleifenphase ******************************
         while(!_prioQueue.isEmpty())
         {   
             _graphAccesses++;         
@@ -69,9 +68,6 @@ public class SimplePrimImpl
             Vertex minVertex = _prioQueue.remove();
             Vertex target = getBestNeighbour(minVertex);
             MyWeightedEdge edge =  getMinimumEdgeFor(minVertex, target);
-//            System.out.println("Minvertex: " + minVertex);
-//            System.out.println("Target: " + target);
-//            System.out.println("Edge: " + edge);
             
             _simplePrimGraph.addVertex(minVertex);
             _simplePrimGraph.addEdge(minVertex, target, edge);
@@ -140,20 +136,22 @@ public class SimplePrimImpl
                 child = source;
             }
             
-            if(_simplePrimGraph.containsVertex(child)) continue;
-            if(!_prioQueue.contains(child))// && kantenGewicht < _schlüssel.get(child))
+            if(!_simplePrimGraph.containsVertex(child))
             {
+            	if(!_prioQueue.contains(child))// && kantenGewicht < _schlüssel.get(child))
+            	{
 //                System.out.println("Child: " + child + " mit Gewicht: " + kantenGewicht + " wird in Heap geschrieben");
-                _schlüssel.put(child, kantenGewicht);
-                _prioQueue.add(child);                
-            }
-            else if(_schlüssel.get(child) > kantenGewicht)
-            {
+            		_schlüssel.put(child, kantenGewicht);
+            		_prioQueue.add(child);                
+            	}
+            	else if(_schlüssel.get(child) > kantenGewicht)
+            	{
 //                System.out.println("alter Wert von Child größer als der Neue, also Gewichtung ändern: " + child + "Gewicht: " + kantenGewicht);
-                _prioQueue.remove(child);
-                _schlüssel.put(child, kantenGewicht);
-                _prioQueue.add(child);
-            }            
+            		_prioQueue.remove(child);
+            		_schlüssel.put(child, kantenGewicht);
+            		_prioQueue.add(child);
+            	}                        	
+            }
         }
         
     }

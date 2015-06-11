@@ -81,7 +81,6 @@ public class KruskalImpl
         vertexListHinzufuegen(); // fügt dem neuen Graphen alle Knoten des Eingabegraphen hinzu
         
         _edges.addAll(_eingabeGraph.edgeSet());
-        startTime = System.currentTimeMillis();
         Collections.sort(_edges,new MyWeightedEdgeComparator()); // Kanten aufsteigend sortieren     
     }
 
