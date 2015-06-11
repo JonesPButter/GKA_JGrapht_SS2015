@@ -22,7 +22,6 @@ public class SimplePrimImpl
     Graph<Vertex,MyWeightedEdge> _simplePrimGraph;
 
     PriorityQueue<Vertex> _prioQueue;
-    List<Vertex> _simplePrimGraphVertices;
     Map<Vertex,Double> _schlüssel;
     long startTime;
     long endTime;
@@ -38,7 +37,6 @@ public class SimplePrimImpl
         
         _eingabeGraph = graph;
         _simplePrimGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
-        _simplePrimGraphVertices = new ArrayList<Vertex>(_eingabeGraph.vertexSet());
         _schlüssel = new HashMap<>();
         _prioQueue = new PriorityQueue<>(new MyVertexComparator(_schlüssel));
 
@@ -51,7 +49,8 @@ public class SimplePrimImpl
         startTime = System.nanoTime();
 //        System.out.println(startTime);
         Map<Vertex,Vertex> vorgaenger = new HashMap<>();
-        for(Vertex v : _simplePrimGraphVertices)
+        Set<Vertex> vertices = _eingabeGraph.vertexSet();
+        for(Vertex v : vertices)
         {
             _graphAccesses++;
             _schlüssel.put(v, Double.POSITIVE_INFINITY);
