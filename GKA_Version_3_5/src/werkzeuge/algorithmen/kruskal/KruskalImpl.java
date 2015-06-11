@@ -22,7 +22,6 @@ public class KruskalImpl
     private Graph<Vertex, MyWeightedEdge> _eingabeGraph;
     private Graph<Vertex, MyWeightedEdge> _kruskalGraph;
     private List<MyWeightedEdge> _edges;
-    private List<Vertex> _vertexList;
     long startTime;
     long endTime;
     int _kantenAnzahl;
@@ -40,7 +39,6 @@ public class KruskalImpl
         
         _eingabeGraph = graph;
         _kruskalGraph = new WeightedPseudograph<>(MyWeightedEdge.class);
-        _vertexList = new ArrayList<>();
         _edges = new ArrayList<>();
         startAlgorithm();
     }
@@ -48,9 +46,10 @@ public class KruskalImpl
     /*
      * Fügt dem Kruskalgraphen alle Knoten aus dem Eingabegraphen hinzu
      */
-    private void vertexListHinzufuegen()
+    private void verticesHinzufuegen()
     {
-        for(Vertex v : _vertexList)
+    	Set<Vertex> vertices = _eingabeGraph.vertexSet();
+        for(Vertex v : vertices)
         {
             _kruskalGraph.addVertex(v);
         }        
@@ -77,8 +76,7 @@ public class KruskalImpl
 
     private void init()
     {       
-        _vertexList.addAll(_eingabeGraph.vertexSet());
-        vertexListHinzufuegen(); // fügt dem neuen Graphen alle Knoten des Eingabegraphen hinzu
+        verticesHinzufuegen(); // fügt dem neuen Graphen alle Knoten des Eingabegraphen hinzu
         
         _edges.addAll(_eingabeGraph.edgeSet());
         Collections.sort(_edges,new MyWeightedEdgeComparator()); // Kanten aufsteigend sortieren     
