@@ -26,6 +26,8 @@ import werkzeuge.algorithmen.SpannbaumConsole;
 import werkzeuge.algorithmen.aStern.ASternImpl;
 import werkzeuge.algorithmen.bfs.BreadthFirstSearchImpl;
 import werkzeuge.algorithmen.dijkstra.DijkstraImpl;
+import werkzeuge.algorithmen.fleury.FleuryImpl;
+import werkzeuge.algorithmen.hierholzer.HierholzerImpl;
 import werkzeuge.algorithmen.kruskal.KruskalImpl;
 import werkzeuge.algorithmen.prim.AdvancedPrimImpl;
 import werkzeuge.algorithmen.prim.SimplePrimImpl;
@@ -382,5 +384,34 @@ public class GraphManager extends ObservableSubwerkzeug
             console.start();
         }
         
+    }
+
+    public void startTouringProblemAlgorithm()
+    {
+        Object[] options = {"Fleury","Hierholzer"};
+        Object option = JOptionPane.showInputDialog(null,
+                "Welchen Algorithmus möchten Sie verwenden?", "Euler-Touren", JOptionPane.QUESTION_MESSAGE, null,
+                options, options[0]);
+        
+        if(option.equals(options[0]))
+        {
+            FleuryImpl fleury = new FleuryImpl(_graph);
+            
+//            Graph<Vertex,MyWeightedEdge> primGraph = fleury.getGraph();
+//            _modelAdapter = _graphBuilder.getModelAdapter(primGraph);
+//            _visualizationGraph.setModel(_modelAdapter);
+//            
+//            informiereUeberAenderung("Graph changed!");
+        }
+        else if(option.equals(options[1]))
+        {
+            HierholzerImpl hierholzer = new HierholzerImpl(_graph);
+//            
+//            Graph<Vertex,MyWeightedEdge> primGraph = hierholzer.getGraph();
+//            _modelAdapter = _graphBuilder.getModelAdapter(primGraph);
+//            _visualizationGraph.setModel(_modelAdapter);
+//            
+//            informiereUeberAenderung("Graph changed!"); 
+        }
     }
 }

@@ -30,6 +30,7 @@ public class MainControllerUI
     private JMenuItem _menuItemAlgorithms_Dijkstra;
     private JMenuItem _menuItemAlgorithms_AStern;
     private JMenuItem _menuItemAlgorithms_Spannbaeume;
+    private JMenuItem _menuItemAlgorithms_TouringProblems;
     
     private JRadioButtonMenuItem _menuRadioButton_Vertex;
     private JRadioButtonMenuItem _menuRadioButton_Edge;
@@ -93,6 +94,9 @@ public class MainControllerUI
         
         _menuItemAlgorithms_Spannbaeume = new JMenuItem("Spannbäume");
         menuAlgorithms.add(_menuItemAlgorithms_Spannbaeume);
+        
+        _menuItemAlgorithms_TouringProblems = new JMenuItem("Touren-Probleme");
+        menuAlgorithms.add(_menuItemAlgorithms_TouringProblems);
         
         _menuRadioButton_Vertex = new JRadioButtonMenuItem("Vertex");
         _menuRadioButton_Vertex.setMaximumSize(new Dimension(100, 100));
@@ -236,12 +240,21 @@ public class MainControllerUI
     }
     
     /**
-     * Liefert den MenuItemButton für das Anwenden des Kruskal Algorithmus
+     * Liefert den MenuItemButton für die Anwendung von MST-Algorithmen
      * @return
      */    
     public JMenuItem getMenuItemAlgorithms_Spannbaeume()
     {
         return _menuItemAlgorithms_Spannbaeume;
+    }
+    
+    /**
+     * Liefert den MenuItemButton für das Anwenden des Kruskal Algorithmus
+     * @return
+     */    
+    public JMenuItem getMenuItemAlgorithms_TouringProblems()
+    {
+        return _menuItemAlgorithms_TouringProblems;
     }
     
     /**

@@ -464,14 +464,26 @@ public class MainController
             }
         });
         
-        JMenuItem kruskalAlgorithm = _ui.getMenuItemAlgorithms_Spannbaeume();
-        kruskalAlgorithm.addActionListener(new ActionListener()
+        JMenuItem spanningTreeAlgorithms = _ui.getMenuItemAlgorithms_Spannbaeume();
+        spanningTreeAlgorithms.addActionListener(new ActionListener()
         {
             
             @Override
             public void actionPerformed(ActionEvent e)
             {
                 _graphManager.startSpannbaumAlgorithm();                
+            }
+        });
+        
+        JMenuItem touringProblemAlgorithms = _ui.getMenuItemAlgorithms_TouringProblems();
+        touringProblemAlgorithms.addActionListener(new ActionListener()
+        {
+            
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                _graphManager.startTouringProblemAlgorithm();
+                
             }
         });
         
