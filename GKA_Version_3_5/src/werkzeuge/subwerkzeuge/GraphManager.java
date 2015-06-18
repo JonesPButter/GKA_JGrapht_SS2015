@@ -104,7 +104,6 @@ public class GraphManager extends ObservableSubwerkzeug
          try
          {
         	 _bigGraph = new BigGraphImpl();
-            
              _bigGraph.registriereObserver(new SubwerkzeugObserver()
              { 
                  @Override
@@ -159,7 +158,7 @@ public class GraphManager extends ObservableSubwerkzeug
     		
     		
 		} catch (Exception e) {
-			// TODO: handle exception
+			 JOptionPane.showMessageDialog(null, "Dies ist kein gültige Eingabe, um den Euler Graph anzuwenden.");
 		}
     	_eulerCreator.showUI();
     }
