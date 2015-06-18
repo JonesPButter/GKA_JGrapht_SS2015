@@ -32,6 +32,7 @@ import werkzeuge.algorithmen.kruskal.KruskalImpl;
 import werkzeuge.algorithmen.prim.AdvancedPrimImpl;
 import werkzeuge.algorithmen.prim.SimplePrimImpl;
 import werkzeuge.subwerkzeuge.BigGraph.BigGraphImpl;
+import werkzeuge.subwerkzeuge.eulerCreator.EulerCreator;
 
 /**
  * Der GraphManager ist für die Verwaltung des Graphen zuständig. 
@@ -50,6 +51,7 @@ public class GraphManager extends ObservableSubwerkzeug
     private GraphBuilder _graphBuilder;
     private GraphSaver _graphSaver;
     private BigGraphImpl _bigGraph;
+    private EulerCreator _eulerCreator;
     
     private GraphManager()
     {
@@ -128,6 +130,41 @@ public class GraphManager extends ObservableSubwerkzeug
              JOptionPane.showMessageDialog(null, "Dies ist kein gültiger Graph, um den Dijkstra-Algorithmus anzuwenden.");
          }
     }
+    
+    public void createEulerGraph() {
+    	try {
+			
+    		_eulerCreator = new EulerCreator();
+    		_eulerCreator.registriereObserver(new SubwerkzeugObserver() {
+				
+				@Override
+				public void reagiereAufAenderung(Object o) {
+					// TODO Auto-generated method stub
+					_graph = _eulerCreator.getEulerGraph();
+					
+					_modelAdapter = _graphBuilder.getModelAdapter(_graph);
+					
+                    _visualizationGraph.setModel(_modelAdapter);
+                    
+                    informiereUeberAenderung("Graph changed!");   
+				}
+				
+				
+				@Override
+				public void reagiereAufAenderung() {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+    		
+    		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+    	_eulerCreator.showUI();
+    }
+    
+    
     
     public void createDefaultDirectedGraph()
     {

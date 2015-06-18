@@ -26,6 +26,7 @@ public class MainControllerUI
     private JMenuItem _menuItemCreate_DirectedGraph;
     private JMenuItem _menuItemCreate_UndirectedGraph;
     private JMenuItem _menuItemCreate_BigGraph;
+    private JMenuItem _menuItemCreate_EulerGraph;
     private JMenuItem _menuItemAlgorithms_BreadthFirst;
     private JMenuItem _menuItemAlgorithms_Dijkstra;
     private JMenuItem _menuItemAlgorithms_AStern;
@@ -79,6 +80,9 @@ public class MainControllerUI
         
         _menuItemCreate_BigGraph = new JMenuItem("Big Graph");
         menuCreate.add(_menuItemCreate_BigGraph);
+        
+        _menuItemCreate_EulerGraph = new JMenuItem("Euler Graph");
+        menuCreate.add(_menuItemCreate_EulerGraph);
         
         JMenu menuAlgorithms = new JMenu("Algorithms");
         menuBar.add(menuAlgorithms);
@@ -210,6 +214,15 @@ public class MainControllerUI
     public JMenuItem getMenuItemCreate_BigGraph()
     {
         return _menuItemCreate_BigGraph;
+    }
+    
+    /**
+     * Liefert den MenuItemButton für das Erstellen eines Euler Graphen
+     * @return
+     */
+    public JMenuItem getMenuItemCreate_EulerGraph()
+    {
+        return _menuItemCreate_EulerGraph;
     }
     
     /**

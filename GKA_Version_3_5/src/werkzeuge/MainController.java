@@ -500,6 +500,20 @@ public class MainController
             }
         });
         
+        
+        JMenuItem createEulerGraph = _ui.getMenuItemCreate_EulerGraph();
+        createEulerGraph.addActionListener(new ActionListener()
+        {
+            
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+            	
+                _graphManager.createEulerGraph();
+                aktualisiereGraph();
+            }
+        });
+        
         JMenuItem createDirectedGraphButton = _ui.getMenuItemCreate_DirectedGraph();
         createDirectedGraphButton.addActionListener(new ActionListener()
         {
