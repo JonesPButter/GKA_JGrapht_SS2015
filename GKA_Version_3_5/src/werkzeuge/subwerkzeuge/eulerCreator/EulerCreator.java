@@ -11,13 +11,15 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.jgrapht.Graph;
-import org.jgrapht.graph.Pseudograph;
-
 import materialien.MyWeightedEdge;
 import materialien.Vertex;
-import materialien.Graph.UndirectedAttributedGraph;
-import materialien.Graph.UndirectedAttributedWeightedGraph;
+
+
+//import org.jGrGraphUtils.JGraphTUtils
+import org.jgrapht.Graph;
+import org.jgrapht.experimental.GraphTests;
+import org.jgrapht.graph.Pseudograph;
+
 import werkzeuge.ObservableSubwerkzeug;
 
 public class EulerCreator extends ObservableSubwerkzeug {
@@ -25,7 +27,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
 	int _knotenAnzahl;
 	List<Vertex> _vertexList;
 	Map<Vertex, Integer> _vertexMap;
-	
+//	Array <Vertex<Vertex>> _edgesArray;
 	
 	
 //	UndirectedAttributedGraph<Vertex, MyWeightedEdge> _graph;
@@ -54,8 +56,9 @@ public class EulerCreator extends ObservableSubwerkzeug {
 				
 				if(eingabeKorrekt(knontenAnzahl)) {
 					_ui.getDialog().dispose();
-					createVertex(_knotenAnzahl);
-					createEdges(_knotenAnzahl);
+//					createVertex(_knotenAnzahl);
+//					createEdges(_knotenAnzahl);
+					creatEulerGraph(_knotenAnzahl);
 					//TODO createEulerGraph(_knotenAnzahl);
 					informiereUeberAenderung(_graph);
 				}
@@ -102,7 +105,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		int x, y;
 		Vertex vertex;
 		
-		for(int i = 1; i < knotenAnzahl; i++) 
+		for(int i = 1; i < knotenAnzahl +1; i++) 
 		{
 			x = random.nextInt((1200) + 1);
 			y = random.nextInt((800) + 1);
@@ -114,32 +117,60 @@ public class EulerCreator extends ObservableSubwerkzeug {
 			_graph.addVertex(vertex);
 			_graph.addVertex(vertex);
 			_vertexList.add(vertex);
-			//_vertexMap.put(vertex, 0);
 		}
 		
 	}
 	
 	
-	public void createEdges(int knotenAnzahl) {
+	public void createEdges(int knotenAnzahl) 
+	{
 		
-		Random random  = new Random();
-		Vertex source, target;
+		
+		Random randomGenerator = new Random();
+		Vertex source, target, start;
+		Vertex parent = null;
 		MyWeightedEdge edge;
+		int CircleSize;
 		
-		while(!isEulergraph(_graph)) 
+		start  = _vertexList.get(randomGenerator.nextInt(knotenAnzahl -1));
+		source = start;
+		target = _vertexList.get(randomGenerator.nextInt(knotenAnzahl -1));
+		int testInt = 0;
+		while(!isGraphConnected(_graph)) 
 		{
-			source = _vertexList.get(random.nextInt(knotenAnzahl -1));
-			target = _vertexList.get(random.nextInt(knotenAnzahl -1));
-			
-//			System.out.println("Bla");
-			if((source != target) && (getNeighbours(_graph, source).size() % 2 != 0 && getNeighbours(_graph, target).size() % 2 != 0) ||(getNeighbours(_graph, source).size() % 2 == 0 && getNeighbours(_graph, target).size() % 2 == 0) ) 
-//			if(source != target)	
+			CircleSize = randomGenerator.nextInt(knotenAnzahl -3) +3;
+			System.out.println("CircleSie: " + CircleSize);
+			for(int i = 0; i < CircleSize; i++)
 			{
-				_graph.addEdge(source, target);
-				//((UndirectedAttributedGraph<Vertex, MyWeightedEdge>)_graph).setEdgeWeight(edge, 1 );
+				while(source.equals(target))
+				{
+					target = _vertexList.get(randomGenerator.nextInt(knotenAnzahl));
+					
+					System.out.println("Parent: " + parent);
+					System.out.println("Target: " + target);
+					System.out.println("Source: " + source);
+					System.out.println("***************************************+");
+				}
+				
+				System.out.println("***************************DONE***********************");
+//				source = _vertexList.get(randomGenerator.nextInt(knotenAnzahl -1));
+				if(i == CircleSize -1)
+				{
+//					System.out.println("Ende");
+					target = start;				
+				}
+				if(!_graph.containsEdge(source, target) && !source.equals(target)) 
+				{
+					_graph.addEdge(source, target);
+				}
+				parent = source;
+				source = target;					
+				
 			}
-			
+//			_graph.addEdge(source, target);
+			testInt++;
 		}
+		
 	}
 	
     public void showUI()
@@ -154,12 +185,12 @@ public class EulerCreator extends ObservableSubwerkzeug {
     	{
     		return false;
     	}
-    	if(!allVertexHasEvenEdges(graph)) 
+
+    	if(onlyEvenDegreesOfVertices(graph))
     	{
     		System.out.println("False");
     		return false;
     	}
-    	System.out.println("True");
     	return true;
     
     }
@@ -169,66 +200,55 @@ public class EulerCreator extends ObservableSubwerkzeug {
     	Set<Vertex> vertexSet = new HashSet<Vertex>();
     	int neighborusCount;
     	
-//    	vertexSet = graph.vertexSet();
-//    	vertexSet = (Set<Vertex>) _vertexList;
     	vertexSet.addAll(_vertexList);
-    	System.out.println(vertexSet.size());
+//    	System.out.println(vertexSet.size());
     	for(Vertex ver : vertexSet) 
     	{
     		neighborusCount = 0;
-//    		neighborus = getNeighbours(graph, ver).size();
-    		//System.out.println(neighborus);
-    		for(MyWeightedEdge edge :graph.edgesOf(ver))
+
+    		for(MyWeightedEdge edge : graph.edgesOf(ver) )
     		{
     			neighborusCount++;
     		}
     		
     		if(neighborusCount < 2 || neighborusCount % 2 != 0)
     		{
+    			System.out.println("FAAAAAAAAAAAAAAAAAAALLLLLLLLLLLSSSSSSSSSSE");
     			return false;    			
     		}
     	}
-    	
     	return true;
-    	
 	}
-
-	public boolean isGraphConnected(Graph<Vertex, MyWeightedEdge> graph)
+    
+    
+    private boolean onlyEvenDegreesOfVertices(Graph<Vertex, MyWeightedEdge> graph)
     {
-    	boolean result = false;
-
-        Vertex start = (Vertex) graph.vertexSet().iterator().next();
-        Vertex add;
-        Set<Vertex> neighbours = getNeighbours(graph, start);
-        Set<Vertex> allVertices = new HashSet<Vertex>();
-        allVertices.add(start);
-        allVertices.addAll(neighbours);
-   
-        while(!neighbours.isEmpty())
+        int edgeCounter;        
+        for(Vertex v : graph.vertexSet())
         {
-            while(neighbours.iterator().hasNext())
+            edgeCounter = 0;
+            for(MyWeightedEdge edge : graph.edgesOf(v))
             {
-                add = neighbours.iterator().next();
-                for(Vertex v : getNeighbours(graph, add))
-                {
-                    if(!allVertices.contains(v))
-                    {
-                        allVertices.add(v);
-                        neighbours.add(v);
-                    }
-                }
-                neighbours.remove(add);
+                edgeCounter++;
+            }
+            if((edgeCounter%2) != 0)
+            {
+                return false;
             }
         }
-
-        if(allVertices.equals(graph.vertexSet()))
-        {
-            result = true;
-        }
-
-        return result;
-        
+        return true;
     }
+
+	public boolean isGraphConnected(Graph<Vertex, MyWeightedEdge> graph)
+	{
+		if(GraphTests.isConnected(graph)) 
+		{
+			return true;
+		}
+		return false;
+		
+	}
+
     
     
     private Set<Vertex> getNeighbours(Graph<Vertex, MyWeightedEdge> graph, Vertex n)
@@ -255,5 +275,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		// TODO Auto-generated method stub
 		return _graph;
 	}
+	
+		
 	
 }
