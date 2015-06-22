@@ -36,7 +36,46 @@ public class HierholzerImplTest
         _home = System.getProperty("user.home");
     }
 
-//    @Test
+    @Test
+    public void testHierholzerAlgorithmWithWrongGraphs()
+    {
+        boolean isWrongGraph = false;
+        Graph<Vertex,MyWeightedEdge> graph = new Pseudograph<>(MyWeightedEdge.class);
+        HierholzerImpl hierholzer;
+        
+        // Test 1. empty Graph
+        try{
+            hierholzer = new HierholzerImpl(graph);
+        }catch (Exception ex){
+            isWrongGraph=true;
+        }
+        assertTrue(isWrongGraph);
+        
+        // Test 2. only one Node
+        isWrongGraph = false;
+        Vertex v1 = Vertex.createVertex("V1", 0, 0, 0);
+        graph.addVertex(v1);
+        try{
+            hierholzer = new HierholzerImpl(graph);
+        }catch (Exception ex){
+            isWrongGraph=true;
+        }
+        assertTrue(isWrongGraph);
+        
+        // Test 3. two Nodes, one Edge
+        isWrongGraph = false;
+        Vertex v2 = Vertex.createVertex("V2", 0, 0, 0);
+        graph.addVertex(v2);
+        graph.addEdge(v1, v2);
+        try{
+            hierholzer = new HierholzerImpl(graph);
+        }catch (Exception ex){
+            isWrongGraph=true;
+        }
+        assertTrue(isWrongGraph);
+    }
+    
+    @Test
     public void testHierholzerAlgorithmForSmallGraph()
     {
         Graph<Vertex,MyWeightedEdge> graph = new Pseudograph<>(MyWeightedEdge.class);
@@ -148,6 +187,7 @@ public class HierholzerImplTest
          * 1. Wir erhalten eine Tour
          * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des ursprünglichen Graphen
          * 3. Die Tour beinhaltet alle Kanten des ursprünglichen Graphen
+         * 4. Die Tour ist eine Kantenfolge innerhalb des Graphen
          */
         assertTrue(!hierholzer.getEulertour().isEmpty()); 
         assertTrue(hierholzer.getEulertour().size() == graph.edgeSet().size());        
@@ -162,7 +202,12 @@ public class HierholzerImplTest
     private boolean isKantenfolge(List<MyWeightedEdge> eulertour,
             Graph<Vertex, MyWeightedEdge> graph)
     {
-//        MyWeightedEdge startKante = eulertour.get(0);
+        /*
+         * 1. Über alle Kanten iterieren
+         * 2. Jede Kante, bis auf die letzte, mit dem Nachfolger vergleichen
+         *      - sind die Kanten nicht miteinander über einen Knoten verbunden,
+         *        kann es sich nicht um eine Kantenfolge handeln
+         */
         for(int i=0;i<eulertour.size();i++)
         {
             if(i+1<eulertour.size())

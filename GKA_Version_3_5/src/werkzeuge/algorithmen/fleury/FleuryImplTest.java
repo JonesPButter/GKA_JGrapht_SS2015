@@ -13,6 +13,7 @@ import org.jgrapht.graph.Pseudograph;
 import org.junit.Before;
 import org.junit.Test;
 
+import werkzeuge.algorithmen.hierholzer.HierholzerImpl;
 import werkzeuge.subwerkzeuge.GraphManager;
 import werkzeuge.subwerkzeuge.eulerCreator.EulerCreator;
 
@@ -34,6 +35,44 @@ public class FleuryImplTest
         _home = System.getProperty("user.home");
     }
 
+    @Test
+    public void testFleuryAlgorithmWithWrongGraph()
+    {
+        boolean isWrongGraph = false;
+        Graph<Vertex,MyWeightedEdge> graph = new Pseudograph<>(MyWeightedEdge.class);
+        FleuryImpl fleury;
+        
+        // Test 1. empty Graph
+        try{
+            fleury = new FleuryImpl(graph);
+        }catch (Exception ex){
+            isWrongGraph=true;
+        }
+        assertTrue(isWrongGraph);
+        
+        // Test 2. only one Node
+        isWrongGraph = false;
+        Vertex v1 = Vertex.createVertex("V1", 0, 0, 0);
+        graph.addVertex(v1);
+        try{
+            fleury = new FleuryImpl(graph);
+        }catch (Exception ex){
+            isWrongGraph=true;
+        }
+        assertTrue(isWrongGraph);
+        
+        // Test 3. two Nodes, one Edge
+        isWrongGraph = false;
+        Vertex v2 = Vertex.createVertex("V2", 0, 0, 0);
+        graph.addVertex(v2);
+        graph.addEdge(v1, v2);
+        try{
+            fleury = new FleuryImpl(graph);
+        }catch (Exception ex){
+            isWrongGraph=true;
+        }
+        assertTrue(isWrongGraph);
+    }
     
     @Test
     public void testFleuryAlgorithmForSmallGraph()
@@ -43,8 +82,7 @@ public class FleuryImplTest
         Vertex v0 = Vertex.createVertex("v0", 0, 0, 0);
         Vertex v1 = Vertex.createVertex("v1", 0, 0, 0);
         Vertex v2 = Vertex.createVertex("v2", 0, 0, 0);
-        Vertex v3 = Vertex.createVertex("v3", 0, 0, 0);
-        
+        Vertex v3 = Vertex.createVertex("v3", 0, 0, 0);       
         Vertex v4 = Vertex.createVertex("v4", 0, 0, 0);
         Vertex v5 = Vertex.createVertex("v5", 0, 0, 0);
         
@@ -105,10 +143,19 @@ public class FleuryImplTest
         assertTrue(isKantenfolge(fleury.getEulertour(),graph));
     }
     
+    /*
+     * Prüft, ob die aufeinanderfolgenden Kanten innerhalb der Eulertour
+     * miteinander verbunden sind.
+     */
     private boolean isKantenfolge(List<MyWeightedEdge> eulertour,
             Graph<Vertex, MyWeightedEdge> graph)
     {
-//        MyWeightedEdge startKante = eulertour.get(0);
+        /*
+         * 1. Über alle Kanten iterieren
+         * 2. Jede Kante, bis auf die letzte, mit dem Nachfolger vergleichen
+         *      - sind die Kanten nicht miteinander über einen Knoten verbunden,
+         *        kann es sich nicht um eine Kantenfolge handeln
+         */
         for(int i=0;i<eulertour.size();i++)
         {
             if(i+1<eulertour.size())
