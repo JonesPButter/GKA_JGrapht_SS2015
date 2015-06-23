@@ -177,7 +177,7 @@ public class HierholzerImplTest
     @Test
     public void testGetEulertour()
     {
-        _eulerCreator.createEulerGraph(6);
+        _eulerCreator.creatEulerGraph(6);
         Graph<Vertex,MyWeightedEdge> graph = _eulerCreator.getEulerGraph();
         
         HierholzerImpl hierholzer = new HierholzerImpl(graph);
