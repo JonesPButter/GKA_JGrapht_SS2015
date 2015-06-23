@@ -74,7 +74,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
 			if(Integer.parseInt(anzahl) > 0) 
 			{
 				_knotenAnzahl = Integer.parseInt(anzahl);
-				System.out.println(_knotenAnzahl);
+//				System.out.println(_knotenAnzahl);
 				return true;
 			}
 			
@@ -93,6 +93,8 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		
 		createVertex(knotenAnzahl);
 		createEdges(knotenAnzahl);
+		
+		System.out.println(goOverAllVertieses(_graph));
 		
 		
 	}
@@ -139,20 +141,20 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		while(!isGraphConnected(_graph)) 
 		{
 			CircleSize = randomGenerator.nextInt(knotenAnzahl -3) +3;
-			System.out.println("CircleSie: " + CircleSize);
+//			System.out.println("CircleSie: " + CircleSize);
 			for(int i = 0; i < CircleSize; i++)
 			{
 				while(source.equals(target))
 				{
 					target = _vertexList.get(randomGenerator.nextInt(knotenAnzahl));
 					
-					System.out.println("Parent: " + parent);
-					System.out.println("Target: " + target);
-					System.out.println("Source: " + source);
-					System.out.println("***************************************+");
+//					System.out.println("Parent: " + parent);
+//					System.out.println("Target: " + target);
+//					System.out.println("Source: " + source);
+//					System.out.println("****************************************");
 				}
 				
-				System.out.println("***************************DONE***********************");
+//				System.out.println("***************************DONE***********************");
 //				source = _vertexList.get(randomGenerator.nextInt(knotenAnzahl -1));
 				if(i == CircleSize -1)
 				{
@@ -167,7 +169,6 @@ public class EulerCreator extends ObservableSubwerkzeug {
 				source = target;					
 				
 			}
-//			_graph.addEdge(source, target);
 			testInt++;
 		}
 		
@@ -188,7 +189,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
 
     	if(onlyEvenDegreesOfVertices(graph))
     	{
-    		System.out.println("False");
+//    		System.out.println("False");
     		return false;
     	}
     	return true;
@@ -213,7 +214,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
     		
     		if(neighborusCount < 2 || neighborusCount % 2 != 0)
     		{
-    			System.out.println("FAAAAAAAAAAAAAAAAAAALLLLLLLLLLLSSSSSSSSSSE");
+//    			System.out.println("FAAAAAAAAAAAAAAAAAAALLLLLLLLLLLSSSSSSSSSSE");
     			return false;    			
     		}
     	}
@@ -231,7 +232,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
             {
                 edgeCounter++;
             }
-            if((edgeCounter%2) != 0)
+            if((edgeCounter % 2) != 0)
             {
                 return false;
             }
@@ -268,6 +269,42 @@ public class EulerCreator extends ObservableSubwerkzeug {
            }
        }
        return adjacentNodes;        
+    }
+    
+    public boolean goOverAllVertieses(Graph<Vertex, MyWeightedEdge> graph)
+    {
+    	boolean result = false;
+    	
+    	Set<Vertex> set = graph.vertexSet();
+    	Vertex source = null;
+    	Vertex target = null;
+    	
+    	for(Vertex ver : set)
+    	{
+    		System.out.println( getNeighbours(_graph, ver).size() );
+    		if(getNeighbours(_graph, ver).size() % 2 == 1) 
+    		{
+    			if(source == null)
+    			{
+    				source = ver;
+    			}
+    			else if(source != null && target == null)
+    			{
+    				System.out.println("Bla");
+    				_graph.addEdge(source, ver);
+    				source = null;
+    			}
+    			
+    		}
+    		
+    	}
+    	
+    	if(source == null) 
+    	{
+    		result = true;
+    	}
+    	return result;
+    	
     }
    
     
