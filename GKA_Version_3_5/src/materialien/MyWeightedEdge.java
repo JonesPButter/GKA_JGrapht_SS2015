@@ -8,11 +8,11 @@ public class MyWeightedEdge extends DefaultWeightedEdge implements Comparable<My
      * 
      */
     private static final long serialVersionUID = 1L;
-
+    
     @Override
     public String toString()
     {
-        return this.getWeight()+"";
+        return "("+this.getSource()+"-" + this.getTarget() +" : " +  this.getWeight()+")";
     }
     
     public double getEdgeWeight()
@@ -27,4 +27,5 @@ public class MyWeightedEdge extends DefaultWeightedEdge implements Comparable<My
         Double thisWeight =  (Double)this.getEdgeWeight();
         return thisWeight.compareTo((Double)((MyWeightedEdge)o).getEdgeWeight());
     }
+    
 }

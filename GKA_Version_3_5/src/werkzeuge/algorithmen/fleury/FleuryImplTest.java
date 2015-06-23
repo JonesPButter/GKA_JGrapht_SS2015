@@ -79,6 +79,8 @@ public class FleuryImplTest
     {    
         Graph<Vertex,MyWeightedEdge> graph = new Pseudograph<>(MyWeightedEdge.class);
         
+        // ***************************************Testgraph1******************************************************
+        
         Vertex v0 = Vertex.createVertex("v0", 0, 0, 0);
         Vertex v1 = Vertex.createVertex("v1", 0, 0, 0);
         Vertex v2 = Vertex.createVertex("v2", 0, 0, 0);
@@ -108,6 +110,55 @@ public class FleuryImplTest
         
         FleuryImpl fleury = new FleuryImpl(graph);
         
+        // Testgraph1:
+        //
+        //    V0 -- V1
+        //   /      /
+        //   V3 -- V2 -- V5
+        //          \   /
+        //            V4
+        
+        /*
+         * 1. Wir erhalten eine Tour
+         * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des ursprünglichen Graphen
+         * 3. Die Tour beinhaltet alle Kanten des ursprünglichen Graphen
+         * 4. Die Tour ist eine Kantenfolge innerhalb des Graphen
+         */
+        assertTrue(!fleury.getEulertour().isEmpty()); 
+        assertTrue(fleury.getEulertour().size() == anzahlEdges);        
+        assertTrue(fleury.getEulertour().containsAll(edges)); 
+//        assertTrue(isKantenfolge(fleury.getEulertour(),graph));
+        
+        // ***************************************Testgraph2******************************************************
+        
+        //    V0 -- V1   V6 -- V7
+        //   /      /     \  /
+        //   V3 -- V2  --  V5
+        //           \    /
+        //             V4
+        
+        Vertex v6 = Vertex.createVertex("v6", 0, 0, 0);
+        Vertex v7 = Vertex.createVertex("v7", 0, 0, 0);
+        graph.addVertex(v6);
+        graph.addVertex(v7);
+        
+        // Kanten neu hinzufügen
+        graph.addEdge(v0, v1);
+        graph.addEdge(v1, v2);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v3, v0);
+        
+        graph.addEdge(v2, v4);
+        graph.addEdge(v4, v5);
+        graph.addEdge(v5, v2);
+        graph.addEdge(v5, v6);
+        graph.addEdge(v6, v7);
+        graph.addEdge(v7, v5);
+        
+        edges = graph.edgeSet();
+        anzahlEdges = edges.size();
+        
+        fleury = new FleuryImpl(graph);        
         /*
          * 1. Wir erhalten eine Tour
          * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des ursprünglichen Graphen
@@ -120,11 +171,15 @@ public class FleuryImplTest
         assertTrue(isKantenfolge(fleury.getEulertour(),graph));
     }
     
-//    @Test
+    @Test
     public void testGetEulertour()
     {
-        _eulerCreator.creatEulerGraph(100);
+        _eulerCreator.createEulerGraph(100);
         Graph<Vertex,MyWeightedEdge> graph = _eulerCreator.getEulerGraph();
+        
+        System.out.println(graph.vertexSet());
+        System.out.println(graph.edgeSet());
+        
         
         Set<MyWeightedEdge> edges = graph.edgeSet();
         int anzahlEdges = edges.size();
@@ -158,7 +213,7 @@ public class FleuryImplTest
          */
         for(int i=0;i<eulertour.size();i++)
         {
-            if(i+1<eulertour.size())
+            if(i+1<eulertour.size()) // Die letzte Kante nicht
             {
                 if(!isConnected(eulertour.get(i),eulertour.get(i+1),graph))
                 {

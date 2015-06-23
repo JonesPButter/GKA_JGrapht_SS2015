@@ -21,7 +21,7 @@ public class FleuryImpl
 
     public FleuryImpl(Graph<Vertex, MyWeightedEdge> graph) throws IllegalArgumentException
     {
-        if(!GraphTests.isConnected(graph) || !onlyEvenDegreesOfVertices(graph))
+        if(graph.vertexSet().size() < 2 || !GraphTests.isConnected(graph) || !onlyEvenDegreesOfVertices(graph))
         {
             throw new IllegalArgumentException("Der Graph ist entweder nicht zusammenhängend"
                     + " oder es haben nicht alle Knoten einen geraden Knotengrad");
@@ -111,7 +111,7 @@ public class FleuryImpl
             result = true;
         }
         
-        _graph.addEdge(source, neighbour,edge);
+        _graph.addEdge(tempVertex, neighbour,edge);
         return result;
     }
 
@@ -123,14 +123,11 @@ public class FleuryImpl
 
     private boolean onlyEvenDegreesOfVertices(Graph<Vertex, MyWeightedEdge> graph)
     {
-        int edgeCounter;        
+        int edgeCounter;
+        
         for(Vertex v : graph.vertexSet())
         {
-            edgeCounter = 0;
-            for(MyWeightedEdge edge : graph.edgesOf(v))
-            {
-                edgeCounter++;
-            }
+            edgeCounter = vertexDegreeFor(v,graph);
             if((edgeCounter%2) != 0)
             {
                 return false;
@@ -139,23 +136,18 @@ public class FleuryImpl
         return true;
     }
     
-    private Set<Vertex> getNeighbours(Graph<Vertex, MyWeightedEdge> graph, Vertex n)
+    /*
+     * Liefert den Knotengrad für einen Vertex
+     */
+    private int vertexDegreeFor(Vertex vertex,Graph<Vertex, MyWeightedEdge> graph)
     {
-        Set<Vertex> adjacentNodes= new HashSet<Vertex>();
-        Set<MyWeightedEdge> edges= graph.edgesOf(n);
-       for(MyWeightedEdge edge : edges)
-       {
-           Vertex source = graph.getEdgeSource(edge);
-           Vertex neighbour = graph.getEdgeTarget(edge);
-           if(source.equals(n))
-           {
-               adjacentNodes.add(neighbour);               
-           } else if(neighbour.equals(n))
-           {
-               adjacentNodes.add(source);
-           }
-       }
-       return adjacentNodes;        
+        int result =0;
+        for(MyWeightedEdge edge : graph.edgesOf(vertex))
+        {
+            result++;
+        }        
+        return result;
     }
+
 
 }
