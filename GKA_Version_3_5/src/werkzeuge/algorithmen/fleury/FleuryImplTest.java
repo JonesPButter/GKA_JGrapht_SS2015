@@ -174,7 +174,7 @@ public class FleuryImplTest
     @Test
     public void testGetEulertour()
     {
-        _eulerCreator.createEulerGraph(100);
+        _eulerCreator.creatEulerGraph(100);
         Graph<Vertex,MyWeightedEdge> graph = _eulerCreator.getEulerGraph();
         
         System.out.println(graph.vertexSet());
