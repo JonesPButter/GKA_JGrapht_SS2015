@@ -94,8 +94,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		createVertex(knotenAnzahl);
 		createEdges(knotenAnzahl);
 		
-		System.out.println(goOverAllVertieses(_graph));
-		
+		goOverAllVertieses(_graph);
 		
 	}
 	
@@ -281,7 +280,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
     	
     	for(Vertex ver : set)
     	{
-    		System.out.println( getNeighbours(_graph, ver).size() );
+//    		System.out.println( getNeighbours(_graph, ver).size() );
     		if(getNeighbours(_graph, ver).size() % 2 == 1) 
     		{
     			if(source == null)
@@ -290,7 +289,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
     			}
     			else if(source != null && target == null)
     			{
-    				System.out.println("Bla");
+//    				System.out.println("Bla");
     				_graph.addEdge(source, ver);
     				source = null;
     			}
