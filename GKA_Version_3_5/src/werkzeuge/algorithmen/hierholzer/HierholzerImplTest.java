@@ -13,10 +13,11 @@ import org.jgrapht.graph.Pseudograph;
 import org.junit.Before;
 import org.junit.Test;
 
+import werkzeuge.algorithmen.GraphTester;
 import werkzeuge.subwerkzeuge.GraphManager;
 import werkzeuge.subwerkzeuge.eulerCreator.EulerCreator;
 
-public class HierholzerImplTest
+public class HierholzerImplTest extends GraphTester
 {
 
     GraphManager _manager;
@@ -92,17 +93,22 @@ public class HierholzerImplTest
         int anzahlEdges = edges.size();
         
         HierholzerImpl hierholzer = new HierholzerImpl(graph);
+        List<MyWeightedEdge> eulerkreis = hierholzer.getEulerkreis();
+        MyWeightedEdge startKante = eulerkreis.get(0);
+        MyWeightedEdge endKante = eulerkreis.get(eulerkreis.size()-1);
         
         /*
          * 1. Wir erhalten eine Tour
          * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des ursprünglichen Graphen
          * 3. Die Tour beinhaltet alle Kanten des ursprünglichen Graphen
          * 4. Die Tour ist eine Kantenfolge innerhalb des Graphen
+         * 5. Start und Endpunkt sind identisch
          */
         assertTrue(!hierholzer.getEulerkreis().isEmpty()); 
         assertTrue(hierholzer.getEulerkreis().size() == anzahlEdges);        
         assertTrue(hierholzer.getEulerkreis().containsAll(edges)); 
         assertTrue(isKantenfolge(hierholzer.getEulerkreis(),graph));
+        assertTrue(isConnected(startKante,endKante,graph)); 
         
     }
     
@@ -144,24 +150,28 @@ public class HierholzerImplTest
         
         Set<MyWeightedEdge> edges = graph.edgeSet();
         int anzahlEdges = edges.size();
-        
+      
         HierholzerImpl hierholzer = new HierholzerImpl(graph);
+        List<MyWeightedEdge> eulerkreis = hierholzer.getEulerkreis();
+        MyWeightedEdge startKante = eulerkreis.get(0);
+        MyWeightedEdge endKante = eulerkreis.get(eulerkreis.size()-1);
         
         /*
          * 1. Wir erhalten eine Tour
          * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des ursprünglichen Graphen
          * 3. Die Tour beinhaltet alle Kanten des ursprünglichen Graphen
          * 4. Die Tour ist eine Kantenfolge innerhalb des Graphen
+         * 5. Start und Endpunkt sind identisch
          */
         assertTrue(!hierholzer.getEulerkreis().isEmpty()); 
         assertTrue(hierholzer.getEulerkreis().size() == anzahlEdges);        
         assertTrue(hierholzer.getEulerkreis().containsAll(edges)); 
         assertTrue(isKantenfolge(hierholzer.getEulerkreis(),graph));
-        
-
+        assertTrue(isConnected(startKante,endKante,graph));       
     }
 
 
+    @Test
     public void testFleuryAlgorithmForSmallGraphExtended()
     {
         Graph<Vertex,MyWeightedEdge> graph = new Pseudograph<>(MyWeightedEdge.class);
@@ -204,17 +214,24 @@ public class HierholzerImplTest
         Set<MyWeightedEdge> edges = graph.edgeSet();
         int anzahlEdges = edges.size();
         
-        HierholzerImpl hierholzer = new HierholzerImpl(graph); 
+        HierholzerImpl hierholzer = new HierholzerImpl(graph);
+        List<MyWeightedEdge> eulerkreis = hierholzer.getEulerkreis();
+        MyWeightedEdge startKante = eulerkreis.get(0);
+        MyWeightedEdge endKante = eulerkreis.get(eulerkreis.size()-1);
+        
         /*
          * 1. Wir erhalten eine Tour
          * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des ursprünglichen Graphen
          * 3. Die Tour beinhaltet alle Kanten des ursprünglichen Graphen
          * 4. Die Tour ist eine Kantenfolge innerhalb des Graphen
+         * 5. Start und Endpunkt sind identisch
          */
         assertTrue(!hierholzer.getEulerkreis().isEmpty()); 
         assertTrue(hierholzer.getEulerkreis().size() == anzahlEdges);        
         assertTrue(hierholzer.getEulerkreis().containsAll(edges)); 
         assertTrue(isKantenfolge(hierholzer.getEulerkreis(),graph));
+        assertTrue(isConnected(startKante,endKante,graph)); 
+        
     }
     
     @Test
@@ -229,17 +246,23 @@ public class HierholzerImplTest
             int anzahlEdges = edges.size();
             
             HierholzerImpl hierholzer = new HierholzerImpl(graph);
-                    
+            List<MyWeightedEdge> eulerkreis = hierholzer.getEulerkreis();
+            MyWeightedEdge startKante = eulerkreis.get(0);
+            MyWeightedEdge endKante = eulerkreis.get(eulerkreis.size()-1);
+            
             /*
              * 1. Wir erhalten eine Tour
-             * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des Graphen
+             * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des ursprünglichen Graphen
              * 3. Die Tour beinhaltet alle Kanten des ursprünglichen Graphen
              * 4. Die Tour ist eine Kantenfolge innerhalb des Graphen
+             * 5. Start und Endpunkt sind identisch
              */
             assertTrue(!hierholzer.getEulerkreis().isEmpty()); 
             assertTrue(hierholzer.getEulerkreis().size() == anzahlEdges);        
             assertTrue(hierholzer.getEulerkreis().containsAll(edges)); 
             assertTrue(isKantenfolge(hierholzer.getEulerkreis(),graph));
+            assertTrue(isConnected(startKante,endKante,graph)); 
+            
         }
     }
     
@@ -285,67 +308,22 @@ public class HierholzerImplTest
         int anzahlEdges = edges.size();
         
         HierholzerImpl hierholzer = new HierholzerImpl(graph);
+        List<MyWeightedEdge> eulerkreis = hierholzer.getEulerkreis();
+        MyWeightedEdge startKante = eulerkreis.get(0);
+        MyWeightedEdge endKante = eulerkreis.get(eulerkreis.size()-1);
         
-        System.out.println("T: "+hierholzer.getEulerkreis());
-        System.out.println("K: "+edges);
         /*
          * 1. Wir erhalten eine Tour
          * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des ursprünglichen Graphen
          * 3. Die Tour beinhaltet alle Kanten des ursprünglichen Graphen
          * 4. Die Tour ist eine Kantenfolge innerhalb des Graphen
+         * 5. Start und Endpunkt sind identisch
          */
         assertTrue(!hierholzer.getEulerkreis().isEmpty()); 
         assertTrue(hierholzer.getEulerkreis().size() == anzahlEdges);        
-        assertTrue(hierholzer.getEulerkreis().containsAll(graph.edgeSet())); 
+        assertTrue(hierholzer.getEulerkreis().containsAll(edges)); 
         assertTrue(isKantenfolge(hierholzer.getEulerkreis(),graph));
-    }
-
-    
-    /*
-     * Prüft, ob die aufeinanderfolgenden Kanten innerhalb der Eulertour
-     * miteinander verbunden sind.
-     */
-    private boolean isKantenfolge(List<MyWeightedEdge> eulertour,
-            Graph<Vertex, MyWeightedEdge> graph)
-    {
-        /*
-         * 1. Über alle Kanten iterieren
-         * 2. Jede Kante, bis auf die letzte, mit dem Nachfolger vergleichen
-         *      - sind die Kanten nicht miteinander über einen Knoten verbunden,
-         *        kann es sich nicht um eine Kantenfolge handeln
-         */
-        for(int i=0;i<eulertour.size();i++)
-        {
-            if(i+1<eulertour.size())
-            {
-                if(!isConnected(eulertour.get(i),eulertour.get(i+1),graph))
-                {
-                    return false;
-                }
-            }
-        }    
-        return true;
-    }
-
-
-    /*
-     * Prüft, ob zwei Kanten miteinander verbunden sind
-     */
-    private boolean isConnected(MyWeightedEdge first,
-            MyWeightedEdge second, Graph<Vertex, MyWeightedEdge> graph)
-    {
-        Vertex source1 = graph.getEdgeSource(first);
-        Vertex target1 = graph.getEdgeTarget(first);
+        assertTrue(isConnected(startKante,endKante,graph)); 
         
-        Vertex source2 = graph.getEdgeSource(second);
-        Vertex target2 = graph.getEdgeTarget(second);
-        
-        if(source1.equals(source2) || source1.equals(target2) || 
-                target1.equals(source2) || target1.equals(target2))
-        {
-            return true;
-        }        
-        return false;
     }
-
 }

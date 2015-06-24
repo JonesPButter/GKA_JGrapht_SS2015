@@ -13,10 +13,11 @@ import org.jgrapht.graph.Pseudograph;
 import org.junit.Before;
 import org.junit.Test;
 
+import werkzeuge.algorithmen.GraphTester;
 import werkzeuge.subwerkzeuge.GraphManager;
 import werkzeuge.subwerkzeuge.eulerCreator.EulerCreator;
 
-public class FleuryImplTest
+public class FleuryImplTest extends GraphTester
 {
     
     GraphManager _manager;
@@ -70,6 +71,17 @@ public class FleuryImplTest
             isWrongGraph=true;
         }
         assertTrue(isWrongGraph);
+        
+        // ********************** Test 4. not connected **********************
+        isWrongGraph = false;
+        Vertex v3 = Vertex.createVertex("V3", 0, 0, 0);
+        graph.addVertex(v3);
+        try{
+            new FleuryImpl(graph);
+        }catch (Exception ex){
+            isWrongGraph=true;
+        }
+        assertTrue(isWrongGraph);
     }
     
     @Test
@@ -92,20 +104,24 @@ public class FleuryImplTest
         int anzahlEdges = edges.size();
         
         FleuryImpl fleury = new FleuryImpl(graph);
+        List<MyWeightedEdge> eulerkreis = fleury.getEulerkreis();
+        MyWeightedEdge startKante = eulerkreis.get(0);
+        MyWeightedEdge endKante = eulerkreis.get(eulerkreis.size()-1);
         
         /*
          * 1. Wir erhalten eine Tour
-         * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des ursprünglichen Graphen
-         * 3. Die Tour beinhaltet alle Kanten des ursprünglichen Graphen
+         * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des Graphen
+         * 3. Die Tour beinhaltet alle Kanten des Graphen
          * 4. Die Tour ist eine Kantenfolge innerhalb des Graphen
+         * 5. Start und Endpunkt sind identisch
          */
-        assertTrue(!fleury.getEulerkreis().isEmpty()); 
-        assertTrue(fleury.getEulerkreis().size() == anzahlEdges);        
-        assertTrue(fleury.getEulerkreis().containsAll(edges)); 
-        assertTrue(isKantenfolge(fleury.getEulerkreis(),graph));
-        
+        assertTrue(!eulerkreis.isEmpty()); 
+        assertTrue(eulerkreis.size() == anzahlEdges);        
+        assertTrue(eulerkreis.containsAll(edges)); 
+        assertTrue(isKantenfolge(eulerkreis,graph));
+        assertTrue(isConnected(startKante,endKante,graph)); 
     }
-    
+
     @Test
     public void testFleuryAlgorithmForSmallGraph()
     {    
@@ -144,21 +160,24 @@ public class FleuryImplTest
         
         Set<MyWeightedEdge> edges = graph.edgeSet();
         int anzahlEdges = edges.size();
-        
+       
         FleuryImpl fleury = new FleuryImpl(graph);
+        List<MyWeightedEdge> eulerkreis = fleury.getEulerkreis();
+        MyWeightedEdge startKante = eulerkreis.get(0);
+        MyWeightedEdge endKante = eulerkreis.get(eulerkreis.size()-1);
         
         /*
          * 1. Wir erhalten eine Tour
-         * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des ursprünglichen Graphen
-         * 3. Die Tour beinhaltet alle Kanten des ursprünglichen Graphen
+         * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des Graphen
+         * 3. Die Tour beinhaltet alle Kanten des Graphen
          * 4. Die Tour ist eine Kantenfolge innerhalb des Graphen
+         * 5. Start und Endpunkt sind identisch
          */
-        assertTrue(!fleury.getEulerkreis().isEmpty()); 
-        assertTrue(fleury.getEulerkreis().size() == anzahlEdges);        
-        assertTrue(fleury.getEulerkreis().containsAll(edges)); 
-        assertTrue(isKantenfolge(fleury.getEulerkreis(),graph));
-        
-
+        assertTrue(!eulerkreis.isEmpty()); 
+        assertTrue(eulerkreis.size() == anzahlEdges);        
+        assertTrue(eulerkreis.containsAll(edges)); 
+        assertTrue(isKantenfolge(eulerkreis,graph));
+        assertTrue(isConnected(startKante,endKante,graph)); 
     }
     
     public void testFleuryAlgorithmForSmallGraphExtended()
@@ -203,17 +222,23 @@ public class FleuryImplTest
         Set<MyWeightedEdge> edges = graph.edgeSet();
         int anzahlEdges = edges.size();
         
-        FleuryImpl fleury = new FleuryImpl(graph);        
+        FleuryImpl fleury = new FleuryImpl(graph);
+        List<MyWeightedEdge> eulerkreis = fleury.getEulerkreis();
+        MyWeightedEdge startKante = eulerkreis.get(0);
+        MyWeightedEdge endKante = eulerkreis.get(eulerkreis.size()-1);
+        
         /*
          * 1. Wir erhalten eine Tour
-         * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des ursprünglichen Graphen
-         * 3. Die Tour beinhaltet alle Kanten des ursprünglichen Graphen
+         * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des Graphen
+         * 3. Die Tour beinhaltet alle Kanten des Graphen
          * 4. Die Tour ist eine Kantenfolge innerhalb des Graphen
+         * 5. Start und Endpunkt sind identisch
          */
-        assertTrue(!fleury.getEulerkreis().isEmpty()); 
-        assertTrue(fleury.getEulerkreis().size() == anzahlEdges);        
-        assertTrue(fleury.getEulerkreis().containsAll(edges)); 
-        assertTrue(isKantenfolge(fleury.getEulerkreis(),graph));
+        assertTrue(!eulerkreis.isEmpty()); 
+        assertTrue(eulerkreis.size() == anzahlEdges);        
+        assertTrue(eulerkreis.containsAll(edges)); 
+        assertTrue(isKantenfolge(eulerkreis,graph));
+        assertTrue(isConnected(startKante,endKante,graph)); 
     }
     
     @Test
@@ -228,70 +253,22 @@ public class FleuryImplTest
             int anzahlEdges = edges.size();
             
             FleuryImpl fleury = new FleuryImpl(graph);
-                    
+            List<MyWeightedEdge> eulerkreis = fleury.getEulerkreis();
+            MyWeightedEdge startKante = eulerkreis.get(0);
+            MyWeightedEdge endKante = eulerkreis.get(eulerkreis.size()-1);
+            
             /*
              * 1. Wir erhalten eine Tour
              * 2. Die Anzahl der Kanten der Tour entspricht der Anzahl der Kanten des Graphen
-             * 3. Die Tour beinhaltet alle Kanten des ursprünglichen Graphen
+             * 3. Die Tour beinhaltet alle Kanten des Graphen
              * 4. Die Tour ist eine Kantenfolge innerhalb des Graphen
+             * 5. Start und Endpunkt sind identisch
              */
-            assertTrue(!fleury.getEulerkreis().isEmpty()); 
-            assertTrue(fleury.getEulerkreis().size() == anzahlEdges);        
-            assertTrue(fleury.getEulerkreis().containsAll(edges)); 
-            assertTrue(isKantenfolge(fleury.getEulerkreis(),graph));
+            assertTrue(!eulerkreis.isEmpty()); 
+            assertTrue(eulerkreis.size() == anzahlEdges);        
+            assertTrue(eulerkreis.containsAll(edges)); 
+            assertTrue(isKantenfolge(eulerkreis,graph));
+            assertTrue(isConnected(startKante,endKante,graph)); 
         }
     }
-    
-    /*
-     * Prüft, ob die aufeinanderfolgenden Kanten innerhalb der Eulertour
-     * miteinander verbunden sind.
-     */
-    private boolean isKantenfolge(List<MyWeightedEdge> eulertour,
-            Graph<Vertex, MyWeightedEdge> graph)
-    {
-        /*
-         * 1. Über alle Kanten iterieren
-         * 2. Jede Kante, bis auf die letzte, mit dem Nachfolger vergleichen
-         *      - sind die Kanten nicht miteinander über einen Knoten verbunden,
-         *        kann es sich nicht um eine Kantenfolge handeln
-         */
-        for(int i=0;i<eulertour.size();i++)
-        {
-            if(i+1<eulertour.size()) // Die letzte Kante nicht
-            {
-                if(!isConnected(eulertour.get(i),eulertour.get(i+1),graph))
-                {
-                    return false;
-                }
-            }
-        }    
-        return true;
-    }
-
-
-    /*
-     * Prüft, ob zwei Kanten miteinander verbunden sind
-     */
-    private boolean isConnected(MyWeightedEdge first,
-            MyWeightedEdge second, Graph<Vertex, MyWeightedEdge> graph)
-    {
-        Vertex source1 = graph.getEdgeSource(first);
-        Vertex target1 = graph.getEdgeTarget(first);
-        
-        Vertex source2 = graph.getEdgeSource(second);
-        Vertex target2 = graph.getEdgeTarget(second);
-        
-        if(source1.equals(source2) || source1.equals(target2) || 
-                target1.equals(source2) || target1.equals(target2))
-        {
-            return true;
-        }        
-        return false;
-    }
-
-
-
-
-
-
 }

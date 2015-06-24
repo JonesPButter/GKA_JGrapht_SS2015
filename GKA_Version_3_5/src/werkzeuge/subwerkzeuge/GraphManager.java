@@ -434,7 +434,8 @@ public class GraphManager extends ObservableSubwerkzeug
         {
             FleuryImpl fleury = new FleuryImpl(_graph);
             EulerkreisConsole console = new EulerkreisConsole(fleury.getAnzahlZugriffe()+"",
-                    "Fleury", ""+fleury.getTime(),fleury.getEulerkreis());
+                    "Fleury",  (fleury.getTime()/ Math.pow(10.0, 9.0)) + "sec",
+                    fleury.getEulerkreis());
             console.start();
             Graph<Vertex,MyWeightedEdge> eulerGraph = fleury.getGraph();
             _modelAdapter = _graphBuilder.getModelAdapter(eulerGraph);
@@ -446,7 +447,8 @@ public class GraphManager extends ObservableSubwerkzeug
         {
             HierholzerImpl hierholzer = new HierholzerImpl(_graph);
             EulerkreisConsole console = new EulerkreisConsole(hierholzer.getAnzahlZugriffe()+"",
-                    "Hierholzer", ""+hierholzer.getTime(),hierholzer.getEulerkreis());
+                    "Hierholzer",(hierholzer.getTime()/ Math.pow(10.0, 9.0)) + "sec",
+                    hierholzer.getEulerkreis());
             console.start();
             
             Graph<Vertex,MyWeightedEdge> eulerGraph = hierholzer.getGraph();
