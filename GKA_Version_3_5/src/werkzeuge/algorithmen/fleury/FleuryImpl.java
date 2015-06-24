@@ -1,9 +1,7 @@
 package werkzeuge.algorithmen.fleury;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import materialien.MyWeightedEdge;
 import materialien.Vertex;
@@ -17,8 +15,23 @@ public class FleuryImpl
 {
     
     Graph<Vertex,MyWeightedEdge> _graph;
-    List<MyWeightedEdge> _eulerTour;
+    List<MyWeightedEdge> _eulerKreis;
+    long startTime;
+    long endTime;
+    private int _graphAccesses;
 
+    /**
+     * Eine Implementation des Fleury-Algorithmus 
+     *          zur Berechnung von Eulerkreisen innerhalb eines Graphen
+     *          
+     * @param graph Der zu untersuchende Graph
+     * 
+     * @requires graph.vertexSet().size() >= 2
+     * @requires GraphTests.isConnected(graph)
+     * @requires onlyEvenDegreesOfVertices(graph)
+     * 
+     * @throws IllegalArgumentException
+     */
     public FleuryImpl(Graph<Vertex, MyWeightedEdge> graph) throws IllegalArgumentException
     {
         if(graph.vertexSet().size() < 2 || !GraphTests.isConnected(graph) || !onlyEvenDegreesOfVertices(graph))
@@ -27,21 +40,24 @@ public class FleuryImpl
                     + " oder es haben nicht alle Knoten einen geraden Knotengrad");
         }
         _graph = graph;
-        _eulerTour  = new ArrayList<>();
+        _eulerKreis  = new ArrayList<>();
+        _graphAccesses = 0;
         startAlgorithm();
     }
 
-
+    // Startet den Algorithmus
     private void startAlgorithm()
     {
+        startTime = System.nanoTime();
         /*
          * Schritt 1: Man wähle einen beliebigen Knoten v0 in G und setze W0 = v0.
          */
         Vertex v0 = _graph.vertexSet().iterator().next(); 
         Vertex tempVertex = v0;
         
-        while(!_eulerTour.containsAll(_graph.edgeSet()))
+        while(!_eulerKreis.containsAll(_graph.edgeSet()))
         {
+            _graphAccesses++;
             /*
              * Schritt 2: Eine passende Kante wählen, für die gilt: 
              *                            a)- sie ist keine Schnittkante
@@ -51,8 +67,10 @@ public class FleuryImpl
              *                               kann dieser Fall gar nicht eintreten)
              */
             MyWeightedEdge nextEdge = getNextEdge(tempVertex);
-            _graph.removeEdge(nextEdge);
-            _eulerTour.add(nextEdge);
+         // Kante wird entfernt, damit wir den Suchalgorithmus zur Berechnung 
+         //                                   einer möglichen Schnittkante anwenden können
+            _graph.removeEdge(nextEdge); 
+            _eulerKreis.add(nextEdge);
             
             // tempVertex bestimmen
             Vertex source = _graph.getEdgeSource(nextEdge);
@@ -63,14 +81,24 @@ public class FleuryImpl
             }
             else tempVertex = source;
         }
+        endTime = System.nanoTime();
     }
 
+    /*
+     * Liefert die nächste mögliche Kante für den Eulerkreis.
+     * Für die Kante muss gelten, dass sie keine Schnittkante ist, es sei denn,
+     * es gibt keine Alternative.
+     * 
+     * @param tempVertex Der Knoten von dem aus wir die nächste Kante suchen
+     * 
+     */
     private MyWeightedEdge getNextEdge(Vertex tempVertex)
     {
         MyWeightedEdge resultEdge = null;
         List<MyWeightedEdge> edges = new ArrayList<>(_graph.edgesOf(tempVertex));
         for(int i=0;i<edges.size();i++)
         {
+            _graphAccesses++;
             MyWeightedEdge edge = edges.get(i);
             // Die Kante ist keine Schnittkante oder es gibt keine andere Alternative
             if(!isSchnittkante(edge,tempVertex) || i==edges.size()-1){
@@ -82,6 +110,12 @@ public class FleuryImpl
     }
 
 
+    /*
+     * Prüft, ob es sich bei einer Kante um eine Schnittkante handelt
+     * 
+     * @param edge Die Kante die überprüft werden soll
+     * @param tempVertex Der Knoten von dem aus wir kommen
+     */
     private boolean isSchnittkante(MyWeightedEdge edge, Vertex tempVertex)
     {
         boolean result = false;
@@ -110,17 +144,24 @@ public class FleuryImpl
         {
             result = true;
         }
-        
+        _graphAccesses+= bfs.getAnzahlZugriffe();
         _graph.addEdge(tempVertex, neighbour,edge);
         return result;
     }
 
 
-    public List<MyWeightedEdge> getEulertour()
+    /**
+     * Liefert den endgültigen Eulerkreis
+     * @return Den Eulerkreis
+     */
+    public List<MyWeightedEdge> getEulerkreis()
     {
-        return _eulerTour;
+        return _eulerKreis;
     }
 
+    /*
+     * Prüft, ob alle Knoten innerhalb eines Graphen einen geraden Knotengrad besitzen
+     */
     private boolean onlyEvenDegreesOfVertices(Graph<Vertex, MyWeightedEdge> graph)
     {
         int edgeCounter;
@@ -139,6 +180,7 @@ public class FleuryImpl
     /*
      * Liefert den Knotengrad für einen Vertex
      */
+    @SuppressWarnings("unused")
     private int vertexDegreeFor(Vertex vertex,Graph<Vertex, MyWeightedEdge> graph)
     {
         int result =0;
@@ -149,5 +191,19 @@ public class FleuryImpl
         return result;
     }
 
+    public long getTime()
+    {
+        return endTime-startTime;
+    }
+    
+    public int getAnzahlZugriffe()
+    {
+        return _graphAccesses;
+    }
 
+    public Graph<Vertex, MyWeightedEdge> getGraph()
+    {
+        return _graph;
+    }
+    
 }

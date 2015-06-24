@@ -10,7 +10,7 @@ import javax.swing.WindowConstants;
 import materialien.Vertex;
 
 
-public class AlgorithmConsole
+public class ShortestWayConsole
 {
     private JFrame _frame;
     private JLabel _rootVertex;
@@ -20,7 +20,7 @@ public class AlgorithmConsole
     private JLabel _benoetigteKanten;
     private JLabel _wegLaenge;
  
-    public AlgorithmConsole(Vertex rootVertex,
+    public ShortestWayConsole(Vertex rootVertex,
             Vertex targetVertex, String shortestW, String graphAccesses,
             String benoetigteKanten, String wegLaenge, String algorithm)
     {

@@ -19,7 +19,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.WeightedPseudograph;
 
 import werkzeuge.ObservableSubwerkzeug;
-import werkzeuge.algorithmen.AlgorithmConsole;
+import werkzeuge.algorithmen.ShortestWayConsole;
 
 public class DijkstraImpl extends ObservableSubwerkzeug
 {
@@ -287,7 +287,7 @@ public class DijkstraImpl extends ObservableSubwerkzeug
                     }
                     else
                     {
-                        AlgorithmConsole console = new AlgorithmConsole(_rootVertex, _targetVertex, shortestW, ""+_graphAccesses, "" + _benoetigteKanten, ""+_wegLaenge, "Dijkstra");
+                        ShortestWayConsole console = new ShortestWayConsole(_rootVertex, _targetVertex, shortestW, ""+_graphAccesses, "" + _benoetigteKanten, ""+_wegLaenge, "Dijkstra");
                         console.start();
                     }
                 }

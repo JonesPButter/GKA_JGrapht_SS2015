@@ -18,7 +18,7 @@ import materialien.Graph.UndirectedAttributedWeightedGraph;
 import org.jgrapht.Graph;
 
 import werkzeuge.ObservableSubwerkzeug;
-import werkzeuge.algorithmen.AlgorithmConsole;
+import werkzeuge.algorithmen.ShortestWayConsole;
 
 public class ASternImpl extends ObservableSubwerkzeug
 {
@@ -255,7 +255,7 @@ public class ASternImpl extends ObservableSubwerkzeug
                     }
                     else
                     {
-                        AlgorithmConsole console = new AlgorithmConsole(_rootVertex, _targetVertex, shortestW, ""+_graphAccesses, "" + _benoetigteKanten, ""+_wegLaenge, "AStern");
+                        ShortestWayConsole console = new ShortestWayConsole(_rootVertex, _targetVertex, shortestW, ""+_graphAccesses, "" + _benoetigteKanten, ""+_wegLaenge, "AStern");
                         console.start();
                     }
                 }

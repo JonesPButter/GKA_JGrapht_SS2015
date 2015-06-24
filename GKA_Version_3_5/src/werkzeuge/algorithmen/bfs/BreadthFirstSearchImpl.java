@@ -27,6 +27,7 @@ public class BreadthFirstSearchImpl extends ObservableSubwerkzeug
     Graph<Vertex,MyWeightedEdge> _graph; 
     Vertex _rootVertex;
     Vertex _targetVertex;
+    int _graphAccesses;
     int _benoetigteKanten;
     
     public BreadthFirstSearchImpl(Graph<Vertex,MyWeightedEdge> graph)
@@ -34,6 +35,7 @@ public class BreadthFirstSearchImpl extends ObservableSubwerkzeug
         _ui = new BreadthFirstSearchUserInputUI();
         _graph = graph;
         _benoetigteKanten = 0;
+        _graphAccesses = 0;
         registriereListenerAnUI();
         faerbungenZuruecksetzen();
     }
@@ -102,11 +104,11 @@ public class BreadthFirstSearchImpl extends ObservableSubwerkzeug
         assert target != null : "Vorbedingung verletzt: graph != null";
         
         List<Vertex> shortestWay = new ArrayList<Vertex>();
-        
+        _graphAccesses++;
         Queue<Vertex> q = new LinkedList<>();
         source.visit();      // setze Startvertex auf "gesehen"
         q.add(source);       
-  
+        
         if(source.equals(target))
         {
             shortestWay.add(source);
@@ -116,10 +118,11 @@ public class BreadthFirstSearchImpl extends ObservableSubwerkzeug
         boolean targetGefunden = false;
         while(!q.isEmpty() && !targetGefunden)
         {
-
+            _graphAccesses++;
             Vertex root = q.remove();
             for(Vertex child : getAdjacentNodes(root))
             {
+                _graphAccesses++;
                 if(!child.isVisited())
                 {
                     child.setEntfernungVomStartVertex((root.getEntfernungVomStartVertex() + 1));                      
@@ -141,7 +144,8 @@ public class BreadthFirstSearchImpl extends ObservableSubwerkzeug
         while(i>0) // wir gehen von hinten (vom Target) zum StartVertex
         {                        
             for(Vertex neighbour : getBackwardsAdjacentNodes(currentVertex))
-            {          
+            {       
+                _graphAccesses++;
                 if(neighbour.getEntfernungVomStartVertex() == i-1 && neighbour.isVisited())
                 {
                     shortestWay.add(0,neighbour);
@@ -263,5 +267,10 @@ public class BreadthFirstSearchImpl extends ObservableSubwerkzeug
                 }
             }
         });
+    }
+    
+    public int getAnzahlZugriffe()
+    {
+        return _graphAccesses;
     }
 }

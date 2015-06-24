@@ -22,6 +22,7 @@ import org.jgrapht.graph.WeightedPseudograph;
 
 import werkzeuge.ObservableSubwerkzeug;
 import werkzeuge.SubwerkzeugObserver;
+import werkzeuge.algorithmen.EulerkreisConsole;
 import werkzeuge.algorithmen.SpannbaumConsole;
 import werkzeuge.algorithmen.aStern.ASternImpl;
 import werkzeuge.algorithmen.bfs.BreadthFirstSearchImpl;
@@ -432,22 +433,27 @@ public class GraphManager extends ObservableSubwerkzeug
         if(option.equals(options[0]))
         {
             FleuryImpl fleury = new FleuryImpl(_graph);
+            EulerkreisConsole console = new EulerkreisConsole(fleury.getAnzahlZugriffe()+"",
+                    "Fleury", ""+fleury.getTime(),fleury.getEulerkreis());
+            console.start();
+            Graph<Vertex,MyWeightedEdge> eulerGraph = fleury.getGraph();
+            _modelAdapter = _graphBuilder.getModelAdapter(eulerGraph);
+            _visualizationGraph.setModel(_modelAdapter);
             
-//            Graph<Vertex,MyWeightedEdge> primGraph = fleury.getGraph();
-//            _modelAdapter = _graphBuilder.getModelAdapter(primGraph);
-//            _visualizationGraph.setModel(_modelAdapter);
-//            
-//            informiereUeberAenderung("Graph changed!");
+            informiereUeberAenderung("Graph changed!");
         }
         else if(option.equals(options[1]))
         {
             HierholzerImpl hierholzer = new HierholzerImpl(_graph);
-//            
-//            Graph<Vertex,MyWeightedEdge> primGraph = hierholzer.getGraph();
-//            _modelAdapter = _graphBuilder.getModelAdapter(primGraph);
-//            _visualizationGraph.setModel(_modelAdapter);
-//            
-//            informiereUeberAenderung("Graph changed!"); 
+            EulerkreisConsole console = new EulerkreisConsole(hierholzer.getAnzahlZugriffe()+"",
+                    "Hierholzer", ""+hierholzer.getTime(),hierholzer.getEulerkreis());
+            console.start();
+            
+            Graph<Vertex,MyWeightedEdge> eulerGraph = hierholzer.getGraph();
+            _modelAdapter = _graphBuilder.getModelAdapter(eulerGraph);
+            _visualizationGraph.setModel(_modelAdapter);
+            
+            informiereUeberAenderung("Graph changed!"); 
         }
     }
 }

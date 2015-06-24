@@ -1,9 +1,7 @@
 package werkzeuge.algorithmen.hierholzer;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import materialien.MyWeightedEdge;
 import materialien.Vertex;
@@ -20,12 +18,15 @@ public class HierholzerImpl
     List<MyWeightedEdge> _edgeSeen;
     List<Vertex> _vertexSeen;
     List<Vertex> _schnittKnoten;
+    private int _graphAccesses;
+    private long endTime;
+    private long startTime;
     
     public HierholzerImpl(Graph<Vertex, MyWeightedEdge> graph)
     {
         _graph = graph;
         _edgeSeen = new ArrayList<>();
-        if(!GraphTests.isConnected(graph) || !onlyEvenDegreesOfVertices(graph))
+        if(graph.vertexSet().size() < 2 || !GraphTests.isConnected(graph) || !onlyEvenDegreesOfVertices(graph))
         {
             throw new IllegalArgumentException("Der Graph ist entweder nicht zusammenhängend"
                     + " oder es haben nicht alle Knoten einen geraden Knotengrad");
@@ -39,6 +40,7 @@ public class HierholzerImpl
     
     private void startAlgorithm()
     {
+        startTime = System.nanoTime();
         /*
          * Schritt 1: Man wähle einen beliebigen Knoten v0 in G und setze W0 = v0.
          */
@@ -52,18 +54,20 @@ public class HierholzerImpl
          */
         while(!_edgeSeen.containsAll(_graph.edgeSet()))
         {
+            _graphAccesses++;
             List<Vertex> eulerKreis = getEulerKreisFor(tempVertex);
             _eulerKreise.add(eulerKreis);
             
-            tempVertex = getNextNodeWithBiggerDegreeThan0(tempVertex,_vertexSeen);
+            tempVertex = getNextNodeWithBiggerDegreeThan0(_vertexSeen);
         }
           
         /*
          * Schritt 3: Den Eulerkreis zusammenbauen
          */ 
         _eulerTour.add(v0);
-        erstelleEulertour(v0,_eulerKreise.get(0));
+        erstelleEulertour(_eulerKreise.get(0));
         System.out.println("Eulertour: " + _eulerTour);
+        endTime = System.nanoTime();
     }
     
     /*
@@ -74,7 +78,7 @@ public class HierholzerImpl
      *              Unterkreis wieder bis zu einem weiteren
      *              Schnittpunkt oder dem Endpunkt fortsetzt.
      */
-    private void erstelleEulertour(Vertex start, List<Vertex> eulerKreis)
+    private void erstelleEulertour(List<Vertex> eulerKreis)
     {
 //        Vertex tempVertex = start;
         for(int i=1;i<eulerKreis.size();i++)
@@ -85,7 +89,7 @@ public class HierholzerImpl
             {
                 _schnittKnoten.remove(vertex);
                 List<Vertex> nextEulerkreis = getCreatedEulerkreisWhereStartIs(vertex);
-                erstelleEulertour(vertex,nextEulerkreis);
+                erstelleEulertour(nextEulerkreis);
             }               
 //            tempVertex = vertex;
         }
@@ -110,8 +114,7 @@ public class HierholzerImpl
         return resultList;
     }
 
-    private Vertex getNextNodeWithBiggerDegreeThan0(Vertex tempVertex,
-            List<Vertex> eulerKreis)
+    private Vertex getNextNodeWithBiggerDegreeThan0(List<Vertex> eulerKreis)
     {
         Vertex result = null;
         for(Vertex v : eulerKreis)
@@ -149,6 +152,7 @@ public class HierholzerImpl
         boolean kreis = false;
         while(!kreis)
         {
+            _graphAccesses++;
             /*
              * 1.) Suchen der nächsten Kante für den Eulerkreis
              *              - es können nur Kanten ausgewählt werden, die noch nicht betrachtet
@@ -181,6 +185,7 @@ public class HierholzerImpl
         MyWeightedEdge resultEdge = null;
         for(MyWeightedEdge edge : _graph.edgesOf(start))
         {
+            _graphAccesses++;
             if(!_edgeSeen.contains(edge))
             {
                 resultEdge = edge;
@@ -191,18 +196,36 @@ public class HierholzerImpl
         return resultEdge;
     }
 
-    public List<MyWeightedEdge> getEulertour()
+    public List<MyWeightedEdge> getEulerkreis()
     {       
         List<MyWeightedEdge> eulertour = new ArrayList<>();
         for(int i=0;i<_eulerTour.size();i++)
         {
             if(i+1 < _eulerTour.size())
             {
-                MyWeightedEdge edge = _graph.getEdge(_eulerTour.get(i), _eulerTour.get(i+1));    
+                MyWeightedEdge edge = getEdgeFor(eulertour,_eulerTour.get(i), _eulerTour.get(i+1));    
                 eulertour.add(edge);
             }
         }
         return eulertour;
+    }
+    
+    /*
+     * Liefert die nächste kante für einen Knoten unter der Bedingung,
+     * dass die Kante noch nicht in der Eulertour vorkommt
+     */
+    private MyWeightedEdge getEdgeFor( List<MyWeightedEdge> eulertour,Vertex vertex, Vertex vertex2)
+    {
+        MyWeightedEdge result = null;
+        for(MyWeightedEdge edge : _graph.getAllEdges(vertex, vertex2))
+        {
+            if(!eulertour.contains(edge))
+            {
+                result = edge;
+                break;
+            }
+        }
+        return result;
     }
 
     private boolean onlyEvenDegreesOfVertices(Graph<Vertex, MyWeightedEdge> graph)
@@ -235,18 +258,19 @@ public class HierholzerImpl
         }        
         return result;
     }
-    
-    private Set<Vertex> getNeighbours(Graph<Vertex, MyWeightedEdge> graph, Vertex n)
+
+    public long getTime()
     {
-        Set<Vertex> adjacentNodes= new HashSet<Vertex>();
-        Set<MyWeightedEdge> edges= graph.edgesOf(n);
-       for(MyWeightedEdge edge : edges)
-       {
-           Vertex neighbour = getNeighbour(graph,edge,n);
-           adjacentNodes.add(neighbour);               
-       }
-       return adjacentNodes;        
+        return endTime-startTime;
     }
-
-
+    
+    public int getAnzahlZugriffe()
+    {
+        return _graphAccesses;
+    }
+    
+    public Graph<Vertex, MyWeightedEdge> getGraph()
+    {
+        return _graph;
+    }
 }
