@@ -27,10 +27,9 @@ public class EulerCreator extends ObservableSubwerkzeug {
 	int _knotenAnzahl;
 	List<Vertex> _vertexList;
 	Map<Vertex, Integer> _vertexMap;
-//	Array <Vertex<Vertex>> _edgesArray;
+
 	
 	
-//	UndirectedAttributedGraph<Vertex, MyWeightedEdge> _graph;
 	Pseudograph<Vertex, MyWeightedEdge> _graph;
 	public EulerCreator() {
 		
@@ -38,8 +37,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		_knotenAnzahl = 0;
 		_vertexList  = new ArrayList<>();
 		
-		
-//		_graph = new UndirectedAttributedGraph<>(MyWeightedEdge.class);
+
 		_graph = new Pseudograph<>(MyWeightedEdge.class);
 		registiereListener();
 		
@@ -66,6 +64,12 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		});
 	}
 	
+	
+	/**
+	 * prüft ob die Eingabe der UI korrekt ist und gibt dann einen bool zurück
+	 * @param anzahl
+	 * @return boolean
+	 */
 	public boolean eingabeKorrekt(String anzahl)
 	{
 		try 
@@ -74,7 +78,6 @@ public class EulerCreator extends ObservableSubwerkzeug {
 			if(Integer.parseInt(anzahl) > 0) 
 			{
 				_knotenAnzahl = Integer.parseInt(anzahl);
-//				System.out.println(_knotenAnzahl);
 				return true;
 			}
 			
@@ -84,7 +87,11 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		
 		return false;
 	}
-	
+
+	/**
+	 * Diese Methode erstellt den ganzen Graphen mit der gewünschten Kantenanzahl. Und speichert den im _graph.
+	 * @param knotenAnzahl
+	 */
 	public void creatEulerGraph(int knotenAnzahl) 
 	{
 		_graph = new Pseudograph<Vertex, MyWeightedEdge>(MyWeightedEdge.class);
@@ -98,7 +105,10 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		
 	}
 	
-	
+	/**
+	 * es werden demm Graphen _graph die Knoten hinzu gefügt. Da das Attribute egal ist, wrid es immer 0 sein.
+	 * @param knotenAnzahl
+	 */
 	public void createVertex(int knotenAnzahl)
 	{
 		Random random = new Random();
@@ -123,6 +133,11 @@ public class EulerCreator extends ObservableSubwerkzeug {
 	}
 	
 	
+	/**
+	 * In deiser Mehtode werden alle Kanten erzeugt.
+	 * Zuerst werden solange Kreise gezogen bis, der Graph zusammen hängend ist. 
+	 * @param knotenAnzahl
+	 */
 	public void createEdges(int knotenAnzahl) 
 	{
 		
@@ -136,28 +151,19 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		start  = _vertexList.get(randomGenerator.nextInt(knotenAnzahl -1));
 		source = start;
 		target = _vertexList.get(randomGenerator.nextInt(knotenAnzahl -1));
-		int testInt = 0;
+//		int testInt = 0;
 		while(!isGraphConnected(_graph)) 
 		{
 			CircleSize = randomGenerator.nextInt(knotenAnzahl -3) +3;
-//			System.out.println("CircleSie: " + CircleSize);
 			for(int i = 0; i < CircleSize; i++)
 			{
 				while(source.equals(target))
 				{
 					target = _vertexList.get(randomGenerator.nextInt(knotenAnzahl));
-					
-//					System.out.println("Parent: " + parent);
-//					System.out.println("Target: " + target);
-//					System.out.println("Source: " + source);
-//					System.out.println("****************************************");
 				}
-				
-//				System.out.println("***************************DONE***********************");
-//				source = _vertexList.get(randomGenerator.nextInt(knotenAnzahl -1));
 				if(i == CircleSize -1)
 				{
-//					System.out.println("Ende");
+
 					target = start;				
 				}
 				if(!_graph.containsEdge(source, target) && !source.equals(target)) 
@@ -168,17 +174,24 @@ public class EulerCreator extends ObservableSubwerkzeug {
 				source = target;					
 				
 			}
-			testInt++;
+//			testInt++;
 		}
 		
 	}
 	
+	/**
+	 * zeigt die UI 
+	 */
     public void showUI()
     {
         _ui.getDialog().setVisible(true);
     }
 
-
+    /**
+     * diese Methode prüft ob der Graph ein eulerGraph ist oder ist. Und gibt einen boolean zurück
+     * @param graph
+     * @return boolean
+     */
     public boolean isEulergraph(Graph<Vertex, MyWeightedEdge> graph){
     	
     	if(!isGraphConnected(graph))
@@ -188,37 +201,36 @@ public class EulerCreator extends ObservableSubwerkzeug {
 
     	if(onlyEvenDegreesOfVertices(graph))
     	{
-//    		System.out.println("False");
     		return false;
     	}
     	return true;
     
     }
     
-    private boolean allVertexHasEvenEdges(Graph<Vertex, MyWeightedEdge> graph) {
-		
-    	Set<Vertex> vertexSet = new HashSet<Vertex>();
-    	int neighborusCount;
-    	
-    	vertexSet.addAll(_vertexList);
-//    	System.out.println(vertexSet.size());
-    	for(Vertex ver : vertexSet) 
-    	{
-    		neighborusCount = 0;
-
-    		for(MyWeightedEdge edge : graph.edgesOf(ver) )
-    		{
-    			neighborusCount++;
-    		}
-    		
-    		if(neighborusCount < 2 || neighborusCount % 2 != 0)
-    		{
-//    			System.out.println("FAAAAAAAAAAAAAAAAAAALLLLLLLLLLLSSSSSSSSSSE");
-    			return false;    			
-    		}
-    	}
-    	return true;
-	}
+//    private boolean allVertexHasEvenEdges(Graph<Vertex, MyWeightedEdge> graph) {
+//		
+//    	Set<Vertex> vertexSet = new HashSet<Vertex>();
+//    	int neighborusCount;
+//    	
+//    	vertexSet.addAll(_vertexList);
+////    	System.out.println(vertexSet.size());
+//    	for(Vertex ver : vertexSet) 
+//    	{
+//    		neighborusCount = 0;
+//
+//    		for(MyWeightedEdge edge : graph.edgesOf(ver) )
+//    		{
+//    			neighborusCount++;
+//    		}
+//    		
+//    		if(neighborusCount < 2 || neighborusCount % 2 != 0)
+//    		{
+////    			System.out.println("FAAAAAAAAAAAAAAAAAAALLLLLLLLLLLSSSSSSSSSSE");
+//    			return false;    			
+//    		}
+//    	}
+//    	return true;
+//	}
     
     
     private boolean onlyEvenDegreesOfVertices(Graph<Vertex, MyWeightedEdge> graph)
@@ -239,6 +251,11 @@ public class EulerCreator extends ObservableSubwerkzeug {
         return true;
     }
 
+    /**
+     * gitb einen Boolean zurück, ob der Graph zusammen hängend ist
+     * @param graph
+     * @return
+     */
 	public boolean isGraphConnected(Graph<Vertex, MyWeightedEdge> graph)
 	{
 		if(GraphTests.isConnected(graph)) 
@@ -249,8 +266,12 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		
 	}
 
-    
-    
+    /**
+     * gibt alle Nachbarn eines Knote im Graphen zurück. Im Set
+     * @param graph
+     * @param n
+     * @return Set<Vertex>
+     */
     private Set<Vertex> getNeighbours(Graph<Vertex, MyWeightedEdge> graph, Vertex n)
     {
         Set<Vertex> adjacentNodes= new HashSet<Vertex>();
@@ -270,6 +291,11 @@ public class EulerCreator extends ObservableSubwerkzeug {
        return adjacentNodes;        
     }
     
+    /**
+     * Diese Methode schaut, on alle Knoten eine gerade Anzahl an Kanten hat.
+     * @param graph
+     * @return
+     */
     public boolean goOverAllVertieses(Graph<Vertex, MyWeightedEdge> graph)
     {
     	boolean result = false;
@@ -280,7 +306,6 @@ public class EulerCreator extends ObservableSubwerkzeug {
     	
     	for(Vertex ver : set)
     	{
-//    		System.out.println( getNeighbours(_graph, ver).size() );
     		if(getNeighbours(_graph, ver).size() % 2 == 1) 
     		{
     			if(source == null)
@@ -289,7 +314,6 @@ public class EulerCreator extends ObservableSubwerkzeug {
     			}
     			else if(source != null && target == null)
     			{
-//    				System.out.println("Bla");
     				_graph.addEdge(source, ver);
     				source = null;
     			}
@@ -306,9 +330,12 @@ public class EulerCreator extends ObservableSubwerkzeug {
     	
     }
    
-    
+    /**
+     * gibt den Graphen zurück
+     * @return Graph<Vertex, MyWeightedEdge>
+     */
 	public Graph<Vertex, MyWeightedEdge> getEulerGraph() {
-		// TODO Auto-generated method stub
+
 		return _graph;
 	}
 	
