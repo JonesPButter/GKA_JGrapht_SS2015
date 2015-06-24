@@ -52,10 +52,9 @@ public class FleuryImpl
         /*
          * Schritt 1: Man wähle einen beliebigen Knoten v0 in G und setze W0 = v0.
          */
-        Vertex v0 = _graph.vertexSet().iterator().next(); 
-        Vertex tempVertex = v0;
-        
-        while(!_eulerKreis.containsAll(_graph.edgeSet()))
+        Vertex tempVertex = _graph.vertexSet().iterator().next(); 
+        int i= _graph.edgeSet().size();
+        while(i>0)
         {
             _graphAccesses++;
             /*
@@ -80,6 +79,7 @@ public class FleuryImpl
                 tempVertex = target;
             }
             else tempVertex = source;
+            i--;
         }
         endTime = System.nanoTime();
     }
