@@ -54,10 +54,7 @@ public class EulerCreator extends ObservableSubwerkzeug {
 				
 				if(eingabeKorrekt(knontenAnzahl)) {
 					_ui.getDialog().dispose();
-//					createVertex(_knotenAnzahl);
-//					createEdges(_knotenAnzahl);
 					creatEulerGraph(_knotenAnzahl);
-					//TODO createEulerGraph(_knotenAnzahl);
 					informiereUeberAenderung(_graph);
 				}
 			}
@@ -151,7 +148,6 @@ public class EulerCreator extends ObservableSubwerkzeug {
 		start  = _vertexList.get(randomGenerator.nextInt(knotenAnzahl -1));
 		source = start;
 		target = _vertexList.get(randomGenerator.nextInt(knotenAnzahl -1));
-//		int testInt = 0;
 		while(!isGraphConnected(_graph)) 
 		{
 			CircleSize = randomGenerator.nextInt(knotenAnzahl -3) +3;
@@ -174,7 +170,6 @@ public class EulerCreator extends ObservableSubwerkzeug {
 				source = target;					
 				
 			}
-//			testInt++;
 		}
 		
 	}
@@ -199,39 +194,14 @@ public class EulerCreator extends ObservableSubwerkzeug {
     		return false;
     	}
 
-    	if(onlyEvenDegreesOfVertices(graph))
+    	if(!onlyEvenDegreesOfVertices(graph))
     	{
     		return false;
     	}
     	return true;
     
     }
-    
-//    private boolean allVertexHasEvenEdges(Graph<Vertex, MyWeightedEdge> graph) {
-//		
-//    	Set<Vertex> vertexSet = new HashSet<Vertex>();
-//    	int neighborusCount;
-//    	
-//    	vertexSet.addAll(_vertexList);
-////    	System.out.println(vertexSet.size());
-//    	for(Vertex ver : vertexSet) 
-//    	{
-//    		neighborusCount = 0;
-//
-//    		for(MyWeightedEdge edge : graph.edgesOf(ver) )
-//    		{
-//    			neighborusCount++;
-//    		}
-//    		
-//    		if(neighborusCount < 2 || neighborusCount % 2 != 0)
-//    		{
-////    			System.out.println("FAAAAAAAAAAAAAAAAAAALLLLLLLLLLLSSSSSSSSSSE");
-//    			return false;    			
-//    		}
-//    	}
-//    	return true;
-//	}
-    
+        
     
     private boolean onlyEvenDegreesOfVertices(Graph<Vertex, MyWeightedEdge> graph)
     {
