@@ -34,7 +34,7 @@ public class FleuryImpl
      */
     public FleuryImpl(Graph<Vertex, MyWeightedEdge> graph) throws IllegalArgumentException
     {
-        if(graph.vertexSet().size() < 2 || !GraphTests.isConnected(graph) || !onlyEvenDegreesOfVertices(graph))
+        if(graph.vertexSet().size() < 1 || !GraphTests.isConnected(graph) || !onlyEvenDegreesOfVertices(graph))
         {
             throw new IllegalArgumentException("Der Graph ist entweder nicht zusammenhängend"
                     + " oder es haben nicht alle Knoten einen geraden Knotengrad");
@@ -169,7 +169,7 @@ public class FleuryImpl
         for(Vertex v : graph.vertexSet())
         {
             edgeCounter = vertexDegreeFor(v,graph);
-            if((edgeCounter%2) != 0)
+            if(edgeCounter == 0 || (edgeCounter%2) != 0)
             {
                 return false;
             }
